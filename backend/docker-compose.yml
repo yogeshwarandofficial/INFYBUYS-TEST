@@ -1,0 +1,16 @@
+services:
+  infybuys-postgres:
+    image: postgres:17
+    container_name: infybuys-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: infybuys
+      POSTGRES_PASSWORD: infybuys_dev_password
+      POSTGRES_DB: infybuys
+    ports:
+      - "5433:5432"
+    volumes:
+      - infybuys-postgres-data:/var/lib/postgresql/data
+
+volumes:
+  infybuys-postgres-data:

@@ -1,0 +1,277 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                String                 @id @default(uuid())
+  name              String
+  email             String                 @unique
+  phone             String?
+  passwordHash      String?
+  roles             Role[]
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
+  verifiedAt        DateTime?
+  adminActionLogs   AdminActionLog[]       @relation("AdminActionLogs")
+  listings          Listing[]
+  ndaAcceptances    ListingNdaAcceptance[]
+  buyerEnquiries    Enquiry[]              @relation("BuyerEnquiries")
+  sellerEnquiries   Enquiry[]              @relation("SellerEnquiries")
+  enquiryMessages   EnquiryMessage[]       @relation("UserEnquiryMessages")
+  payments          Payment[]
+  refreshTokens     RefreshToken[]
+  givenReviews      Review[]               @relation("GivenReviews")
+  receivedReviews   Review[]               @relation("ReceivedReviews")
+  savedSearches     SavedSearch[]
+  sellerProfile     SellerProfile?
+  userSubscriptions UserSubscription[]
+}
+
+model SellerProfile {
+  id            String    @id @default(uuid())
+  userId        String    @unique
+  businessName  String
+  companyNumber String?
+  kycStatus     KycStatus @default(PENDING)
+  verifiedBadge Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Listing {
+  id                  String                 @id @default(uuid())
+  sellerId            String
+  type                ListingType
+  category            String
+  title               String
+  description         String
+  priceOrRent         Decimal                @db.Decimal(12, 2)
+  currency            String                 @default("GBP")
+  locationArea        String
+  locationPostcode    String
+  locationExact       String?
+  turnover            Decimal?               @db.Decimal(12, 2)
+  netProfit           Decimal?               @db.Decimal(12, 2)
+  establishedYear     Int?
+  status              ListingStatus          @default(DRAFT)
+  rejectionReasonCode String?
+  ndaRequired         Boolean                @default(false)
+  contactName         String?
+  contactEmail        String?
+  contactPhone        String?
+  coverMediaId        String?
+  createdAt           DateTime               @default(now())
+  updatedAt           DateTime               @updatedAt
+  expiresAt           DateTime?
+  seller              User                   @relation(fields: [sellerId], references: [id])
+  media               ListingMedia[]
+  ndaAcceptances      ListingNdaAcceptance[]
+  enquiries           Enquiry[]
+  reviews             Review[]
+
+  @@index([sellerId])
+  @@index([status, type, locationArea])
+}
+
+model ListingMedia {
+  id        String    @id @default(uuid())
+  listingId String
+  url       String?
+  type      MediaType
+  order     Int       @default(0)
+  createdAt DateTime  @default(now())
+  s3Key     String?
+  listing   Listing   @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@index([listingId])
+}
+
+model SubscriptionPlan {
+  id                String               @id @default(uuid())
+  audience          SubscriptionAudience
+  name              String
+  price             Decimal              @db.Decimal(12, 2)
+  billingCycle      BillingCycle
+  featureLimits     Json
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
+  userSubscriptions UserSubscription[]
+}
+
+model UserSubscription {
+  id          String             @id @default(uuid())
+  userId      String
+  planId      String
+  status      SubscriptionStatus
+  startDate   DateTime           @default(now())
+  renewalDate DateTime?
+  paymentRef  String?
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  plan        SubscriptionPlan   @relation(fields: [planId], references: [id])
+  user        User               @relation(fields: [userId], references: [id])
+
+  @@index([userId, status])
+}
+
+model Payment {
+  id            String   @id @default(uuid())
+  userId        String
+  amount        Decimal  @db.Decimal(12, 2)
+  currency      String   @default("GBP")
+  status        String
+  gatewayRef    String
+  invoicePdfUrl String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  user          User     @relation(fields: [userId], references: [id])
+
+  @@index([gatewayRef])
+}
+
+model Enquiry {
+  id        String           @id @default(uuid())
+  listingId String
+  buyerId   String
+  sellerId  String
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  buyer     User             @relation("BuyerEnquiries", fields: [buyerId], references: [id])
+  listing   Listing          @relation(fields: [listingId], references: [id])
+  seller    User             @relation("SellerEnquiries", fields: [sellerId], references: [id])
+  messages  EnquiryMessage[]
+
+  @@unique([listingId, buyerId])
+  @@index([buyerId])
+  @@index([sellerId])
+}
+
+model EnquiryMessage {
+  id          String    @id @default(uuid())
+  enquiryId   String
+  senderId    String
+  messageText String
+  sentAt      DateTime  @default(now())
+  readAt      DateTime?
+  enquiry     Enquiry   @relation(fields: [enquiryId], references: [id], onDelete: Cascade)
+  sender      User      @relation("UserEnquiryMessages", fields: [senderId], references: [id])
+
+  @@index([enquiryId])
+  @@index([senderId])
+}
+
+model SavedSearch {
+  id             String   @id @default(uuid())
+  buyerId        String
+  filtersJson    Json
+  alertFrequency String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  buyer          User     @relation(fields: [buyerId], references: [id], onDelete: Cascade)
+
+  @@index([buyerId])
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  listingId String?
+  sellerId  String?
+  buyerId   String
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  buyer     User     @relation("GivenReviews", fields: [buyerId], references: [id])
+  listing   Listing? @relation(fields: [listingId], references: [id])
+  seller    User?    @relation("ReceivedReviews", fields: [sellerId], references: [id])
+}
+
+model AdminActionLog {
+  id           String   @id @default(uuid())
+  adminId      String
+  actionType   String
+  targetEntity String
+  reason       String?
+  timestamp    DateTime @default(now())
+  admin        User     @relation("AdminActionLogs", fields: [adminId], references: [id])
+}
+
+model ListingNdaAcceptance {
+  id         String   @id @default(uuid())
+  listingId  String
+  buyerId    String
+  acceptedAt DateTime @default(now())
+  buyer      User     @relation(fields: [buyerId], references: [id])
+  listing    Listing  @relation(fields: [listingId], references: [id])
+
+  @@unique([listingId, buyerId])
+}
+
+model RefreshToken {
+  id        String    @id @default(uuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([tokenHash])
+}
+
+enum Role {
+  BUYER
+  SELLER
+  AGENCY
+  ADMIN
+}
+
+enum ListingType {
+  SALE
+  RENT
+}
+
+enum ListingStatus {
+  DRAFT
+  SUBMITTED_FOR_REVIEW
+  REJECTED
+  PUBLISHED
+  PAUSED
+  SOLD_LET
+  EXPIRED
+}
+
+enum KycStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum SubscriptionAudience {
+  BUYER
+  SELLER
+}
+
+enum BillingCycle {
+  MONTHLY
+  ANNUAL
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELLED
+  EXPIRED
+}
+
+enum MediaType {
+  PHOTO
+  VIDEO
+}

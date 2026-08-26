@@ -1,0 +1,60 @@
+{
+  "REPORT": {
+    "auth": {
+      "register": "PASS",
+      "login": "PASS",
+      "getMe": "FAIL",
+      "refresh": "FAIL",
+      "logout": "FAIL"
+    },
+    "listing": {
+      "createDraft": "PASS",
+      "myListings": "PASS",
+      "editDraft": "PASS",
+      "uploadMedia": "PASS",
+      "deleteMedia": "PASS",
+      "reorderMedia": "BLOCKED",
+      "submitForReview": "PASS"
+    },
+    "admin": {
+      "login": "PASS",
+      "viewSubmitted": "PASS",
+      "approve": "PASS",
+      "buyerToSeller": "PASS",
+      "reject": "FAIL",
+      "rejectedRemainsBuyer": "FAIL"
+    },
+    "marketplace": {
+      "publishedVisible": "PASS",
+      "draftHidden": "PASS",
+      "rejectedHidden": "PASS",
+      "sellerEmailHidden": "FAIL",
+      "sellerPhoneHidden": "FAIL"
+    },
+    "subscription": {
+      "noSubBlocked": "PASS",
+      "activeSubAllowed": "BLOCKED",
+      "expiredBlocked": "BLOCKED",
+      "cancelledBlocked": "BLOCKED"
+    },
+    "nda": {
+      "required": "PASS",
+      "notAcceptedBlocked": "FAIL",
+      "acceptedAllowed": "BLOCKED",
+      "notRequired": "BLOCKED"
+    },
+    "sellerContact": {
+      "publicHidden": "FAIL",
+      "subRequired": "FAIL",
+      "contactAvailable": "BLOCKED",
+      "ownerBlocked": "PASS"
+    },
+    "security": {
+      "idorProtection": "FAIL",
+      "sellerIdProtection": "PASS",
+      "statusProtection": "PASS",
+      "roleProtection": "PASS"
+    }
+  },
+  "failures": []
+}
