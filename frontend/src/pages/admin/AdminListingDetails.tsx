@@ -133,7 +133,36 @@ export default function AdminListingDetails() {
                       : 'The seller has proposed changes to this listing.'}
                   </p>
                   <div className="bg-white p-4 rounded border text-sm">
-                    <pre className="whitespace-pre-wrap font-mono text-xs">{JSON.stringify(revision.proposedData, null, 2)}</pre>
+                    {(() => {
+                      const changes: { field: string; oldVal: any; newVal: any }[] = [];
+                      const propsToCheck = ['title', 'description', 'priceOrRent', 'turnover', 'netProfit', 'locationArea', 'category', 'subCategory', 'contactName', 'contactEmail', 'contactPhone', 'ndaRequired', 'establishedYear', 'employees'];
+                      
+                      propsToCheck.forEach(prop => {
+                        const newVal = revision.proposedData[prop];
+                        if (newVal !== undefined && newVal !== listing[prop]) {
+                          changes.push({ field: prop, oldVal: listing[prop], newVal });
+                        }
+                      });
+
+                      if (changes.length === 0) return <p className="text-muted-foreground text-sm italic">No text field changes detected (maybe only media was changed).</p>;
+
+                      return (
+                        <div className="space-y-3">
+                          <div className="grid grid-cols-3 gap-4 border-b pb-2 font-medium text-muted-foreground">
+                            <div>Field</div>
+                            <div>Current (Live)</div>
+                            <div>Proposed Change</div>
+                          </div>
+                          {changes.map(c => (
+                            <div key={c.field} className="grid grid-cols-3 gap-4 border-b pb-2 last:border-0 text-xs sm:text-sm">
+                              <div className="font-semibold capitalize break-words">{c.field.replace(/([A-Z])/g, ' $1').trim()}</div>
+                              <div className="text-red-600 line-through break-words whitespace-pre-wrap max-h-48 overflow-y-auto">{String(c.oldVal ?? 'N/A')}</div>
+                              <div className="text-green-600 break-words whitespace-pre-wrap max-h-48 overflow-y-auto">{String(c.newVal ?? 'N/A')}</div>
+                            </div>
+                          ))}
+                        </div>
+                      );
+                    })()}
                   </div>
                   {listing.status === 'CHANGES_PENDING_REVIEW' && (
                     <div className="flex gap-2">
