@@ -30,6 +30,7 @@ model User {
   savedSearches     SavedSearch[]
   sellerProfile     SellerProfile?
   userSubscriptions UserSubscription[]
+  listingRevisions  ListingRevision[]
 }
 
 model SellerProfile {
@@ -74,6 +75,7 @@ model Listing {
   ndaAcceptances      ListingNdaAcceptance[]
   enquiries           Enquiry[]
   reviews             Review[]
+  revisions           ListingRevision[]
 
   @@index([sellerId])
   @@index([status, type, locationArea])
@@ -86,8 +88,10 @@ model ListingMedia {
   type      MediaType
   order     Int       @default(0)
   createdAt DateTime  @default(now())
-  s3Key     String?
-  listing   Listing   @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  s3Key             String?
+  listingRevisionId String?
+  listing           Listing   @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  listingRevision   ListingRevision? @relation(fields: [listingRevisionId], references: [id], onDelete: Cascade)
 
   @@index([listingId])
 }
@@ -243,9 +247,34 @@ enum ListingStatus {
   SUBMITTED_FOR_REVIEW
   REJECTED
   PUBLISHED
+  CHANGES_PENDING_REVIEW
+  REJECTED_CHANGES
   PAUSED
   SOLD_LET
   EXPIRED
+}
+
+enum RevisionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model ListingRevision {
+  id              String         @id @default(uuid())
+  listingId       String
+  createdBy       String
+  status          RevisionStatus @default(PENDING)
+  proposedData    Json
+  submittedAt     DateTime       @default(now())
+  reviewedAt      DateTime?
+  reviewedBy      String?
+  rejectionReason String?
+  listing         Listing        @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  user            User           @relation(fields: [createdBy], references: [id])
+  media           ListingMedia[]
+
+  @@index([listingId, status])
 }
 
 enum KycStatus {

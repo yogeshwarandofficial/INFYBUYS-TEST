@@ -30,4 +30,23 @@ export class AdminController {
   getListing(@Request() req: any, @Param('id') id: string) {
     return this.listingsService.findOne(id, req.user);
   }
+
+  @Get('listings/:id/revision')
+  getRevision(@Request() req: any, @Param('id') id: string) {
+    return this.listingsService.getAdminPendingRevision(id);
+  }
+
+  @Post('listings/:id/revision/approve')
+  approveRevision(@Request() req: any, @Param('id') id: string) {
+    return this.listingsService.approveRevision(req.user.id, id);
+  }
+
+  @Post('listings/:id/revision/reject')
+  rejectRevision(
+    @Request() req: any,
+    @Param('id') id: string,
+    @Body() rejectListingDto: RejectListingDto,
+  ) {
+    return this.listingsService.rejectRevision(req.user.id, id, rejectListingDto);
+  }
 }

@@ -58,6 +58,18 @@ export function AdminListingStatusBadge({ status, className }: AdminListingStatu
       className: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 border-blue-200 dark:border-blue-800',
       variant: 'secondary'
     },
+    CHANGES_PENDING_REVIEW: {
+      label: 'Changes Pending',
+      icon: Clock,
+      className: 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400 border-orange-200 dark:border-orange-800',
+      variant: 'secondary'
+    },
+    REJECTED_CHANGES: {
+      label: 'Changes Rejected',
+      icon: XCircle,
+      className: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 border-red-200 dark:border-red-800',
+      variant: 'destructive'
+    },
     draft: {
       label: 'Draft',
       icon: Edit,

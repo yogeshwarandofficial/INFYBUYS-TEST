@@ -26,6 +26,18 @@ const STATUS_CONFIG: Record<
     label: 'Archived',
     className: 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400',
   },
+  rejected: {
+    label: 'Rejected',
+    className: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+  },
+  changes_pending_review: {
+    label: 'Changes Pending Review',
+    className: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
+  },
+  rejected_changes: {
+    label: 'Changes Rejected',
+    className: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+  },
 };
 
 interface SellerListingStatusBadgeProps {

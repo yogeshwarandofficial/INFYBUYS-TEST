@@ -23,7 +23,7 @@ export interface SellerDashboardStats {
 
 // â”€â”€â”€ Listings â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-export type SellerListingStatus = 'draft' | 'pending' | 'active' | 'sold' | 'archived';
+export type SellerListingStatus = 'draft' | 'pending' | 'active' | 'sold' | 'archived' | 'rejected' | 'changes_pending_review' | 'rejected_changes';
 
 export interface SellerListing {
   id: string;
@@ -1055,7 +1055,9 @@ export const useSellerStore = create<SellerState>()(
           SOLD_LET: 'sold',
           PAUSED: 'archived',
           EXPIRED: 'archived',
-          REJECTED: 'rejected'
+          REJECTED: 'rejected',
+          CHANGES_PENDING_REVIEW: 'changes_pending_review',
+          REJECTED_CHANGES: 'rejected_changes'
         };
 
         const mapped = data.map((l: any) => ({

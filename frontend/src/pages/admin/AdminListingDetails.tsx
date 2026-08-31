@@ -13,6 +13,7 @@ export default function AdminListingDetails() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [listing, setListing] = useState<any>(null);
+  const [revision, setRevision] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -20,8 +21,16 @@ export default function AdminListingDetails() {
     const fetchListing = async () => {
       try {
         setIsLoading(true);
-        const data = await apiClient.get(`/admin/listings/${id}`);
+        const data: any = await apiClient.get(`/admin/listings/${id}`);
         setListing(data);
+        if (data.status === 'CHANGES_PENDING_REVIEW' || data.status === 'REJECTED_CHANGES') {
+          try {
+            const revData: any = await apiClient.get(`/admin/listings/${id}/revision`);
+            setRevision(revData.revision);
+          } catch (e) {
+            console.error("Failed to fetch revision", e);
+          }
+        }
       } catch (err: any) {
         setError(err.message || 'Failed to fetch listing');
       } finally {
@@ -109,6 +118,41 @@ export default function AdminListingDetails() {
 
           {/* Left Column - Details & Seller */}
           <div className="lg:col-span-2 space-y-6">
+
+            {revision && (
+              <Card className={listing.status === 'REJECTED_CHANGES' ? "border-red-200 bg-red-50/50" : "border-orange-200 bg-orange-50/50"}>
+                <CardHeader>
+                  <CardTitle className={`text-lg ${listing.status === 'REJECTED_CHANGES' ? 'text-red-700' : 'text-orange-700'}`}>
+                    {listing.status === 'REJECTED_CHANGES' ? 'Rejected Changes' : 'Pending Changes Review'}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className={`text-sm ${listing.status === 'REJECTED_CHANGES' ? 'text-red-800' : 'text-orange-800'}`}>
+                    {listing.status === 'REJECTED_CHANGES' 
+                      ? 'The seller\'s proposed changes were rejected.'
+                      : 'The seller has proposed changes to this listing.'}
+                  </p>
+                  <div className="bg-white p-4 rounded border text-sm">
+                    <pre className="whitespace-pre-wrap font-mono text-xs">{JSON.stringify(revision.proposedData, null, 2)}</pre>
+                  </div>
+                  {listing.status === 'CHANGES_PENDING_REVIEW' && (
+                    <div className="flex gap-2">
+                      <Button 
+                        onClick={() => {
+                          apiClient.post(`/admin/listings/${id}/revision/approve`, {}).then(() => window.location.reload());
+                        }}
+                        className="bg-green-600 hover:bg-green-700 text-white">Approve Changes</Button>
+                      <Button 
+                        onClick={() => {
+                          apiClient.post(`/admin/listings/${id}/revision/reject`, { rejectionReasonCode: 'Rejected by admin' }).then(() => window.location.reload());
+                        }}
+                        variant="destructive">Reject Changes</Button>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">Business Information</CardTitle>

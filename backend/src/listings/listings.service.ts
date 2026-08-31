@@ -79,7 +79,8 @@ export class ListingsService {
       throw new NotFoundException('Listing not found');
     }
 
-    if (listing.status !== ListingStatus.PUBLISHED) {
+    const publicStatuses: ListingStatus[] = [ListingStatus.PUBLISHED, ListingStatus.CHANGES_PENDING_REVIEW, ListingStatus.REJECTED_CHANGES];
+    if (!publicStatuses.includes(listing.status)) {
       const isOwner = user && user.id === listing.sellerId;
       const isAdmin = user && user.roles?.includes(Role.ADMIN);
       
@@ -114,6 +115,44 @@ export class ListingsService {
 
     if (listing.sellerId !== sellerId) {
       throw new ForbiddenException('You do not have permission to update this listing');
+    }
+
+    const publicStatuses: ListingStatus[] = [ListingStatus.PUBLISHED, ListingStatus.CHANGES_PENDING_REVIEW, ListingStatus.REJECTED_CHANGES];
+    if (publicStatuses.includes(listing.status)) {
+      // Create or update a pending revision instead of touching the live listing
+      let revision = await this.prisma.listingRevision.findFirst({
+        where: { listingId: id, status: { in: ['PENDING', 'REJECTED'] } }
+      });
+
+      // proposedData starts as empty or existing proposedData
+      let proposedData = revision && revision.proposedData && typeof revision.proposedData === 'object' ? revision.proposedData : {};
+      proposedData = { ...(proposedData as any), ...updateListingDto };
+
+      if (revision) {
+        await this.prisma.listingRevision.update({
+          where: { id: revision.id },
+          data: {
+            status: 'PENDING',
+            proposedData,
+          }
+        });
+      } else {
+        await this.prisma.listingRevision.create({
+          data: {
+            listingId: id,
+            createdBy: sellerId,
+            status: 'PENDING',
+            proposedData,
+          }
+        });
+      }
+
+      const updatedListing = await this.prisma.listing.update({
+        where: { id },
+        data: { status: ListingStatus.CHANGES_PENDING_REVIEW },
+        include: { media: true }
+      });
+      return await this.enrichAndSanitizeListing(updatedListing, { id: sellerId });
     }
 
     const updated = await this.prisma.listing.update({
@@ -246,7 +285,7 @@ export class ListingsService {
         where.status = status;
       }
     } else {
-      where.status = ListingStatus.PUBLISHED;
+      where.status = { in: [ListingStatus.PUBLISHED, ListingStatus.CHANGES_PENDING_REVIEW, ListingStatus.REJECTED_CHANGES] };
     }
 
     if (type) where.type = type;
@@ -389,6 +428,34 @@ export class ListingsService {
       : -1;
     const nextOrder = currentMaxOrder + 1;
 
+    let targetRevisionId: string | null = null;
+    const publicStatuses: ListingStatus[] = [ListingStatus.PUBLISHED, ListingStatus.CHANGES_PENDING_REVIEW, ListingStatus.REJECTED_CHANGES];
+    if (publicStatuses.includes(listing.status)) {
+      let revision = await this.prisma.listingRevision.findFirst({
+        where: { listingId, status: { in: ['PENDING', 'REJECTED'] } }
+      });
+      if (!revision) {
+        revision = await this.prisma.listingRevision.create({
+          data: {
+            listingId,
+            createdBy: sellerId,
+            status: 'PENDING',
+            proposedData: {},
+          }
+        });
+        await this.prisma.listing.update({
+          where: { id: listingId },
+          data: { status: ListingStatus.CHANGES_PENDING_REVIEW }
+        });
+      } else if (revision.status === 'REJECTED') {
+        revision = await this.prisma.listingRevision.update({
+          where: { id: revision.id },
+          data: { status: 'PENDING' }
+        });
+      }
+      targetRevisionId = revision.id;
+    }
+
     try {
       const media = await this.prisma.listingMedia.create({
         data: {
@@ -396,6 +463,7 @@ export class ListingsService {
           s3Key,
           type: normalizedType,
           order: nextOrder,
+          listingRevisionId: targetRevisionId,
         },
       });
       const url = await this.s3Service.generateDownloadUrl(s3Key);
@@ -425,6 +493,45 @@ export class ListingsService {
     });
     if (!media) {
       throw new NotFoundException('Media not found for this listing');
+    }
+
+    const publicStatuses: ListingStatus[] = [ListingStatus.PUBLISHED, ListingStatus.CHANGES_PENDING_REVIEW, ListingStatus.REJECTED_CHANGES];
+    if (publicStatuses.includes(listing.status)) {
+      let revision = await this.prisma.listingRevision.findFirst({
+        where: { listingId, status: { in: ['PENDING', 'REJECTED'] } }
+      });
+      if (!revision) {
+        revision = await this.prisma.listingRevision.create({
+          data: { listingId, createdBy: sellerId, status: 'PENDING', proposedData: {} }
+        });
+        await this.prisma.listing.update({
+          where: { id: listingId },
+          data: { status: ListingStatus.CHANGES_PENDING_REVIEW }
+        });
+      } else if (revision.status === 'REJECTED') {
+        revision = await this.prisma.listingRevision.update({
+          where: { id: revision.id },
+          data: { status: 'PENDING' }
+        });
+      }
+
+      if (media.listingRevisionId === revision.id) {
+        if (media.s3Key) await this.s3Service.deleteFile(media.s3Key);
+        await this.prisma.listingMedia.delete({ where: { id: mediaId } });
+        return { success: true, message: 'Media removed successfully' };
+      } else {
+        let proposedData = revision.proposedData && typeof revision.proposedData === 'object' ? revision.proposedData : {};
+        const deletions = Array.isArray((proposedData as any).proposedMediaDeletions) ? (proposedData as any).proposedMediaDeletions : [];
+        if (!deletions.includes(mediaId)) {
+          deletions.push(mediaId);
+        }
+        proposedData = { ...(proposedData as any), proposedMediaDeletions: deletions };
+        await this.prisma.listingRevision.update({
+          where: { id: revision.id },
+          data: { status: 'PENDING', proposedData }
+        });
+        return { success: true, message: 'Media marked for removal pending admin approval' };
+      }
     }
 
     if (media.s3Key) {
@@ -609,7 +716,8 @@ export class ListingsService {
       include: { seller: true }
     });
 
-    if (!listing || listing.status !== ListingStatus.PUBLISHED) {
+    const publicStatuses: ListingStatus[] = [ListingStatus.PUBLISHED, ListingStatus.CHANGES_PENDING_REVIEW, ListingStatus.REJECTED_CHANGES];
+    if (!listing || !publicStatuses.includes(listing.status)) {
       throw new NotFoundException('Listing not found');
     }
 
@@ -663,6 +771,10 @@ export class ListingsService {
       delete listing.contactName;
       delete listing.contactEmail;
       delete listing.contactPhone;
+
+      if (listing.media && Array.isArray(listing.media)) {
+        listing.media = listing.media.filter((m: any) => m.listingRevisionId === null);
+      }
     }
 
     if (listing.media && Array.isArray(listing.media)) {
@@ -677,5 +789,127 @@ export class ListingsService {
     }
     
     return listing;
+  }
+
+  async getPendingRevision(sellerId: string, listingId: string) {
+    const listing = await this.prisma.listing.findUnique({ where: { id: listingId } });
+    if (!listing) {
+      throw new NotFoundException('Listing not found');
+    }
+    if (listing.sellerId !== sellerId) {
+      throw new ForbiddenException('You do not have permission to view this listing revision');
+    }
+
+    const revision = await this.prisma.listingRevision.findFirst({
+      where: {
+        listingId,
+        status: { in: ['PENDING', 'REJECTED'] }
+      },
+      include: {
+        media: true
+      }
+    });
+
+    return revision;
+  }
+
+  async getAdminPendingRevision(listingId: string) {
+    const revision = await this.prisma.listingRevision.findFirst({
+      where: { listingId, status: { in: ['PENDING', 'REJECTED'] } },
+      include: { media: true }
+    });
+    if (!revision) {
+      throw new NotFoundException('No pending revision found');
+    }
+    const currentListing = await this.prisma.listing.findUnique({
+      where: { id: listingId },
+      include: { media: { where: { listingRevisionId: null } } }
+    });
+    return { revision, currentListing };
+  }
+
+  async approveRevision(adminId: string, listingId: string) {
+    const revision = await this.prisma.listingRevision.findFirst({
+      where: { listingId, status: 'PENDING' },
+      include: { media: true }
+    });
+    if (!revision) {
+      throw new ConflictException('No pending revision to approve');
+    }
+
+    const proposedData = (revision.proposedData as any) || {};
+    const mediaDeletions = Array.isArray(proposedData.proposedMediaDeletions) ? proposedData.proposedMediaDeletions : [];
+
+    for (const mediaId of mediaDeletions) {
+      const media = await this.prisma.listingMedia.findUnique({ where: { id: mediaId } });
+      if (media && media.s3Key) {
+        await this.s3Service.deleteFile(media.s3Key);
+      }
+    }
+
+    delete proposedData.proposedMediaDeletions;
+
+    const [updated] = await this.prisma.$transaction([
+      this.prisma.listingMedia.deleteMany({
+        where: { id: { in: mediaDeletions } }
+      }),
+      this.prisma.listingMedia.updateMany({
+        where: { listingRevisionId: revision.id },
+        data: { listingRevisionId: null }
+      }),
+      this.prisma.listingRevision.update({
+        where: { id: revision.id },
+        data: { status: 'APPROVED', reviewedAt: new Date(), reviewedBy: adminId }
+      }),
+      this.prisma.listing.update({
+        where: { id: listingId },
+        data: {
+          ...proposedData,
+          status: ListingStatus.PUBLISHED,
+          rejectionReasonCode: null,
+        },
+        include: { media: true }
+      }),
+      this.prisma.adminActionLog.create({
+        data: {
+          adminId,
+          actionType: 'REVISION_APPROVED',
+          targetEntity: `Listing:${listingId}`,
+        }
+      })
+    ]);
+
+    return await this.enrichAndSanitizeListing(updated);
+  }
+
+  async rejectRevision(adminId: string, listingId: string, dto: RejectListingDto) {
+    const revision = await this.prisma.listingRevision.findFirst({
+      where: { listingId, status: 'PENDING' }
+    });
+    if (!revision) {
+      throw new ConflictException('No pending revision to reject');
+    }
+
+    const [updated] = await this.prisma.$transaction([
+      this.prisma.listingRevision.update({
+        where: { id: revision.id },
+        data: { status: 'REJECTED', reviewedAt: new Date(), reviewedBy: adminId, rejectionReason: dto.rejectionReasonCode }
+      }),
+      this.prisma.listing.update({
+        where: { id: listingId },
+        data: { status: ListingStatus.REJECTED_CHANGES },
+        include: { media: true }
+      }),
+      this.prisma.adminActionLog.create({
+        data: {
+          adminId,
+          actionType: 'REVISION_REJECTED',
+          targetEntity: `Listing:${listingId}`,
+          reason: dto.rejectionReasonCode,
+        }
+      })
+    ]);
+
+    return await this.enrichAndSanitizeListing(updated);
   }
 }
