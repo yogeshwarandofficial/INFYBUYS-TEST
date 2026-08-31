@@ -797,6 +797,14 @@ export class ListingsService {
       if (listing.media && Array.isArray(listing.media)) {
         listing.media = listing.media.filter((m: any) => m.listingRevisionId === null);
       }
+
+      // Mask internal statuses so the public and buyers continue to see the active listing
+      if (
+        listing.status === ListingStatus.CHANGES_PENDING_REVIEW ||
+        listing.status === ListingStatus.REJECTED_CHANGES
+      ) {
+        listing.status = ListingStatus.PUBLISHED;
+      }
     }
 
     if (listing.media && Array.isArray(listing.media)) {
