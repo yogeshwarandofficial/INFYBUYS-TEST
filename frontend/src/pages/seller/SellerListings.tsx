@@ -4,6 +4,7 @@ import { Seo } from '@/components/shared/Seo';
 import { Pagination } from '@/components/shared/Pagination';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { useSellerListingSearch } from '@/hooks/useSellerListingSearch';
+import { useSellerKyc } from '@/hooks/useSellerKyc';
 import { SellerListingCard } from '@/components/seller/listings/SellerListingCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -142,6 +143,7 @@ export default function SellerListings() {
 
   const search = useSellerListingSearch();
   const { filters, updateFilter, paginated, currentPage, setCurrentPage, totalPages, totalCount, hasActiveFilters } = search;
+  const kyc = useSellerKyc();
 
   return (
     <>
@@ -156,11 +158,18 @@ export default function SellerListings() {
               {totalCount} listing{totalCount !== 1 ? 's' : ''} found
             </p>
           </div>
-          <Button asChild>
-            <Link to="/seller/listings/new">
-              <PlusCircle className="w-4 h-4 mr-2" />
-              Create Listing
-            </Link>
+          <Button asChild={kyc.data?.status === 'APPROVED'} disabled={kyc.data?.status !== 'APPROVED'} className={kyc.data?.status !== 'APPROVED' ? 'cursor-not-allowed opacity-50' : ''}>
+            {kyc.data?.status === 'APPROVED' ? (
+              <Link to="/seller/listings/new">
+                <PlusCircle className="w-4 h-4 mr-2" />
+                Create Listing
+              </Link>
+            ) : (
+              <div title="Please complete KYC first">
+                <PlusCircle className="w-4 h-4 mr-2" />
+                Create Listing
+              </div>
+            )}
           </Button>
         </div>
 
@@ -246,10 +255,10 @@ export default function SellerListings() {
                 description={
                   hasActiveFilters
                     ? 'Try adjusting your filters or search term.'
-                    : 'Create your first listing to start selling on InfyBuys.'
+                    : (kyc.data?.status === 'APPROVED' ? 'Create your first listing to start selling on InfyBuys.' : 'You must complete KYC verification before you can create listings.')
                 }
-                actionLabel={hasActiveFilters ? 'Clear Filters' : 'Create Listing'}
-                onAction={hasActiveFilters ? search.resetFilters : undefined}
+                actionLabel={hasActiveFilters ? 'Clear Filters' : (kyc.data?.status === 'APPROVED' ? 'Create Listing' : undefined)}
+                onAction={hasActiveFilters ? search.resetFilters : (kyc.data?.status === 'APPROVED' ? () => window.location.href = '/seller/listings/new' : undefined)}
               />
             ) : (
               <>

@@ -34,15 +34,23 @@ model User {
 }
 
 model SellerProfile {
-  id            String    @id @default(uuid())
-  userId        String    @unique
-  businessName  String
-  companyNumber String?
-  kycStatus     KycStatus @default(PENDING)
-  verifiedBadge Boolean   @default(false)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                 String              @id @default(uuid())
+  userId             String              @unique
+  legalName          String?
+  businessName       String
+  businessAddress    String?
+  phone              String?
+  companyNumber      String?
+  kycStatus          KycStatus           @default(PENDING)
+  kycSubmittedAt     DateTime?
+  kycReviewedAt      DateTime?
+  kycReviewedBy      String?
+  kycRejectionReason String?
+  verifiedBadge      Boolean             @default(false)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kycDocuments       SellerKycDocument[]
 }
 
 model Listing {
@@ -303,4 +311,26 @@ enum SubscriptionStatus {
 enum MediaType {
   PHOTO
   VIDEO
+}
+
+model SellerKycDocument {
+  id               String          @id @default(uuid())
+  sellerProfileId  String
+  documentType     KycDocumentType
+  s3Key            String
+  originalFileName String
+  mimeType         String
+  uploadedAt       DateTime        @default(now())
+  verifiedAt       DateTime?
+  verifiedBy       String?
+  sellerProfile    SellerProfile   @relation(fields: [sellerProfileId], references: [id], onDelete: Cascade)
+
+  @@index([sellerProfileId])
+}
+
+enum KycDocumentType {
+  IDENTITY
+  BUSINESS_PROOF
+  ADDRESS_PROOF
+  OTHER
 }

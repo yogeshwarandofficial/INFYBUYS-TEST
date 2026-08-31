@@ -7,7 +7,7 @@ import { ListingQueryDto } from './dto/listing-query.dto.js';
 import { AddListingMediaDto } from './dto/add-listing-media.dto.js';
 import { ReorderListingMediaDto } from './dto/reorder-listing-media.dto.js';
 import { RejectListingDto } from '../admin/dto/reject-listing.dto.js';
-import { ListingStatus, MediaType, Role } from '../../generated/prisma/client.js';
+import { ListingStatus, MediaType, Role, KycStatus } from '../../generated/prisma/client.js';
 import * as crypto from 'crypto';
 import * as path from 'path';
 
@@ -47,6 +47,17 @@ export class ListingsService {
   ) {}
 
   async create(sellerId: string, createListingDto: CreateListingDto) {
+    const sellerProfile = await this.prisma.sellerProfile.findUnique({
+      where: { userId: sellerId }
+    });
+
+    if (!sellerProfile || sellerProfile.kycStatus !== KycStatus.APPROVED) {
+      throw new ForbiddenException({
+        code: 'KYC_REQUIRED',
+        message: 'Seller KYC approval is required before creating a listing.'
+      });
+    }
+
     const listing = await this.prisma.listing.create({
       data: {
         ...createListingDto,
@@ -179,6 +190,17 @@ export class ListingsService {
 
     if (listing.status !== ListingStatus.DRAFT) {
       throw new ConflictException('Only DRAFT listings can be submitted for review');
+    }
+
+    const sellerProfile = await this.prisma.sellerProfile.findUnique({
+      where: { userId: sellerId }
+    });
+
+    if (!sellerProfile || sellerProfile.kycStatus !== KycStatus.APPROVED) {
+      throw new ForbiddenException({
+        code: 'KYC_REQUIRED',
+        message: 'Seller KYC approval is required before submitting a listing.'
+      });
     }
 
     const updated = await this.prisma.listing.update({

@@ -58,6 +58,19 @@ export default function SellerListingPreview() {
     if (newId) navigate(`/seller/listings/${newId}/edit`);
   };
 
+  const handleSubmit = async (listingId: string) => {
+    try {
+      await submitListing(listingId);
+    } catch (error: any) {
+      if (error?.response?.data?.code === 'KYC_REQUIRED' || error?.message?.includes('KYC')) {
+        alert('KYC verification required\n\nYou need to complete business verification before submitting this listing.');
+        navigate('/seller/kyc');
+      } else {
+        alert(`Failed to submit: ${error?.response?.data?.message || error?.message || 'Unknown error'}`);
+      }
+    }
+  };
+
   return (
     <>
       <Seo title={listing.title} description={listing.description.slice(0, 160)} />
@@ -94,7 +107,7 @@ export default function SellerListingPreview() {
             <Copy className="w-3.5 h-3.5 mr-1.5" /> Duplicate
           </Button>
           {listing.status === 'draft' && (
-            <Button size="sm" onClick={() => submitListing(listing.id)}>
+            <Button size="sm" onClick={() => handleSubmit(listing.id)}>
               <Send className="w-3.5 h-3.5 mr-1.5" /> Submit for Review
             </Button>
           )}

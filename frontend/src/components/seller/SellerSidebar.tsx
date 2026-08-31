@@ -29,6 +29,7 @@ const navItems = [
   { title: 'Messages', path: '/seller/messages', icon: MessageSquare },
   { title: 'Notifications', path: '/seller/notifications', icon: Bell },
   { title: 'Analytics', path: '/seller/analytics', icon: BarChart },
+  { title: 'KYC Verification', path: '/seller/kyc', icon: User },
   { title: 'Profile', path: '/seller/profile', icon: User },
   { title: 'Settings', path: '/seller/settings', icon: Settings },
 ];

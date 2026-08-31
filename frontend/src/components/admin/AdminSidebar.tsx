@@ -33,6 +33,11 @@ const adminLinks = [
     icon: UserCheck,
   },
   {
+    title: 'KYC Approvals',
+    href: '/admin/kyc',
+    icon: FileText,
+  },
+  {
     title: 'Buyers',
     href: '/admin/buyers',
     icon: ShoppingBag,

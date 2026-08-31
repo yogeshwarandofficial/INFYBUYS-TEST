@@ -9,9 +9,10 @@ import { S3Module } from './s3/s3.module.js';
 import { ListingsModule } from './listings/listings.module.js';
 import { AdminModule } from './admin/admin.module.js';
 import { EnquiriesModule } from './enquiries/enquiries.module';
+import { SellerKycModule } from './seller-kyc/seller-kyc.module.js';
 
 @Module({
-  imports: [PrismaModule, UsersModule, AuthModule, SubscriptionsModule, S3Module, ListingsModule, AdminModule, EnquiriesModule],
+  imports: [PrismaModule, UsersModule, AuthModule, SubscriptionsModule, S3Module, ListingsModule, AdminModule, EnquiriesModule, SellerKycModule],
   controllers: [AppController],
   providers: [AppService],
 })

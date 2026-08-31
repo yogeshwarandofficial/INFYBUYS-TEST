@@ -2,10 +2,11 @@ import { Seo } from '@/components/shared/Seo';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { useSellerStore } from '@/store/useSellerStore';
 import { useUserStore } from '@/store/useUserStore';
+import { useSellerKyc } from '@/hooks/useSellerKyc';
 import { SellerStatCard } from '@/components/seller/dashboard/SellerStatCard';
 import { SellerRecentActivity } from '@/components/seller/dashboard/SellerRecentActivity';
 import { SellerQuickActions } from '@/components/seller/dashboard/SellerQuickActions';
-import { Building2, Activity, Clock, DollarSign, Mail, MessageSquare, BarChart3 } from 'lucide-react';
+import { Building2, Activity, Clock, DollarSign, Mail, MessageSquare, BarChart3, AlertTriangle, ShieldCheck } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router';
@@ -25,6 +26,8 @@ export default function SellerDashboard() {
 
   // Live messaging KPIs derived from conversations array
   const unreadConversations = conversations.filter((c) => c.unreadCount > 0).length;
+
+  const { data: kycData } = useSellerKyc();
 
   return (
     <>
@@ -56,6 +59,56 @@ export default function SellerDashboard() {
             </div>
           </div>
         </div>
+
+        {kycData?.status === 'NOT_STARTED' && (
+          <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg flex justify-between items-center">
+            <div className="flex items-center gap-3">
+              <AlertTriangle className="w-5 h-5 text-red-600" />
+              <div>
+                <h3 className="text-red-800 font-medium">KYC Verification Required</h3>
+                <p className="text-red-700 text-sm">Complete your business verification before submitting listings.</p>
+              </div>
+            </div>
+            <Button asChild variant="default" className="bg-red-600 hover:bg-red-700 text-white">
+              <Link to="/seller/kyc">Start Verification</Link>
+            </Button>
+          </div>
+        )}
+
+        {kycData?.status === 'PENDING' && (
+          <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg flex items-center gap-3">
+            <AlertTriangle className="w-5 h-5 text-yellow-600" />
+            <div>
+              <h3 className="text-yellow-800 font-medium">KYC Verification Pending</h3>
+              <p className="text-yellow-700 text-sm">Our team is reviewing your business information.</p>
+            </div>
+          </div>
+        )}
+
+        {kycData?.status === 'REJECTED' && (
+          <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg flex justify-between items-center">
+            <div className="flex items-center gap-3">
+              <AlertTriangle className="w-5 h-5 text-red-600" />
+              <div>
+                <h3 className="text-red-800 font-medium">KYC Verification Rejected</h3>
+                <p className="text-red-700 text-sm">Reason: {kycData.rejectionReason}. Please update your info.</p>
+              </div>
+            </div>
+            <Button asChild variant="default" className="bg-red-600 hover:bg-red-700 text-white">
+              <Link to="/seller/kyc">Resubmit KYC</Link>
+            </Button>
+          </div>
+        )}
+
+        {kycData?.status === 'APPROVED' && (
+          <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg flex items-center gap-3">
+            <ShieldCheck className="w-5 h-5 text-green-600" />
+            <div>
+              <h3 className="text-green-800 font-medium">KYC Verified</h3>
+              <p className="text-green-700 text-sm">Your business has been verified.</p>
+            </div>
+          </div>
+        )}
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <SellerStatCard

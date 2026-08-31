@@ -114,7 +114,12 @@ export default function SellerEditListing() {
       navigate(`/seller/listings/${listing.id}`);
     } catch (error: any) {
       console.error('Failed to submit listing:', error);
-      alert(`Failed to save: ${error?.message || 'Unknown error'}`);
+      if (error?.response?.data?.code === 'KYC_REQUIRED' || error?.message?.includes('KYC')) {
+        alert('KYC verification required\n\nYou need to complete business verification before submitting this listing.');
+        navigate('/seller/kyc');
+        return;
+      }
+      alert(`Failed to save: ${error?.response?.data?.message || error?.message || 'Unknown error'}`);
     } finally {
       setIsSaving(false);
     }

@@ -143,8 +143,17 @@ export default function AdminListingDetails() {
                           changes.push({ field: prop, oldVal: listing[prop], newVal });
                         }
                       });
+                      
+                      const mediaDeletions = Array.isArray(revision.proposedData.proposedMediaDeletions) ? revision.proposedData.proposedMediaDeletions : [];
+                      if (mediaDeletions.length > 0) {
+                        changes.push({ field: 'Deleted Media', oldVal: `${mediaDeletions.length} files removed`, newVal: 'Deleted' });
+                      }
+                      
+                      if (revision.media && revision.media.length > 0) {
+                        changes.push({ field: 'Added Media', oldVal: 'None', newVal: `${revision.media.length} new files uploaded` });
+                      }
 
-                      if (changes.length === 0) return <p className="text-muted-foreground text-sm italic">No text field changes detected (maybe only media was changed).</p>;
+                      if (changes.length === 0) return <p className="text-muted-foreground text-sm italic">No changes detected.</p>;
 
                       return (
                         <div className="space-y-3">
