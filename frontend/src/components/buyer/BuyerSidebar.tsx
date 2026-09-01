@@ -1,0 +1,111 @@
+import { Link, useLocation } from 'react-router';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import {
+  LayoutDashboard,
+  Search,
+  Heart,
+  Bookmark,
+  MessageSquare,
+  Mail,
+  Bell,
+  FileText,
+  CreditCard,
+  Settings,
+  ChevronLeft,
+  ChevronRight,
+  Receipt,
+  Star
+} from 'lucide-react';
+
+interface SidebarProps {
+  collapsed: boolean;
+  setCollapsed: (collapsed: boolean) => void;
+  isMobile?: boolean;
+}
+
+const navItems = [
+  { title: 'Dashboard', path: '/buyer', icon: LayoutDashboard },
+  { title: 'Discover', path: '/buyer/browse', icon: Search },
+  { title: 'Saved Listings', path: '/buyer/favorites', icon: Heart },
+  { title: 'Saved Searches', path: '/buyer/saved-searches', icon: Bookmark },
+  { title: 'Enquiries', path: '/buyer/enquiries', icon: Mail },
+  { title: 'Messages', path: '/buyer/messages', icon: MessageSquare },
+  { title: 'Notifications', path: '/buyer/notifications', icon: Bell },
+  { title: 'NDA', path: '/buyer/nda', icon: FileText },
+  { title: 'Reviews', path: '/buyer/reviews', icon: Star },
+  { title: 'Subscription', path: '/buyer/subscription', icon: CreditCard },
+  { title: 'Billing', path: '/buyer/billing', icon: Receipt },
+  { title: 'Settings', path: '/buyer/settings', icon: Settings },
+];
+
+export function BuyerSidebar({ collapsed, setCollapsed, isMobile }: SidebarProps) {
+  const location = useLocation();
+
+  return (
+    <div className={cn(
+      "flex flex-col h-full bg-card border-r transition-all duration-300",
+      collapsed && !isMobile ? "w-20" : "w-64"
+    )}>
+      <div className="h-16 flex items-center justify-between px-4 border-b shrink-0">
+        {!collapsed || isMobile ? (
+          <Link to="/buyer" className="font-bold text-lg tracking-tight truncate">
+            Buyer Portal
+          </Link>
+        ) : (
+          <div className="w-8 h-8 mx-auto bg-primary text-primary-foreground rounded-lg flex items-center justify-center font-bold">
+            B
+          </div>
+        )}
+
+        {!isMobile && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 ml-auto"
+            onClick={() => setCollapsed(!collapsed)}
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          >
+            {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+          </Button>
+        )}
+      </div>
+
+      <ScrollArea className="flex-1 py-4">
+        <nav className="space-y-1 px-2">
+          <TooltipProvider delayDuration={0}>
+            {navItems.map((item) => {
+              const isActive = location.pathname === item.path;
+              return (
+                <Tooltip key={item.path}>
+                  <TooltipTrigger asChild>
+                    <Link
+                      to={item.path}
+                      className={cn(
+                        "flex items-center gap-3 px-3 py-2 rounded-md transition-colors text-sm font-medium",
+                        isActive
+                          ? "bg-primary/10 text-primary"
+                          : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                        collapsed && !isMobile ? "justify-center px-0" : ""
+                      )}
+                    >
+                      <item.icon className={cn("h-5 w-5 shrink-0", isActive ? "text-primary" : "")} />
+                      {(!collapsed || isMobile) && <span className="truncate">{item.title}</span>}
+                    </Link>
+                  </TooltipTrigger>
+                  {collapsed && !isMobile && (
+                    <TooltipContent side="right">
+                      {item.title}
+                    </TooltipContent>
+                  )}
+                </Tooltip>
+              );
+            })}
+          </TooltipProvider>
+        </nav>
+      </ScrollArea>
+    </div>
+  );
+}
