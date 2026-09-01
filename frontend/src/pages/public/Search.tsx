@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Seo } from '@/components/shared/Seo';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { FilterSidebar } from '@/components/shared/FilterSidebar';
@@ -8,31 +8,32 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { apiClient } from '@/services/apiClient';
-import type { Listing } from '@/types/api';
+import { useListingSearch } from '@/hooks/useListingSearch';
 import { Search as SearchIcon, SlidersHorizontal, LayoutGrid, List, X } from 'lucide-react';
 
 export default function Search() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showMobileFilters, setShowMobileFilters] = useState(false);
-  const [listings, setListings] = useState<Listing[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [searchInput, setSearchInput] = useState('');
 
-  useEffect(() => {
-    const fetchListings = async () => {
-      try {
-        setIsLoading(true);
-        const data = await apiClient.get<{ data: Listing[] }>('/listings');
-        setListings(data.data);
-      } catch (err: any) {
-        setError(err.message || 'Failed to load listings');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchListings();
-  }, []);
+  const {
+    filters,
+    updateFilter,
+    clearFilters,
+    sortBy,
+    setSortBy,
+    currentPage,
+    setCurrentPage,
+    totalPages,
+    totalResults,
+    listings,
+    isLoading,
+    error,
+  } = useListingSearch(12);
+
+  const handleSearch = () => {
+    updateFilter('query', searchInput);
+  };
 
   return (
     <>
@@ -94,7 +95,7 @@ export default function Search() {
             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-sm text-muted-foreground mr-2 font-medium">
-                  {listings.length} Results
+                  {totalResults} Results
                 </span>
                 {/* Mock Active Chips */}
                 <Badge variant="secondary" className="px-3 py-1 text-sm font-normal">
@@ -165,7 +166,7 @@ export default function Search() {
             </div>
 
             <div className="mt-12">
-              <Pagination currentPage={1} totalPages={5} onPageChange={() => {}} />
+              <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
             </div>
           </main>
         </div>
