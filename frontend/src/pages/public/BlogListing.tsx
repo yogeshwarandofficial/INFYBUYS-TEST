@@ -1,17 +1,9 @@
 import { Seo } from '@/components/shared/Seo';
-import { PageHeader } from '@/components/shared/PageHeader';
+import { ArrowRight } from 'lucide-react';
 import { BLOG_POSTS } from '@/constants/marketing';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Search as SearchIcon, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router';
 
 export default function BlogListing() {
-  const featuredPost = BLOG_POSTS.find(p => p.isFeatured) || BLOG_POSTS[0];
-  const recentPosts = BLOG_POSTS.filter(p => p.id !== featuredPost.id);
-
   return (
     <>
       <Seo

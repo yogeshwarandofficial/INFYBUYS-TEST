@@ -36,16 +36,16 @@ export function NotificationCard({ notification }: NotificationCardProps) {
   return (
     <div
       className={cn(
-        "group relative flex items-start gap-4 p-4 rounded-xl border transition-all duration-200",
+        "group relative flex items-start gap-4 p-5 rounded-xl transition-all duration-200 border",
         notification.read
-          ? "bg-card hover:bg-muted/50 border-border"
-          : "bg-primary/5 hover:bg-primary/10 border-primary/20 shadow-sm"
+          ? "bg-white/50 backdrop-blur-sm hover:bg-white/80 border-[#E2E8F0]"
+          : "bg-white/85 backdrop-blur-md hover:bg-white/95 border-blue-200 shadow-sm"
       )}
       onClick={handleRead}
     >
       <div className={cn(
-        "shrink-0 w-10 h-10 rounded-full flex items-center justify-center",
-        notification.read ? "bg-muted" : "bg-background shadow-sm border border-primary/10"
+        "shrink-0 w-11 h-11 rounded-full flex items-center justify-center",
+        notification.read ? "bg-slate-100" : "bg-blue-50 shadow-inner ring-2 ring-blue-50/50"
       )}>
         {getIcon()}
       </div>
@@ -53,19 +53,19 @@ export function NotificationCard({ notification }: NotificationCardProps) {
       <div className="flex-1 min-w-0 pr-8">
         <div className="flex items-start justify-between gap-4 mb-1">
           <h4 className={cn(
-            "text-base truncate",
-            notification.read ? "font-medium text-muted-foreground" : "font-semibold text-foreground"
+            "text-[15px] truncate",
+            notification.read ? "font-medium text-[#64748B]" : "font-semibold text-[#0F172A]"
           )}>
             {notification.title}
           </h4>
-          <span className="shrink-0 text-xs text-muted-foreground whitespace-nowrap mt-1">
+          <span className="shrink-0 text-[11px] font-medium text-[#94A3B8] whitespace-nowrap mt-1">
             {new Date(notification.createdAt).toLocaleDateString()}
           </span>
         </div>
 
         <p className={cn(
-          "text-sm mb-3 line-clamp-2",
-          notification.read ? "text-muted-foreground/80" : "text-muted-foreground"
+          "text-[13px] mb-3 line-clamp-2 leading-relaxed",
+          notification.read ? "text-[#94A3B8]" : "text-[#64748B]"
         )}>
           {notification.message}
         </p>
@@ -74,18 +74,21 @@ export function NotificationCard({ notification }: NotificationCardProps) {
           <Button
             variant={notification.read ? "outline" : "default"}
             size="sm"
-            className="h-8 text-xs"
+            className={cn(
+              "h-8 text-xs px-3 rounded-lg",
+              notification.read ? "border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A]" : "bg-[#2563EB] hover:bg-[#1D4ED8] text-white shadow-sm"
+            )}
             asChild
           >
             <Link to={notification.relatedPath} onClick={handleRead}>
-              View Details <ArrowRight className="w-3 h-3 ml-1.5" />
+              View Details <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
             </Link>
           </Button>
         )}
       </div>
 
       {!notification.read && (
-        <div className="absolute top-6 right-4 w-2 h-2 bg-primary rounded-full" aria-label="Unread indicator" />
+        <div className="absolute top-6 right-4 w-2 h-2 bg-[#2563EB] rounded-full shadow-sm" aria-label="Unread indicator" />
       )}
 
       <Button

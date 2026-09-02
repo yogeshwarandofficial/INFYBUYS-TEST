@@ -21,10 +21,10 @@ export function AdminUsersTable({ users }: AdminUsersTableProps) {
   };
 
   return (
-    <div className="rounded-md border bg-card">
+    <div className="rounded-2xl border border-[#E5E9F2] bg-white/85 backdrop-blur-md shadow-sm shadow-blue-900/5">
       <div className="overflow-x-auto">
         <table className="w-full text-sm text-left">
-          <thead className="text-xs text-muted-foreground uppercase bg-muted/50 border-b">
+          <thead className="text-[12px] font-semibold text-[#64748B] uppercase bg-[#F8FAFC] border-b border-[#E5E9F2]">
             <tr>
               <th scope="col" className="px-6 py-4 font-medium">User</th>
               <th scope="col" className="px-6 py-4 font-medium">Role</th>
@@ -35,9 +35,9 @@ export function AdminUsersTable({ users }: AdminUsersTableProps) {
               <th scope="col" className="px-6 py-4 font-medium text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-border">
+          <tbody className="divide-y divide-[#E5E9F2]">
             {users.map((user) => (
-              <tr key={user.id} className="hover:bg-muted/50 transition-colors">
+              <tr key={user.id} className="hover:bg-[#F8FAFC]/50 transition-colors">
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
                     <Avatar className="h-9 w-9">
@@ -45,8 +45,8 @@ export function AdminUsersTable({ users }: AdminUsersTableProps) {
                       <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col">
-                      <span className="font-medium text-foreground">{user.name}</span>
-                      <span className="text-muted-foreground text-xs">{user.email}</span>
+                      <span className="font-medium text-[#111827]">{user.name}</span>
+                      <span className="text-[#64748B] text-xs">{user.email}</span>
                     </div>
                   </div>
                 </td>
@@ -62,20 +62,20 @@ export function AdminUsersTable({ users }: AdminUsersTableProps) {
                       {user.emailVerified ? (
                         <CheckCircle2 className="h-4 w-4 text-emerald-500" />
                       ) : (
-                        <XCircle className="h-4 w-4 text-muted-foreground/40" />
+                        <XCircle className="h-4 w-4 text-[#64748B]/40" />
                       )}
                     </div>
                     <div className="flex items-center" title="Phone Verification">
                       {user.phoneVerified ? (
                         <CheckCircle2 className="h-4 w-4 text-emerald-500" />
                       ) : (
-                        <XCircle className="h-4 w-4 text-muted-foreground/40" />
+                        <XCircle className="h-4 w-4 text-[#64748B]/40" />
                       )}
                     </div>
                   </div>
                 </td>
                 <td className="px-6 py-4">
-                  <span className="text-muted-foreground">{user.company || '-'}</span>
+                  <span className="text-[#64748B]">{user.company || '-'}</span>
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex flex-col">
@@ -85,7 +85,7 @@ export function AdminUsersTable({ users }: AdminUsersTableProps) {
                         : 'Never'
                       }
                     </span>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-xs text-[#64748B]">
                       Joined {format(new Date(user.createdAt), 'MMM d, yyyy')}
                     </span>
                   </div>

@@ -60,9 +60,9 @@ export function ConversationList({ onSelect }: ConversationListProps) {
   };
 
   return (
-    <div className="flex flex-col h-full bg-background border-r">
-      <div className="p-4 space-y-4 border-b">
-        <h2 className="text-xl font-bold">Messages</h2>
+    <div className="flex flex-col h-full bg-transparent">
+      <div className="p-5 space-y-4 border-b border-[#E5E9F2]">
+        <h2 className="text-xl font-bold text-[#111827]">Messages</h2>
         <ConversationSearch value={searchQuery} onChange={setSearchQuery} />
         <ConversationFilters currentFilter={filter} onFilterChange={setFilter} />
       </div>
@@ -81,9 +81,11 @@ export function ConversationList({ onSelect }: ConversationListProps) {
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center p-8 text-center h-full min-h-[300px]">
-            <MessageSquareOff className="h-12 w-12 text-muted-foreground/50 mb-4" />
-            <h3 className="text-lg font-medium mb-1">No conversations found</h3>
-            <p className="text-sm text-muted-foreground">
+            <div className="w-16 h-16 bg-[#EFF6FF] rounded-full flex items-center justify-center mb-4 shadow-inner ring-4 ring-[#EFF6FF]/50">
+              <MessageSquareOff className="h-7 w-7 text-[#2563EB]" />
+            </div>
+            <h3 className="text-lg font-bold mb-1 text-[#111827]">No conversations found</h3>
+            <p className="text-[13px] text-[#64748B]">
               {searchQuery || filter !== 'all'
                 ? "Try adjusting your search or filters."
                 : "You don't have any messages yet."}

@@ -13,85 +13,85 @@ export function AdminListingStatusBadge({ status, className }: AdminListingStatu
     active: {
       label: 'Active',
       icon: CheckCircle2,
-      className: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800',
+      className: 'bg-[#ECFDF5] text-[#10B981] border border-[#10B981]/20 rounded-full',
       variant: 'outline'
     },
     PUBLISHED: {
       label: 'Active',
       icon: CheckCircle2,
-      className: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800',
+      className: 'bg-[#ECFDF5] text-[#10B981] border border-[#10B981]/20 rounded-full',
       variant: 'outline'
     },
     suspended: {
       label: 'Suspended',
       icon: AlertCircle,
-      className: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 border-amber-200 dark:border-amber-800',
+      className: 'bg-[#FFFBEB] text-[#F59E0B] border border-[#F59E0B]/20 rounded-full',
       variant: 'outline'
     },
     PAUSED: {
       label: 'Paused',
       icon: AlertCircle,
-      className: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 border-amber-200 dark:border-amber-800',
+      className: 'bg-[#FFFBEB] text-[#F59E0B] border border-[#F59E0B]/20 rounded-full',
       variant: 'outline'
     },
     rejected: {
       label: 'Rejected',
       icon: XCircle,
-      className: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 border-red-200 dark:border-red-800',
+      className: 'bg-[#FEF2F2] text-[#EF4444] border border-[#EF4444]/20 rounded-full',
       variant: 'destructive'
     },
     REJECTED: {
       label: 'Rejected',
       icon: XCircle,
-      className: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 border-red-200 dark:border-red-800',
+      className: 'bg-[#FEF2F2] text-[#EF4444] border border-[#EF4444]/20 rounded-full',
       variant: 'destructive'
     },
     pending: {
       label: 'Pending',
       icon: Clock,
-      className: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 border-blue-200 dark:border-blue-800',
+      className: 'bg-[#EFF6FF] text-[#3B82F6] border border-[#3B82F6]/20 rounded-full',
       variant: 'secondary'
     },
     SUBMITTED_FOR_REVIEW: {
       label: 'Pending',
       icon: Clock,
-      className: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 border-blue-200 dark:border-blue-800',
+      className: 'bg-[#EFF6FF] text-[#3B82F6] border border-[#3B82F6]/20 rounded-full',
       variant: 'secondary'
     },
     draft: {
       label: 'Draft',
       icon: Edit,
-      className: 'bg-slate-100 text-slate-800 dark:bg-slate-800/50 dark:text-slate-400 border-slate-200 dark:border-slate-700',
+      className: 'bg-[#F1F5F9] text-[#64748B] border border-[#64748B]/20 rounded-full',
       variant: 'outline'
     },
     DRAFT: {
       label: 'Draft',
       icon: Edit,
-      className: 'bg-slate-100 text-slate-800 dark:bg-slate-800/50 dark:text-slate-400 border-slate-200 dark:border-slate-700',
+      className: 'bg-[#F1F5F9] text-[#64748B] border border-[#64748B]/20 rounded-full',
       variant: 'outline'
     },
     sold: {
       label: 'Sold',
       icon: Check,
-      className: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400 border-purple-200 dark:border-purple-800',
+      className: 'bg-[#F5F3FF] text-[#7C3AED] border border-[#7C3AED]/20 rounded-full',
       variant: 'outline'
     },
     SOLD_LET: {
       label: 'Sold',
       icon: Check,
-      className: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400 border-purple-200 dark:border-purple-800',
+      className: 'bg-[#F5F3FF] text-[#7C3AED] border border-[#7C3AED]/20 rounded-full',
       variant: 'outline'
     },
     closed: {
       label: 'Closed',
       icon: Ban,
-      className: 'bg-slate-100 text-slate-800 dark:bg-slate-800/50 dark:text-slate-400 border-slate-200 dark:border-slate-700',
+      className: 'bg-[#F1F5F9] text-[#64748B] border border-[#64748B]/20 rounded-full',
       variant: 'outline'
     },
     EXPIRED: {
       label: 'Expired',
       icon: Ban,
-      className: 'bg-slate-100 text-slate-800 dark:bg-slate-800/50 dark:text-slate-400 border-slate-200 dark:border-slate-700',
+      className: 'bg-[#F1F5F9] text-[#64748B] border border-[#64748B]/20 rounded-full',
       variant: 'outline'
     }
   };
@@ -118,10 +118,9 @@ export function AdminListingVerificationBadge({ isVerified, className }: AdminLi
   if (isVerified) {
     return (
       <Badge
-        variant="outline"
-        className={cn('capitalize flex w-fit items-center gap-1 font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800', className)}
+        className={cn('capitalize flex w-fit items-center gap-1 font-medium bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0] hover:bg-[#ECFDF5]/80 shadow-none', className)}
       >
-        <Shield className="h-3 w-3" aria-hidden="true" />
+        <Shield className="h-3 w-3 text-[#059669]" aria-hidden="true" />
         <span>Verified</span>
       </Badge>
     );
@@ -129,10 +128,9 @@ export function AdminListingVerificationBadge({ isVerified, className }: AdminLi
 
   return (
     <Badge
-      variant="outline"
-      className={cn('capitalize flex w-fit items-center gap-1 font-medium bg-slate-100 text-slate-800 dark:bg-slate-800/50 dark:text-slate-400 border-slate-200 dark:border-slate-700', className)}
+      className={cn('capitalize flex w-fit items-center gap-1 font-medium bg-[#FFF7E6] text-[#D97706] border border-[#FCD34D] hover:bg-[#FFF7E6]/80 shadow-none', className)}
     >
-      <Shield className="h-3 w-3 text-slate-400" aria-hidden="true" />
+      <Shield className="h-3 w-3 text-[#D97706]" aria-hidden="true" />
       <span>Unverified</span>
     </Badge>
   );

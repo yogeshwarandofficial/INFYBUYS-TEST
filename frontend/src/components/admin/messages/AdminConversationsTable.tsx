@@ -14,7 +14,7 @@ export function AdminConversationsTable({ conversations }: AdminConversationsTab
   };
 
   return (
-    <div className="w-full overflow-auto border rounded-md bg-card">
+    <div className="w-full overflow-auto bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl">
       <table className="w-full text-sm text-left">
         <thead className="text-xs text-muted-foreground uppercase bg-muted/50 border-b">
           <tr>

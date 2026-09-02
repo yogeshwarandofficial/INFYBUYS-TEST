@@ -10,11 +10,11 @@ interface ConversationSearchProps {
 export function ConversationSearch({ value, onChange }: ConversationSearchProps) {
   return (
     <div className="relative">
-      <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+      <Search className="absolute left-3 top-2.5 h-4 w-4 text-[#64748B]" />
       <Input
         type="text"
         placeholder="Search messages..."
-        className="pl-9 pr-9"
+        className="pl-9 pr-9 h-9 bg-white/50 border-[#E5E9F2] text-[#334155] rounded-lg focus-visible:ring-[#2563EB] placeholder:text-[#64748B]"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         aria-label="Search conversations"

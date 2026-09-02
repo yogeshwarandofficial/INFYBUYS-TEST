@@ -37,7 +37,7 @@ export default function BuyerEnquiryDetails() {
 
   if (error || !enquiry) {
     return (
-      <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
+      <div className="w-full space-y-8">
         <div className="text-center py-20">
           <h2 className="text-xl font-semibold mb-2">Enquiry Not Found</h2>
           <p className="text-muted-foreground mb-6">

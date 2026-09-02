@@ -25,9 +25,9 @@ export function RecommendedListings() {
   }, []);
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Recommended for you</CardTitle>
+    <Card className="bg-white/80 backdrop-blur-md border border-gray-100 shadow-sm rounded-xl overflow-hidden">
+      <CardHeader className="pb-4">
+        <CardTitle className="text-lg font-bold text-[#111827]">Recommended for you</CardTitle>
       </CardHeader>
       <CardContent>
         {loading ? (

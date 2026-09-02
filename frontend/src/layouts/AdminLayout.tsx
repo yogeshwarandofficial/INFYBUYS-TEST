@@ -1,21 +1,24 @@
 import { Outlet } from 'react-router';
+import { useState } from 'react';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { AdminHeader } from '@/components/admin/AdminHeader';
+import { Seo } from '@/components/shared/Seo';
 
 export default function AdminLayout() {
+  const [collapsed, setCollapsed] = useState(false);
+
   return (
-    <div className="flex h-screen bg-background overflow-hidden">
+    <div className="flex h-screen overflow-hidden bg-background">
+      <Seo title="Admin Dashboard" noIndex={true} />
+
       {/* Desktop Sidebar */}
-      <div className="hidden lg:block">
-        <AdminSidebar />
+      <div className="hidden md:block h-full">
+        <AdminSidebar collapsed={collapsed} setCollapsed={setCollapsed} />
       </div>
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 h-full">
         <AdminHeader />
-
-        {/* Scrollable Main Content */}
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-auto bg-[#F8F9FA] dark:bg-transparent p-6 md:p-8">
           <Outlet />
         </main>
       </div>

@@ -58,7 +58,7 @@ export function SellerNotificationCard({ notification }: SellerNotificationCardP
         {/* Content */}
         <div className="flex-1 min-w-0 pr-8 sm:pr-12">
           <div className="flex flex-wrap items-center gap-2 mb-1">
-            <h3 className={cn('text-sm font-semibold truncate', !notification.isRead && 'text-foreground')}>
+            <h3 className={cn('text-[15px] font-semibold text-[#111827] truncate', !notification.isRead && 'text-foreground')}>
               {notification.title}
             </h3>
             {!notification.isRead && (
@@ -68,10 +68,10 @@ export function SellerNotificationCard({ notification }: SellerNotificationCardP
             )}
             <SellerNotificationPriorityBadge priority={notification.priority} />
           </div>
-          <p className={cn('text-xs leading-relaxed max-w-2xl', !notification.isRead ? 'text-foreground font-medium' : 'text-muted-foreground')}>
+          <p className={cn('text-xs leading-relaxed max-w-2xl', !notification.isRead ? 'text-foreground font-medium' : 'text-[#64748B]')}>
             {notification.message}
           </p>
-          <time dateTime={notification.createdAt} className="block text-[11px] text-muted-foreground/70 mt-2">
+          <time dateTime={notification.createdAt} className="block text-[11px] text-[#64748B]/70 mt-2">
             {formatDistanceToNow(notification.createdAt)}
           </time>
         </div>
@@ -81,7 +81,7 @@ export function SellerNotificationCard({ notification }: SellerNotificationCardP
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-background" aria-label="Notification actions">
-                <MoreHorizontal className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
+                <MoreHorizontal className="w-4 h-4 text-[#64748B]" aria-hidden="true" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">

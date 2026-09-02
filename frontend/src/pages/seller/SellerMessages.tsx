@@ -53,10 +53,10 @@ export default function SellerMessages() {
 
       <div className="p-4 sm:p-6 space-y-6 max-w-7xl mx-auto pb-12">
         {/* Page header */}
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">Messages</h1>
-            <p className="text-sm text-muted-foreground">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 pt-2">
+          <div className="space-y-1">
+            <h1 className="text-3xl font-bold tracking-tight text-[#111827]">Messages</h1>
+            <p className="text-[15px] text-[#64748B]">
               {totalCount} conversation{totalCount !== 1 ? 's' : ''} found
             </p>
           </div>
@@ -65,7 +65,7 @@ export default function SellerMessages() {
               variant="outline"
               size="sm"
               onClick={markAllConversationsAsRead}
-              className="gap-2"
+              className="gap-2 bg-white/60 border-[#E5E9F2] hover:bg-slate-50 text-[#111827] rounded-xl shadow-sm h-10 px-4"
               aria-label="Mark all conversations as read"
             >
               <CheckCheck className="w-4 h-4" aria-hidden="true" />
@@ -103,7 +103,7 @@ export default function SellerMessages() {
         </div>
 
         {/* Search + mobile filters trigger */}
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-4">
           <SellerConversationSearch
             value={filters.search}
             onChange={(v) => updateFilter('search', v)}
@@ -111,7 +111,7 @@ export default function SellerMessages() {
 
           <Sheet open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen}>
             <SheetTrigger asChild>
-              <Button variant="outline" className="relative" aria-label="Open filters">
+              <Button variant="outline" className="relative lg:hidden bg-white/60 border-[#E5E9F2] rounded-xl shadow-sm h-10 text-[#111827]" aria-label="Open filters">
                 <SlidersHorizontal className="w-4 h-4 mr-2" aria-hidden="true" />
                 Filters
                 {hasActiveFilters && (
@@ -137,11 +137,11 @@ export default function SellerMessages() {
           </Sheet>
         </div>
 
-        <div className="flex gap-6">
+        <div className="flex gap-8 mt-8">
           {/* Desktop Filters Sidebar */}
-          <aside className="hidden lg:block w-56 shrink-0" aria-label="Conversation filters">
-            <div className="bg-card rounded-lg border p-4 sticky top-20">
-              <h2 className="font-semibold text-sm mb-4">Filters</h2>
+          <aside className="hidden lg:block w-[280px] shrink-0" aria-label="Conversation filters">
+            <div className="bg-white/85 backdrop-blur-md rounded-2xl border border-[#E5E9F2] shadow-sm shadow-blue-900/5 p-6 sticky top-24">
+              <h2 className="font-bold text-base text-[#111827] mb-6">Filters</h2>
               <SellerConversationFilters
                 filters={filters}
                 updateFilter={updateFilter}

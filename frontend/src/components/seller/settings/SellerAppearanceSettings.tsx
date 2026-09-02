@@ -33,26 +33,26 @@ export function SellerAppearanceSettings({ settings }: SellerAppearanceSettingsP
   };
 
   return (
-    <Card>
+    <Card className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl overflow-hidden">
       <CardHeader>
-        <CardTitle className="text-lg">Appearance & Localization</CardTitle>
-        <CardDescription>Customize how InfyBuys looks and feels for you.</CardDescription>
+        <CardTitle className="text-lg text-[#111827]">Appearance & Localization</CardTitle>
+        <CardDescription className="text-[#64748B]">Customize how InfyBuys looks and feels for you.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
 
         <div className="flex items-center justify-between">
           <div className="flex items-start gap-3 w-full sm:w-auto pr-4">
-            <Palette className="w-5 h-5 text-muted-foreground mt-0.5 shrink-0" />
+            <div className="w-10 h-10 rounded-xl bg-[#F6F8FC] flex items-center justify-center shrink-0"><Palette className="w-5 h-5 text-[#94A3B8]" /></div>
             <div className="space-y-0.5">
-              <Label htmlFor="themePreference" className="text-base">Theme Preference</Label>
-              <p className="text-sm text-muted-foreground">Select your preferred color theme.</p>
+              <Label htmlFor="themePreference" className="text-[15px] font-semibold text-[#111827]">Theme Preference</Label>
+              <p className="text-[13px] text-[#64748B] mt-0.5">Select your preferred color theme.</p>
             </div>
           </div>
           <Select
             value={settings.themePreference}
             onValueChange={handleThemeChange}
           >
-            <SelectTrigger id="themePreference" className="w-[180px]">
+            <SelectTrigger id="themePreference" className="w-[180px] bg-white border-[#E5E9F2] shadow-sm rounded-xl text-[#111827]">
               <SelectValue placeholder="Select theme" />
             </SelectTrigger>
             <SelectContent>
@@ -65,17 +65,17 @@ export function SellerAppearanceSettings({ settings }: SellerAppearanceSettingsP
 
         <div className="flex items-center justify-between">
           <div className="flex items-start gap-3 w-full sm:w-auto pr-4">
-            <Globe className="w-5 h-5 text-muted-foreground mt-0.5 shrink-0" />
+            <div className="w-10 h-10 rounded-xl bg-[#F6F8FC] flex items-center justify-center shrink-0"><Globe className="w-5 h-5 text-[#94A3B8]" /></div>
             <div className="space-y-0.5">
-              <Label htmlFor="languagePreference" className="text-base">Language</Label>
-              <p className="text-sm text-muted-foreground">Select your preferred language.</p>
+              <Label htmlFor="languagePreference" className="text-[15px] font-semibold text-[#111827]">Language</Label>
+              <p className="text-[13px] text-[#64748B] mt-0.5">Select your preferred language.</p>
             </div>
           </div>
           <Select
             value={settings.languagePreference}
             onValueChange={handleLanguageChange}
           >
-            <SelectTrigger id="languagePreference" className="w-[180px]">
+            <SelectTrigger id="languagePreference" className="w-[180px] bg-white border-[#E5E9F2] shadow-sm rounded-xl text-[#111827]">
               <SelectValue placeholder="Select language" />
             </SelectTrigger>
             <SelectContent>

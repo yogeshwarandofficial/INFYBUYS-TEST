@@ -58,6 +58,12 @@ export class ListingsController {
     return this.listingsService.update(req.user.id, id, updateListingDto);
   }
 
+  @Get(':id/revision')
+  @UseGuards(JwtAuthGuard)
+  getRevision(@Request() req: any, @Param('id') id: string) {
+    return this.listingsService.getPendingRevision(req.user.id, id);
+  }
+
   @Post(':id/submit')
   @UseGuards(JwtAuthGuard)
   submitForReview(@Request() req: any, @Param('id') id: string) {

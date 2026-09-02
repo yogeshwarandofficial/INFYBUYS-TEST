@@ -7,7 +7,6 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../ui/card';
 
 interface AdminUserGrowthChartProps {
   data: { date: string; buyers: number; sellers: number }[];
@@ -15,12 +14,12 @@ interface AdminUserGrowthChartProps {
 
 export function AdminUserGrowthChart({ data }: AdminUserGrowthChartProps) {
   return (
-    <Card className="col-span-full lg:col-span-2">
-      <CardHeader>
-        <CardTitle>User Growth</CardTitle>
-        <CardDescription>New buyers and sellers acquired over time</CardDescription>
-      </CardHeader>
-      <CardContent>
+    <div className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl p-6 col-span-full lg:col-span-2">
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold text-[#111827]">User Growth</h3>
+        <p className="text-sm text-[#64748B]">New buyers and sellers acquired over time</p>
+      </div>
+      <div>
         <div className="h-[300px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
@@ -74,7 +73,7 @@ export function AdminUserGrowthChart({ data }: AdminUserGrowthChartProps) {
             </AreaChart>
           </ResponsiveContainer>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

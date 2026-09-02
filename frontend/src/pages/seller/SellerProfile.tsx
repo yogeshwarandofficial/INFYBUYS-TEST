@@ -13,14 +13,14 @@ export default function SellerProfile() {
     <>
       <Seo title="My Profile - Seller Portal | InfyBuys" />
 
-      <div className="p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto space-y-6 pb-12">
+      <div className="p-4 sm:p-6 space-y-6 max-w-7xl mx-auto pb-12">
         <SellerProfileHeader profile={profile} />
 
-        <div className="grid lg:grid-cols-3 gap-6">
+        <div className="grid lg:grid-cols-3 gap-8 mt-8 items-start">
           <div className="lg:col-span-2 space-y-6">
             <SellerBusinessInformationCard profile={profile} />
           </div>
-          <div className="lg:col-span-1 space-y-6">
+          <div className="lg:col-span-1 flex flex-col gap-6">
             <SellerProfileCompletion profile={profile} />
             <SellerContactInformationCard profile={profile} />
             <SellerSocialLinksCard profile={profile} />

@@ -56,11 +56,11 @@ function FiltersPanel({
   hasActiveFilters,
 }: ReturnType<typeof useSellerListingSearch>) {
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <div className="space-y-2">
-        <Label>Status</Label>
+        <Label className="text-[#111827] font-semibold">Status</Label>
         <Select value={filters.status} onValueChange={(v) => updateFilter('status', v as SellerListingStatus | 'all')}>
-          <SelectTrigger aria-label="Filter by status">
+          <SelectTrigger aria-label="Filter by status" className="bg-white border-[#E5E9F2] rounded-xl focus:ring-blue-500 shadow-sm">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -72,9 +72,9 @@ function FiltersPanel({
       </div>
 
       <div className="space-y-2">
-        <Label>Category</Label>
+        <Label className="text-[#111827] font-semibold">Category</Label>
         <Select value={filters.category || '_all'} onValueChange={(v) => updateFilter('category', v === '_all' ? '' : v)}>
-          <SelectTrigger aria-label="Filter by category">
+          <SelectTrigger aria-label="Filter by category" className="bg-white border-[#E5E9F2] rounded-xl focus:ring-blue-500 shadow-sm">
             <SelectValue placeholder="All Categories" />
           </SelectTrigger>
           <SelectContent>
@@ -85,9 +85,9 @@ function FiltersPanel({
       </div>
 
       <div className="space-y-2">
-        <Label>Location</Label>
+        <Label className="text-[#111827] font-semibold">Location</Label>
         <Select value={filters.location || '_all'} onValueChange={(v) => updateFilter('location', v === '_all' ? '' : v)}>
-          <SelectTrigger aria-label="Filter by location">
+          <SelectTrigger aria-label="Filter by location" className="bg-white border-[#E5E9F2] rounded-xl focus:ring-blue-500 shadow-sm">
             <SelectValue placeholder="All Locations" />
           </SelectTrigger>
           <SelectContent>
@@ -98,8 +98,8 @@ function FiltersPanel({
       </div>
 
       <div className="space-y-2">
-        <Label>Price Range (USD)</Label>
-        <div className="grid grid-cols-2 gap-2">
+        <Label className="text-[#111827] font-semibold">Price Range (USD)</Label>
+        <div className="grid grid-cols-2 gap-3">
           <Input
             type="number"
             placeholder="Min"
@@ -107,6 +107,7 @@ function FiltersPanel({
             value={filters.priceMin}
             onChange={(e) => updateFilter('priceMin', e.target.value)}
             aria-label="Minimum price"
+            className="bg-white border-[#E5E9F2] rounded-xl focus-visible:ring-blue-500 shadow-sm"
           />
           <Input
             type="number"
@@ -115,14 +116,15 @@ function FiltersPanel({
             value={filters.priceMax}
             onChange={(e) => updateFilter('priceMax', e.target.value)}
             aria-label="Maximum price"
+            className="bg-white border-[#E5E9F2] rounded-xl focus-visible:ring-blue-500 shadow-sm"
           />
         </div>
       </div>
 
       {hasActiveFilters && (
         <>
-          <Separator />
-          <Button variant="outline" className="w-full" onClick={resetFilters}>
+          <Separator className="bg-[#E5E9F2]" />
+          <Button variant="outline" className="w-full bg-white hover:bg-slate-50 border-[#E5E9F2] rounded-xl shadow-sm text-[#111827]" onClick={resetFilters}>
             <X className="w-4 h-4 mr-2" />
             Clear All Filters
           </Button>
@@ -149,14 +151,14 @@ export default function SellerListings() {
 
       <div className="p-4 sm:p-6 space-y-6 max-w-7xl mx-auto pb-12">
         {/* Header */}
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">My Listings</h1>
-            <p className="text-sm text-muted-foreground">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 pt-2">
+          <div className="space-y-1">
+            <h1 className="text-3xl font-bold tracking-tight text-[#111827]">My Listings</h1>
+            <p className="text-[15px] text-[#64748B]">
               {totalCount} listing{totalCount !== 1 ? 's' : ''} found
             </p>
           </div>
-          <Button asChild>
+          <Button asChild className="bg-[#2563EB] hover:bg-blue-700 text-white rounded-xl shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all h-11 px-6 font-medium">
             <Link to="/seller/listings/new">
               <PlusCircle className="w-4 h-4 mr-2" />
               Create Listing
@@ -165,59 +167,62 @@ export default function SellerListings() {
         </div>
 
         {/* Search & Sort bar */}
-        <div className="flex flex-wrap gap-3">
-          <div className="relative flex-1 min-w-48">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+        <div className="flex flex-wrap gap-4">
+          <div className="relative flex-1 min-w-[280px]">
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-[#94A3B8]" />
             <Input
               placeholder="Search by title, category, location..."
-              className="pl-9"
+              className="pl-10 bg-white/60 border-[#E5E9F2] rounded-xl focus-visible:ring-blue-500 shadow-sm h-10"
               value={filters.search}
               onChange={(e) => updateFilter('search', e.target.value)}
               aria-label="Search listings"
             />
           </div>
 
-          <Select value={filters.sort} onValueChange={(v) => updateFilter('sort', v as typeof filters.sort)}>
-            <SelectTrigger className="w-44" aria-label="Sort by">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {SORT_OPTIONS.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
-            </SelectContent>
-          </Select>
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            <Select value={filters.sort} onValueChange={(v) => updateFilter('sort', v as typeof filters.sort)}>
+              <SelectTrigger className="w-[180px] bg-white/60 border-[#E5E9F2] rounded-xl focus:ring-blue-500 shadow-sm h-10" aria-label="Sort by">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {SORT_OPTIONS.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+              </SelectContent>
+            </Select>
 
-          <div className="flex items-center gap-1">
-            <Button
-              variant={view === 'grid' ? 'default' : 'outline'}
-              size="icon"
-              onClick={() => setView('grid')}
-              aria-label="Grid view"
-              aria-pressed={view === 'grid'}
-            >
-              <LayoutGrid className="h-4 w-4" />
-            </Button>
-            <Button
-              variant={view === 'list' ? 'default' : 'outline'}
-              size="icon"
-              onClick={() => setView('list')}
-              aria-label="List view"
-              aria-pressed={view === 'list'}
-            >
-              <List className="h-4 w-4" />
-            </Button>
-          </div>
-
-          {/* Mobile filter trigger */}
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="outline" className="relative">
-                <SlidersHorizontal className="w-4 h-4 mr-2" />
-                Filters
-                {hasActiveFilters && (
-                  <Badge className="ml-2 h-4 w-4 p-0 flex items-center justify-center text-[10px]">!</Badge>
-                )}
+            <div className="flex items-center gap-1 bg-white/60 border border-[#E5E9F2] p-1 rounded-xl shadow-sm h-10">
+              <Button
+                variant={view === 'grid' ? 'secondary' : 'ghost'}
+                size="icon"
+                onClick={() => setView('grid')}
+                aria-label="Grid view"
+                aria-pressed={view === 'grid'}
+                className={cn("h-8 w-8 rounded-lg", view === 'grid' ? 'bg-white shadow-sm text-[#111827]' : 'text-[#64748B] hover:text-[#111827]')}
+              >
+                <LayoutGrid className="h-4 w-4" />
               </Button>
-            </SheetTrigger>
+              <Button
+                variant={view === 'list' ? 'secondary' : 'ghost'}
+                size="icon"
+                onClick={() => setView('list')}
+                aria-label="List view"
+                aria-pressed={view === 'list'}
+                className={cn("h-8 w-8 rounded-lg", view === 'list' ? 'bg-white shadow-sm text-[#111827]' : 'text-[#64748B] hover:text-[#111827]')}
+              >
+                <List className="h-4 w-4" />
+              </Button>
+            </div>
+
+            {/* Mobile filter trigger */}
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="outline" className="relative lg:hidden bg-white/60 border-[#E5E9F2] rounded-xl shadow-sm h-10 text-[#111827]">
+                  <SlidersHorizontal className="w-4 h-4 mr-2" />
+                  Filters
+                  {hasActiveFilters && (
+                    <Badge className="ml-2 h-4 w-4 p-0 flex items-center justify-center text-[10px] bg-blue-100 text-blue-700 hover:bg-blue-100 border-0">!</Badge>
+                  )}
+                </Button>
+              </SheetTrigger>
             <SheetContent side="right" className="w-80">
               <SheetHeader>
                 <SheetTitle>Filter Listings</SheetTitle>
@@ -227,13 +232,14 @@ export default function SellerListings() {
               </div>
             </SheetContent>
           </Sheet>
+          </div>
         </div>
 
-        <div className="flex gap-6">
+        <div className="flex gap-8 mt-8">
           {/* Desktop Filters Sidebar */}
-          <aside className="hidden lg:block w-56 shrink-0">
-            <div className="bg-card rounded-lg border p-4 sticky top-20">
-              <h2 className="font-semibold text-sm mb-4">Filters</h2>
+          <aside className="hidden lg:block w-[280px] shrink-0">
+            <div className="bg-white/85 backdrop-blur-md rounded-2xl border border-[#E5E9F2] shadow-sm shadow-blue-900/5 p-6 sticky top-24">
+              <h2 className="font-bold text-base text-[#111827] mb-6">Filters</h2>
               <FiltersPanel {...search} />
             </div>
           </aside>

@@ -33,11 +33,11 @@ export function SellerProfileCompletion({ profile }: SellerProfileCompletionProp
   const isComplete = completionPercentage === 100;
 
   return (
-    <Card>
+    <Card className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl overflow-hidden">
       <CardContent className="p-6">
         <div className="flex items-start justify-between mb-2">
           <div>
-            <h3 className="text-lg font-semibold flex items-center gap-2">
+            <h3 className="text-lg font-semibold flex items-center gap-2 text-[#111827]">
               Profile Completion
               {isComplete ? (
                 <CheckCircle2 className="w-5 h-5 text-emerald-500" aria-hidden="true" />
@@ -45,26 +45,26 @@ export function SellerProfileCompletion({ profile }: SellerProfileCompletionProp
                 <AlertCircle className="w-5 h-5 text-amber-500" aria-hidden="true" />
               )}
             </h3>
-            <p className="text-sm text-muted-foreground mt-1">
+            <p className="text-[13px] text-[#64748B] mt-1">
               {isComplete
                 ? 'Your profile is fully complete. Buyers can see all your details.'
                 : 'Complete your profile to build trust with potential buyers.'}
             </p>
           </div>
-          <span className="text-2xl font-bold">{completionPercentage}%</span>
+          <span className="text-2xl font-bold text-[#111827]">{completionPercentage}%</span>
         </div>
-        <Progress value={completionPercentage} className="h-2.5 mt-4 mb-4" />
+        <Progress value={completionPercentage} className="h-2 mt-4 mb-4" />
 
         {!isComplete && (
-          <div className="mt-4 pt-4 border-t border-border">
-            <p className="text-sm font-medium mb-3">Missing information:</p>
+          <div className="mt-4 pt-4 border-t border-[#E5E9F2]">
+            <p className="text-sm font-medium mb-3 text-[#111827]">Missing information:</p>
             <div className="flex flex-wrap gap-2">
               {fields
                 .filter((f) => !filledFields.includes(f))
                 .map((f) => (
                   <span
                     key={f.key}
-                    className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground"
+                    className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-[#F1F5F9] text-[#64748B]"
                   >
                     {f.label}
                   </span>

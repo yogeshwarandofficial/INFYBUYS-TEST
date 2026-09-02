@@ -8,11 +8,11 @@ const STATUS_CONFIG: Record<
 > = {
   draft: {
     label: 'Draft',
-    className: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
+    className: 'bg-slate-100 text-[#111827] dark:bg-slate-800 dark:text-slate-300',
   },
   pending: {
     label: 'Pending Review',
-    className: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
+    className: 'bg-amber-100/80 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400',
   },
   active: {
     label: 'Active',

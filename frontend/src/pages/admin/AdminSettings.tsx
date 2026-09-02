@@ -56,13 +56,13 @@ export default function AdminSettings() {
   ];
 
   return (
-    <div className="p-8 max-w-5xl mx-auto space-y-8 animate-in fade-in duration-500">
+    <div className="p-4 sm:p-6 space-y-8 max-w-7xl mx-auto pb-12 animate-in fade-in duration-500">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
+          <h1 className="text-3xl font-bold tracking-tight text-[#111827]">
             Platform Configuration
           </h1>
-          <p className="text-muted-foreground mt-2">
+          <p className="text-[15px] text-[#64748B] mt-1">
             Manage global settings, registrations, and moderation rules.
           </p>
         </div>

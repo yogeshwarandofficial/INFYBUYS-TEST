@@ -61,7 +61,7 @@ export function AdminListingFilters({
       <div className="space-y-4">
         {/* Sort */}
         <div className="space-y-2">
-          <Label htmlFor="sort">Sort By</Label>
+          <Label htmlFor="sort" className="text-[#334155] font-medium">Sort By</Label>
           <Select value={sorting} onValueChange={(v) => onSortChange(v as AdminListingSortOption)}>
             <SelectTrigger id="sort">
               <SelectValue placeholder="Sort by..." />
@@ -79,7 +79,7 @@ export function AdminListingFilters({
 
         {/* Status */}
         <div className="space-y-2">
-          <Label htmlFor="status">Status</Label>
+          <Label htmlFor="status" className="text-[#334155] font-medium">Status</Label>
           <Select
             value={filters.status}
             onValueChange={(v) => onFilterChange({ status: v as any })}
@@ -102,7 +102,7 @@ export function AdminListingFilters({
 
         {/* Category */}
         <div className="space-y-2">
-          <Label htmlFor="category">Category</Label>
+          <Label htmlFor="category" className="text-[#334155] font-medium">Category</Label>
           <Select
             value={filters.category}
             onValueChange={(v) => onFilterChange({ category: v })}
@@ -121,7 +121,7 @@ export function AdminListingFilters({
 
         {/* Verification */}
         <div className="space-y-2">
-          <Label htmlFor="verification">Verification</Label>
+          <Label htmlFor="verification" className="text-[#334155] font-medium">Verification</Label>
           <Select
             value={filters.verification}
             onValueChange={(v) => onFilterChange({ verification: v as any })}

@@ -33,13 +33,13 @@ export default function AdminDashboard() {
     <>
       <Seo title="Admin Dashboard | InfyBuys" />
 
-      <div className="p-4 sm:p-6 lg:p-8 space-y-8 max-w-7xl mx-auto pb-12">
+      <div className="p-4 sm:p-6 space-y-8 max-w-7xl mx-auto pb-12">
 
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Dashboard Overview</h1>
-            <p className="text-muted-foreground mt-1">
+            <h1 className="text-3xl font-bold tracking-tight text-[#111827]">Dashboard Overview</h1>
+            <p className="text-[15px] text-[#64748B] mt-1">
               Welcome back to the InfyBuys administrative portal.
             </p>
           </div>
@@ -128,10 +128,10 @@ export default function AdminDashboard() {
             <AdminQuickActions />
 
             {/* Future Placeholder for Charts or Data Tables */}
-            <div className="h-64 rounded-xl border border-dashed border-border bg-muted/20 flex flex-col items-center justify-center text-center p-8">
+            <div className="h-64 rounded-xl border border-dashed border-[#E5E9F2] bg-white/40 backdrop-blur-sm flex flex-col items-center justify-center text-center p-8">
               <BarChart3 className="w-10 h-10 text-muted-foreground mb-4 opacity-20" />
-              <h3 className="font-semibold text-lg text-muted-foreground">Analytics Overview</h3>
-              <p className="text-sm text-muted-foreground mt-1 max-w-sm">
+              <h3 className="font-semibold text-lg text-[#111827]">Analytics Overview</h3>
+              <p className="text-[14px] text-[#64748B] mt-1 max-w-sm">
                 Detailed charts and platform metrics will be available in the upcoming Analytics module.
               </p>
             </div>

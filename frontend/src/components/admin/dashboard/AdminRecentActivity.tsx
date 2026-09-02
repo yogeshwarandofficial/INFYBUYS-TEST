@@ -23,10 +23,10 @@ export function AdminRecentActivity() {
   };
 
   return (
-    <Card className="h-full flex flex-col">
+    <Card className="h-full flex flex-col bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl overflow-hidden">
       <CardHeader>
-        <CardTitle className="text-lg">Recent Activity</CardTitle>
-        <CardDescription>Latest events across the InfyBuys platform.</CardDescription>
+        <CardTitle className="text-lg text-[#111827]">Recent Activity</CardTitle>
+        <CardDescription className="text-[#64748B]">Latest events across the InfyBuys platform.</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 p-0">
         <ScrollArea className="h-[300px] w-full px-6">
@@ -38,23 +38,23 @@ export function AdminRecentActivity() {
                 <div
                   key={activity.id}
                   className={`flex items-start gap-3 p-3 rounded-lg transition-colors cursor-pointer ${
-                    !activity.read ? 'bg-muted/50' : 'hover:bg-muted/30'
+                    !activity.read ? 'bg-[#F8FAFC]' : 'hover:bg-white/60'
                   }`}
                   onClick={() => handleRead(activity.id, activity.read)}
                 >
-                  <div className="mt-0.5 bg-background border rounded-full p-1.5 shadow-sm">
+                  <div className="mt-0.5 bg-[#F6F8FC] border border-[#E5E9F2] rounded-xl p-2 shadow-sm">
                     {getActivityIcon(activity.type)}
                   </div>
                   <div className="flex-1 space-y-1">
-                    <p className={`text-sm ${!activity.read ? 'font-medium' : 'text-muted-foreground'}`}>
+                    <p className={`text-[14px] ${!activity.read ? 'font-semibold text-[#111827]' : 'font-medium text-[#64748B]'}`}>
                       {activity.description}
                     </p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-[12px] text-[#94A3B8] mt-0.5">
                       {new Date(activity.createdAt).toLocaleString()}
                     </p>
                   </div>
                   {!activity.read && (
-                    <div className="w-2 h-2 rounded-full bg-blue-500 mt-1.5 shrink-0" />
+                    <div className="w-2 h-2 rounded-full bg-[#2563EB] mt-1.5 shrink-0" />
                   )}
                 </div>
               ))

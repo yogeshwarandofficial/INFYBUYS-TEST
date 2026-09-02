@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Seo } from '@/components/shared/Seo';
-import { PageHeader } from '@/components/shared/PageHeader';
+import { BuyerPageHeader } from '@/components/buyer/BuyerPageHeader';
 import { ProfileHeader } from '@/components/buyer/profile/ProfileHeader';
 import { ProfileCompletion } from '@/components/buyer/profile/ProfileCompletion';
 import { ContactInformationCard } from '@/components/buyer/profile/ContactInformationCard';
@@ -19,8 +19,8 @@ export default function BuyerProfile() {
     <>
       <Seo title="Buyer Profile" description="Manage your public buyer profile." />
 
-      <div className="max-w-5xl mx-auto space-y-8 pb-12">
-        <PageHeader
+      <div className="w-full space-y-8">
+        <BuyerPageHeader
           title="My Profile"
           description="Manage your professional information, contact details, and investment criteria."
           breadcrumbs={[{ label: 'Profile' }]}

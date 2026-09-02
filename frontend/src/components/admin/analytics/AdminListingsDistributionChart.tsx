@@ -6,7 +6,6 @@ import {
   Tooltip,
   Legend
 } from 'recharts';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../ui/card';
 
 interface AdminListingsDistributionChartProps {
   data: { name: string; value: number; color: string }[];
@@ -21,12 +20,12 @@ const COLORS: Record<string, string> = {
 
 export function AdminListingsDistributionChart({ data }: AdminListingsDistributionChartProps) {
   return (
-    <Card className="col-span-full lg:col-span-1">
-      <CardHeader>
-        <CardTitle>Listings Distribution</CardTitle>
-        <CardDescription>Breakdown by current status</CardDescription>
-      </CardHeader>
-      <CardContent>
+    <div className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl p-6">
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold text-[#111827]">Listings by Category</h3>
+        <p className="text-sm text-[#64748B]">Distribution of active listings across categories</p>
+      </div>
+      <div>
         <div className="h-[300px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
@@ -51,7 +50,7 @@ export function AdminListingsDistributionChart({ data }: AdminListingsDistributi
             </PieChart>
           </ResponsiveContainer>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

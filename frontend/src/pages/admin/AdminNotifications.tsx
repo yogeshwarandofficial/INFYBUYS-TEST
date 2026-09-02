@@ -5,7 +5,6 @@ import { AdminNotificationCard } from '../../components/admin/notifications/Admi
 import { AdminNotificationSearch } from '../../components/admin/notifications/AdminNotificationSearch';
 import { AdminNotificationFilters } from '../../components/admin/notifications/AdminNotificationFilters';
 import { AdminNotificationCompose } from '../../components/admin/notifications/AdminNotificationCompose';
-import { PageHeader } from '../../components/shared/PageHeader';
 import { EmptyState } from '../../components/shared/EmptyState';
 import { Bell, BellRing, Megaphone, Check } from 'lucide-react';
 import { Button } from '../../components/ui/button';
@@ -45,50 +44,49 @@ export default function AdminNotifications() {
   const systemAlertsCount = notifications.filter(n => n.type === 'system' || n.type === 'security').length;
 
   return (
-    <div className="flex flex-col min-h-screen pb-12">
-      <PageHeader
-        title="Notifications"
-        description={`Manage system alerts, announcements, and platform notifications`}
-        breadcrumbs={[{ label: 'Admin', href: '/admin' }, { label: 'Notifications' }]}
-      />
+    <div className="p-4 sm:p-6 space-y-8 max-w-7xl mx-auto pb-12">
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight text-[#111827]">Notifications</h1>
+        <p className="text-[15px] text-[#64748B] mt-1">Manage system alerts, announcements, and platform notifications</p>
+      </div>
 
       {/* KPI Cards */}
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-card border rounded-xl p-4 flex flex-col gap-2 shadow-sm">
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Bell className="h-4 w-4" />
-              <span className="text-sm font-medium">Total</span>
-            </div>
-            <span className="text-2xl font-bold">{totalNotifications}</span>
+      <div className="space-y-6 min-w-0">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl p-4 flex flex-col justify-between transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+            <div className="flex items-center justify-between"><div className="w-10 h-10 rounded-xl bg-blue-50/80 text-blue-600 border border-blue-100/50 flex items-center justify-center"><Bell className="h-5 w-5" /></div></div><span className="text-[13px] font-semibold text-[#64748B] uppercase tracking-wider mt-4">Total</span>
+            <span className="text-3xl font-bold text-[#111827] mt-1">{totalNotifications}</span>
           </div>
-          <div className="bg-blue-50 dark:bg-blue-950/20 border-blue-100 dark:border-blue-900/50 rounded-xl p-4 flex flex-col gap-2 relative overflow-hidden">
-            <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400">
-              <BellRing className="h-4 w-4" />
-              <span className="text-sm font-medium">Unread</span>
+          <div className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl p-4 flex flex-col justify-between transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+            <div className="flex items-center justify-between">
+              <div className="w-10 h-10 rounded-xl bg-blue-50/80 text-blue-600 border border-blue-100/50 flex items-center justify-center">
+                <BellRing className="h-5 w-5" />
+              </div>
             </div>
-            <span className="text-2xl font-bold text-blue-700 dark:text-blue-300">{unreadCount}</span>
-            {unreadCount > 0 && (
-              <div className="absolute top-0 right-0 w-2 h-full bg-blue-500"></div>
-            )}
+            <span className="text-[13px] font-semibold text-[#64748B] uppercase tracking-wider mt-4">Unread</span>
+            <span className="text-3xl font-bold text-[#111827] mt-1">{unreadCount}</span>
           </div>
-          <div className="bg-amber-50 dark:bg-amber-950/20 border-amber-100 dark:border-amber-900/50 rounded-xl p-4 flex flex-col gap-2">
-            <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400">
-              <Megaphone className="h-4 w-4" />
-              <span className="text-sm font-medium">Announcements</span>
+          <div className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl p-4 flex flex-col justify-between transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+            <div className="flex items-center justify-between">
+              <div className="w-10 h-10 rounded-xl bg-purple-50/80 text-purple-600 border border-purple-100/50 flex items-center justify-center">
+                <Megaphone className="h-5 w-5" />
+              </div>
             </div>
-            <span className="text-2xl font-bold text-amber-700 dark:text-amber-300">{announcementsCount}</span>
+            <span className="text-[13px] font-semibold text-[#64748B] uppercase tracking-wider mt-4">Announcements</span>
+            <span className="text-3xl font-bold text-[#111827] mt-1">{announcementsCount}</span>
           </div>
-          <div className="bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-col gap-2">
-            <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-              <Bell className="h-4 w-4" />
-              <span className="text-sm font-medium">System / Security</span>
+          <div className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl p-4 flex flex-col justify-between transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+            <div className="flex items-center justify-between">
+              <div className="w-10 h-10 rounded-xl bg-slate-50/80 text-slate-600 border border-slate-200/50 flex items-center justify-center">
+                <Bell className="h-5 w-5" />
+              </div>
             </div>
-            <span className="text-2xl font-bold text-slate-700 dark:text-slate-300">{systemAlertsCount}</span>
+            <span className="text-[13px] font-semibold text-[#64748B] uppercase tracking-wider mt-4">System / Security</span>
+            <span className="text-3xl font-bold text-[#111827] mt-1">{systemAlertsCount}</span>
           </div>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex flex-col lg:flex-row gap-6 mb-8">
           {/* Desktop Filters */}
           <div className="hidden lg:block w-64 shrink-0">
             <div className="sticky top-24">
@@ -104,7 +102,7 @@ export default function AdminNotifications() {
 
           <div className="flex-1 flex flex-col gap-6 min-w-0">
             {/* Search and Actions */}
-            <div className="flex flex-col sm:flex-row items-center gap-2">
+            <div className="flex flex-col sm:flex-row items-center gap-2 bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl p-2">
               <AdminNotificationSearch
                 value={search}
                 onChange={setSearch}
@@ -147,12 +145,14 @@ export default function AdminNotifications() {
             </div>
 
             {paginatedNotifications.length === 0 ? (
-              <EmptyState
+              <div className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl p-8 flex items-center justify-center">
+                <EmptyState
                 title="No notifications found"
                 description="No notifications match your current search and filter criteria."
                 actionLabel="Clear Filters"
                 onAction={resetFilters}
               />
+              </div>
             ) : (
               <div className="space-y-4">
                 {/* Desktop Table View */}

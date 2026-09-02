@@ -31,7 +31,6 @@ import {
   RotateCcw,
   Send,
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
 interface SellerListingCardProps {
   listing: SellerListing;
@@ -140,7 +139,7 @@ export function SellerListingCard({ listing, view = 'grid' }: SellerListingCardP
   if (isList) {
     return (
       <>
-        <Card className="overflow-hidden transition-all hover:shadow-md">
+        <Card className="overflow-hidden bg-white/85 backdrop-blur-md border border-[#E5E9F2] rounded-2xl shadow-sm shadow-blue-900/5 transition-all duration-200 hover:shadow-md hover:-translate-y-1 group">
           <div className="flex items-start sm:items-center gap-4 p-4">
             <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden bg-muted shrink-0">
               {(() => {
@@ -152,37 +151,37 @@ export function SellerListingCard({ listing, view = 'grid' }: SellerListingCardP
                   <img
                     src={heroUrl}
                     alt={listing.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover rounded-lg"
                   />
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
-                    <DollarSign className="w-6 h-6 text-primary/40" />
+                  <div className="w-full h-full bg-[#F6F8FC] flex items-center justify-center rounded-lg">
+                    <DollarSign className="w-6 h-6 text-[#94A3B8]" />
                   </div>
                 );
               })()}
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex flex-wrap items-start justify-between gap-2 mb-1">
-                <h3 className="font-semibold text-sm truncate">{listing.title}</h3>
+                <h3 className="font-semibold text-[15px] text-[#111827] truncate group-hover:text-[#2563EB] transition-colors">{listing.title}</h3>
                 <SellerListingStatusBadge status={listing.status} />
               </div>
-              <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+              <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-[#64748B]">
                 <span className="flex items-center gap-1">
-                  <MapPin className="w-3 h-3" /> {listing.location}
+                  <MapPin className="w-3 h-3 text-[#94A3B8]" /> {listing.location}
                 </span>
-                <span className="flex items-center gap-1">
+                <span className="flex items-center gap-1 font-medium text-[#2563EB]">
                   <DollarSign className="w-3 h-3" /> {formatPrice(listing.askingPrice)}
                 </span>
                 {listing.revenue && (
                   <span className="flex items-center gap-1">
-                    <TrendingUp className="w-3 h-3" /> Rev: {formatPrice(listing.revenue)}
+                    <TrendingUp className="w-3 h-3 text-[#94A3B8]" /> Rev: {formatPrice(listing.revenue)}
                   </span>
                 )}
                 <span className="flex items-center gap-1">
-                  <Eye className="w-3 h-3" /> {listing.views} views
+                  <Eye className="w-3 h-3 text-[#94A3B8]" /> {listing.views} views
                 </span>
                 <span className="flex items-center gap-1">
-                  <MessageSquare className="w-3 h-3" /> {listing.enquiries} enquiries
+                  <MessageSquare className="w-3 h-3 text-[#94A3B8]" /> {listing.enquiries} enquiries
                 </span>
               </div>
             </div>
@@ -214,18 +213,18 @@ export function SellerListingCard({ listing, view = 'grid' }: SellerListingCardP
 
   return (
     <>
-      <Card className={cn('overflow-hidden transition-all hover:shadow-lg flex flex-col')}>
-        <div className="aspect-video relative overflow-hidden bg-muted">
+      <Card className="overflow-hidden bg-white/85 backdrop-blur-md border border-[#E5E9F2] rounded-2xl shadow-sm shadow-blue-900/5 transition-all duration-200 hover:shadow-md hover:-translate-y-1 flex flex-col group">
+        <div className="aspect-video relative overflow-hidden bg-[#F6F8FC] rounded-t-2xl">
           {(() => {
             const coverMedia = listing.media?.find((m: any) => m.id === listing.coverMediaId);
             const firstPhoto = listing.media?.find((m: any) => m.type === 'PHOTO');
             const heroUrl = coverMedia?.url || firstPhoto?.url || listing.image;
 
             return heroUrl ? (
-              <img src={heroUrl} alt={listing.title} className="w-full h-full object-cover" />
+              <img src={heroUrl} alt={listing.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
-                <DollarSign className="w-10 h-10 text-primary/30" />
+              <div className="w-full h-full bg-[#F6F8FC] flex items-center justify-center">
+                <DollarSign className="w-10 h-10 text-[#94A3B8]" />
               </div>
             );
           })()}
@@ -249,46 +248,46 @@ export function SellerListingCard({ listing, view = 'grid' }: SellerListingCardP
           </div>
         </div>
 
-        <CardHeader className="pb-2 pt-4 px-4">
-          <h3 className="font-semibold text-base leading-snug line-clamp-2">{listing.title}</h3>
-          <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-            <MapPin className="w-3 h-3" /> {listing.location}
+        <CardHeader className="pb-2 pt-4 px-5">
+          <h3 className="font-semibold text-base leading-snug line-clamp-2 text-[#111827] group-hover:text-[#2563EB] transition-colors">{listing.title}</h3>
+          <p className="text-[13px] text-[#64748B] flex items-center gap-1 mt-1">
+            <MapPin className="w-3.5 h-3.5 text-[#94A3B8]" /> {listing.location}
           </p>
         </CardHeader>
 
-        <CardContent className="px-4 pb-2 flex-1">
-          <div className="grid grid-cols-2 gap-2 text-sm mb-3">
-            <div className="space-y-0.5">
-              <p className="text-xs text-muted-foreground">Asking Price</p>
-              <p className="font-bold text-primary">{formatPrice(listing.askingPrice)}</p>
+        <CardContent className="px-5 pb-3 flex-1">
+          <div className="grid grid-cols-2 gap-3 text-sm mb-4">
+            <div className="space-y-1">
+              <p className="text-xs font-medium text-[#64748B]">Asking Price</p>
+              <p className="font-bold text-[#2563EB]">{formatPrice(listing.askingPrice)}</p>
             </div>
             {listing.revenue && (
-              <div className="space-y-0.5">
-                <p className="text-xs text-muted-foreground">Revenue</p>
-                <p className="font-semibold">{formatPrice(listing.revenue)}</p>
+              <div className="space-y-1">
+                <p className="text-xs font-medium text-[#64748B]">Revenue</p>
+                <p className="font-semibold text-[#111827]">{formatPrice(listing.revenue)}</p>
               </div>
             )}
           </div>
-          <p className="text-xs text-muted-foreground line-clamp-2">{listing.description}</p>
+          <p className="text-[13px] text-[#64748B] line-clamp-2 leading-relaxed">{listing.description}</p>
         </CardContent>
 
-        <CardFooter className="px-4 pb-4 pt-2 flex items-center justify-between border-t mt-auto">
-          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+        <CardFooter className="px-5 pb-4 pt-3 flex items-center justify-between border-t border-[#E5E9F2] mt-auto bg-white/50">
+          <div className="flex items-center gap-3.5 text-[11px] font-medium text-[#64748B]">
             <span className="flex items-center gap-1">
-              <BarChart3 className="w-3 h-3" /> {listing.views}
+              <BarChart3 className="w-3.5 h-3.5 text-[#94A3B8]" /> {listing.views}
             </span>
             <span className="flex items-center gap-1">
-              <MessageSquare className="w-3 h-3" /> {listing.enquiries}
+              <MessageSquare className="w-3.5 h-3.5 text-[#94A3B8]" /> {listing.enquiries}
             </span>
             <span className="flex items-center gap-1">
-              <Calendar className="w-3 h-3" />{' '}
+              <Calendar className="w-3.5 h-3.5 text-[#94A3B8]" />{' '}
               {new Date(listing.updatedAt).toLocaleDateString()}
             </span>
           </div>
           <Button
             size="sm"
             variant="outline"
-            className="text-xs h-7"
+            className="text-xs h-7 px-3 bg-white border-[#E5E9F2] hover:bg-slate-50 text-[#111827] rounded-lg shadow-sm"
             onClick={() => navigate(`/seller/listings/${listing.id}`)}
           >
             View

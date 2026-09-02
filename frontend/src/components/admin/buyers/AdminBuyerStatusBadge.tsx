@@ -13,31 +13,31 @@ export function AdminBuyerStatusBadge({ status, className }: AdminBuyerStatusBad
     active: {
       label: 'Active',
       icon: CheckCircle2,
-      className: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800',
+      className: 'bg-[#ECFDF5] text-[#10B981] border border-[#10B981]/20 rounded-full',
       variant: 'outline'
     },
     suspended: {
       label: 'Suspended',
       icon: AlertCircle,
-      className: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 border-amber-200 dark:border-amber-800',
+      className: 'bg-[#FFFBEB] text-[#F59E0B] border border-[#F59E0B]/20 rounded-full',
       variant: 'outline'
     },
     blocked: {
       label: 'Blocked',
       icon: XCircle,
-      className: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 border-red-200 dark:border-red-800',
+      className: 'bg-[#FEF2F2] text-[#EF4444] border border-[#EF4444]/20 rounded-full',
       variant: 'destructive'
     },
     pending: {
       label: 'Pending',
       icon: Clock,
-      className: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 border-blue-200 dark:border-blue-800',
+      className: 'bg-[#EFF6FF] text-[#3B82F6] border border-[#3B82F6]/20 rounded-full',
       variant: 'secondary'
     },
     deleted: {
       label: 'Deleted',
       icon: Ban,
-      className: 'bg-slate-100 text-slate-800 dark:bg-slate-800/50 dark:text-slate-400 border-slate-200 dark:border-slate-700',
+      className: 'bg-[#F1F5F9] text-[#64748B] border border-[#64748B]/20 rounded-full',
       variant: 'outline'
     }
   };

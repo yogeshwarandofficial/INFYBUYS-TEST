@@ -1,5 +1,4 @@
 import { Seo } from '@/components/shared/Seo';
-import { PageHeader } from '@/components/shared/PageHeader';
 import { FAQS } from '@/constants/marketing';
 import {
   Accordion,

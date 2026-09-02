@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
   output   = "../generated/prisma"
 }
 
@@ -30,18 +30,27 @@ model User {
   savedSearches     SavedSearch[]
   sellerProfile     SellerProfile?
   userSubscriptions UserSubscription[]
+  listingRevisions  ListingRevision[]
 }
 
 model SellerProfile {
-  id            String    @id @default(uuid())
-  userId        String    @unique
-  businessName  String
-  companyNumber String?
-  kycStatus     KycStatus @default(PENDING)
-  verifiedBadge Boolean   @default(false)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                 String              @id @default(uuid())
+  userId             String              @unique
+  legalName          String?
+  businessName       String
+  businessAddress    String?
+  phone              String?
+  companyNumber      String?
+  kycStatus          KycStatus           @default(PENDING)
+  kycSubmittedAt     DateTime?
+  kycReviewedAt      DateTime?
+  kycReviewedBy      String?
+  kycRejectionReason String?
+  verifiedBadge      Boolean             @default(false)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kycDocuments       SellerKycDocument[]
 }
 
 model Listing {
@@ -74,6 +83,7 @@ model Listing {
   ndaAcceptances      ListingNdaAcceptance[]
   enquiries           Enquiry[]
   reviews             Review[]
+  revisions           ListingRevision[]
 
   @@index([sellerId])
   @@index([status, type, locationArea])
@@ -86,8 +96,10 @@ model ListingMedia {
   type      MediaType
   order     Int       @default(0)
   createdAt DateTime  @default(now())
-  s3Key     String?
-  listing   Listing   @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  s3Key             String?
+  listingRevisionId String?
+  listing           Listing   @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  listingRevision   ListingRevision? @relation(fields: [listingRevisionId], references: [id], onDelete: Cascade)
 
   @@index([listingId])
 }
@@ -243,9 +255,34 @@ enum ListingStatus {
   SUBMITTED_FOR_REVIEW
   REJECTED
   PUBLISHED
+  CHANGES_PENDING_REVIEW
+  REJECTED_CHANGES
   PAUSED
   SOLD_LET
   EXPIRED
+}
+
+enum RevisionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model ListingRevision {
+  id              String         @id @default(uuid())
+  listingId       String
+  createdBy       String
+  status          RevisionStatus @default(PENDING)
+  proposedData    Json
+  submittedAt     DateTime       @default(now())
+  reviewedAt      DateTime?
+  reviewedBy      String?
+  rejectionReason String?
+  listing         Listing        @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  user            User           @relation(fields: [createdBy], references: [id])
+  media           ListingMedia[]
+
+  @@index([listingId, status])
 }
 
 enum KycStatus {
@@ -274,4 +311,26 @@ enum SubscriptionStatus {
 enum MediaType {
   PHOTO
   VIDEO
+}
+
+model SellerKycDocument {
+  id               String          @id @default(uuid())
+  sellerProfileId  String
+  documentType     KycDocumentType
+  s3Key            String
+  originalFileName String
+  mimeType         String
+  uploadedAt       DateTime        @default(now())
+  verifiedAt       DateTime?
+  verifiedBy       String?
+  sellerProfile    SellerProfile   @relation(fields: [sellerProfileId], references: [id], onDelete: Cascade)
+
+  @@index([sellerProfileId])
+}
+
+enum KycDocumentType {
+  IDENTITY
+  BUSINESS_PROOF
+  ADDRESS_PROOF
+  OTHER
 }

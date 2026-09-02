@@ -12,24 +12,24 @@ export function AdminHeader() {
   const unreadCount = notifications.filter(n => !n.isRead).length;
 
   return (
-    <header className="h-16 border-b bg-card flex items-center justify-between px-4 lg:px-8">
-      <div className="flex items-center gap-4 lg:hidden">
+    <header className="h-16 border-b bg-card flex items-center justify-between px-4 sticky top-0 z-30">
+      <div className="flex items-center gap-4 md:hidden">
         <Sheet>
           <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="lg:hidden">
+            <Button variant="ghost" size="icon" className="md:hidden">
               <Menu className="w-5 h-5" />
               <span className="sr-only">Toggle Sidebar</span>
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="p-0 w-64">
             <SheetTitle className="sr-only">Admin Navigation</SheetTitle>
-            <AdminSidebar />
+            <AdminSidebar collapsed={false} setCollapsed={() => {}} isMobile={true} />
           </SheetContent>
         </Sheet>
         <span className="font-bold text-lg hidden sm:inline-block">Admin Portal</span>
       </div>
 
-      <div className="flex-1 lg:flex-none max-w-xl px-4 lg:px-0 ml-auto lg:ml-0">
+      <div className="flex-1 md:flex-none max-w-xl px-4 md:px-0 ml-auto md:ml-0">
         <div className="relative">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
@@ -40,7 +40,7 @@ export function AdminHeader() {
         </div>
       </div>
 
-      <div className="flex items-center gap-3 lg:gap-4 ml-4">
+      <div className="flex items-center gap-3 md:gap-4 ml-4">
         <Button variant="ghost" size="icon" className="relative hidden sm:flex" onClick={() => window.location.href = '/admin/notifications'}>
           <Bell className="w-5 h-5 text-muted-foreground" />
           {unreadCount > 0 && (

@@ -114,3 +114,84 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+
+/* BUYER PORTAL - PREMIUM GLASSMORPHISM (LIGHT MODE ONLY) */
+@layer base {
+  /* Scope strictly to light mode using :not(.dark) */
+  html:not(.dark) .buyer-portal .bg-card,
+  html:not(.dark) .buyer-portal .bg-popover,
+  html:not(.dark) .buyer-portal .bg-background,
+  html:not(.dark) .buyer-portal [data-state="open"] > .bg-background {
+    background-color: rgba(255, 255, 255, 0.85) !important;
+    backdrop-filter: blur(16px) saturate(1.2) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(1.2) !important;
+    border: 1px solid #E5E9F2 !important;
+    box-shadow: 0 4px 24px -4px rgba(17, 24, 39, 0.04), 0 2px 8px -2px rgba(17, 24, 39, 0.02) !important;
+  }
+
+  html:not(.dark) .buyer-portal h1,
+  html:not(.dark) .buyer-portal h2,
+  html:not(.dark) .buyer-portal h3,
+  html:not(.dark) .buyer-portal h4,
+  html:not(.dark) .buyer-portal h5,
+  html:not(.dark) .buyer-portal h6 {
+    color: #111827 !important;
+  }
+
+  html:not(.dark) .buyer-portal p,
+  html:not(.dark) .buyer-portal .text-muted-foreground {
+    color: #64748B !important;
+  }
+
+  html:not(.dark) .buyer-portal input,
+  html:not(.dark) .buyer-portal textarea,
+  html:not(.dark) .buyer-portal select,
+  html:not(.dark) .buyer-portal button.bg-background,
+  html:not(.dark) .buyer-portal [role="combobox"] {
+    background-color: rgba(255, 255, 255, 0.6) !important;
+    border: 1px solid #E5E9F2 !important;
+    backdrop-filter: blur(12px) !important;
+    box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.01) !important;
+    color: #111827 !important;
+  }
+  
+  html:not(.dark) .buyer-portal input:focus-visible,
+  html:not(.dark) .buyer-portal textarea:focus-visible,
+  html:not(.dark) .buyer-portal select:focus-visible {
+    border-color: #2563EB !important;
+    background-color: rgba(255, 255, 255, 1) !important;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1) !important;
+  }
+
+  /* Status Colors & Accents */
+  html:not(.dark) .buyer-portal .bg-success,
+  html:not(.dark) .buyer-portal .hover\:bg-success:hover,
+  html:not(.dark) .buyer-portal [class*="bg-success"] {
+    background-color: #DCFCE7 !important;
+    color: #166534 !important;
+    border: 1px solid #BBF7D0 !important;
+  }
+
+  html:not(.dark) .buyer-portal .bg-warning,
+  html:not(.dark) .buyer-portal [class*="bg-warning"] {
+    background-color: #FEF3C7 !important;
+    color: #92400E !important;
+    border: 1px solid #FDE68A !important;
+  }
+
+  html:not(.dark) .buyer-portal .bg-destructive,
+  html:not(.dark) .buyer-portal [class*="bg-destructive"] {
+    background-color: #FEE2E2 !important;
+    color: #991B1B !important;
+    border: 1px solid #FECACA !important;
+  }
+
+  html:not(.dark) .buyer-portal .bg-info,
+  html:not(.dark) .buyer-portal [class*="bg-info"] {
+    background-color: #EFF6FF !important;
+    color: #2563EB !important;
+    border: 1px solid #BFDBFE !important;
+  }
+}

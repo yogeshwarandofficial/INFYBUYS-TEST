@@ -1,11 +1,10 @@
 import { Seo } from '@/components/shared/Seo';
 import { BLOG_POSTS } from '@/constants/marketing';
 import { BLOG_CONTENT } from '@/constants/blogContent';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Mail, MessageSquare, Link as LinkIcon, ArrowRight } from 'lucide-react';
+import { Mail, MessageSquare, Link as LinkIcon } from 'lucide-react';
 import { Link, useParams } from 'react-router';
 
 export default function BlogDetails() {

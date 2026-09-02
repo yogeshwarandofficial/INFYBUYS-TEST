@@ -1,5 +1,4 @@
 import { Seo } from '@/components/shared/Seo';
-import { PageHeader } from '@/components/shared/PageHeader';
 import { CategoryCards } from '@/features/public/CategoryCards';
 
 export default function Categories() {

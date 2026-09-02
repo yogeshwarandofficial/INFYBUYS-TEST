@@ -21,22 +21,22 @@ export function SellerNotificationPreferences({ settings }: SellerNotificationPr
   };
 
   return (
-    <Card>
+    <Card className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl overflow-hidden">
       <CardHeader>
-        <CardTitle className="text-lg">Notification Preferences</CardTitle>
-        <CardDescription>Choose how and when you want to be notified.</CardDescription>
+        <CardTitle className="text-lg text-[#111827]">Notification Preferences</CardTitle>
+        <CardDescription className="text-[#64748B]">Choose how and when you want to be notified.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
 
         <div className="flex items-center justify-between">
           <div className="flex items-start gap-3">
-            <Mail className="w-5 h-5 text-muted-foreground mt-0.5" />
+            <div className="w-10 h-10 rounded-xl bg-[#F6F8FC] flex items-center justify-center shrink-0"><Mail className="w-5 h-5 text-[#94A3B8]" /></div>
             <div className="space-y-0.5">
-              <Label htmlFor="emailNotifications" className="text-base">Email Notifications</Label>
-              <p className="text-sm text-muted-foreground">Receive daily digests and important updates via email.</p>
+              <Label htmlFor="emailNotifications" className="text-[15px] font-semibold text-[#111827]">Email Notifications</Label>
+              <p className="text-[13px] text-[#64748B] mt-0.5">Receive daily digests and important updates via email.</p>
             </div>
           </div>
-          <Switch
+          <Switch className="data-[state=checked]:bg-[#2563EB]"
             id="emailNotifications"
             checked={settings.emailNotifications}
             onCheckedChange={(c) => handleToggle('emailNotifications', c)}
@@ -45,13 +45,13 @@ export function SellerNotificationPreferences({ settings }: SellerNotificationPr
 
         <div className="flex items-center justify-between">
           <div className="flex items-start gap-3">
-            <Bell className="w-5 h-5 text-muted-foreground mt-0.5" />
+            <div className="w-10 h-10 rounded-xl bg-[#F6F8FC] flex items-center justify-center shrink-0"><Bell className="w-5 h-5 text-[#94A3B8]" /></div>
             <div className="space-y-0.5">
-              <Label htmlFor="enquiryNotifications" className="text-base">New Enquiries</Label>
-              <p className="text-sm text-muted-foreground">Get notified when a buyer makes an enquiry on your listing.</p>
+              <Label htmlFor="enquiryNotifications" className="text-[15px] font-semibold text-[#111827]">New Enquiries</Label>
+              <p className="text-[13px] text-[#64748B] mt-0.5">Get notified when a buyer makes an enquiry on your listing.</p>
             </div>
           </div>
-          <Switch
+          <Switch className="data-[state=checked]:bg-[#2563EB]"
             id="enquiryNotifications"
             checked={settings.enquiryNotifications}
             onCheckedChange={(c) => handleToggle('enquiryNotifications', c)}
@@ -60,13 +60,13 @@ export function SellerNotificationPreferences({ settings }: SellerNotificationPr
 
         <div className="flex items-center justify-between">
           <div className="flex items-start gap-3">
-            <MessageSquare className="w-5 h-5 text-muted-foreground mt-0.5" />
+            <div className="w-10 h-10 rounded-xl bg-[#F6F8FC] flex items-center justify-center shrink-0"><MessageSquare className="w-5 h-5 text-[#94A3B8]" /></div>
             <div className="space-y-0.5">
-              <Label htmlFor="messageNotifications" className="text-base">Direct Messages</Label>
-              <p className="text-sm text-muted-foreground">Get notified when you receive a direct message.</p>
+              <Label htmlFor="messageNotifications" className="text-[15px] font-semibold text-[#111827]">Direct Messages</Label>
+              <p className="text-[13px] text-[#64748B] mt-0.5">Get notified when you receive a direct message.</p>
             </div>
           </div>
-          <Switch
+          <Switch className="data-[state=checked]:bg-[#2563EB]"
             id="messageNotifications"
             checked={settings.messageNotifications}
             onCheckedChange={(c) => handleToggle('messageNotifications', c)}
@@ -75,13 +75,13 @@ export function SellerNotificationPreferences({ settings }: SellerNotificationPr
 
         <div className="flex items-center justify-between">
           <div className="flex items-start gap-3">
-            <ListPlus className="w-5 h-5 text-muted-foreground mt-0.5" />
+            <div className="w-10 h-10 rounded-xl bg-[#F6F8FC] flex items-center justify-center shrink-0"><ListPlus className="w-5 h-5 text-[#94A3B8]" /></div>
             <div className="space-y-0.5">
-              <Label htmlFor="listingNotifications" className="text-base">Listing Updates</Label>
-              <p className="text-sm text-muted-foreground">Get notified about the status of your listings (approval, expiry).</p>
+              <Label htmlFor="listingNotifications" className="text-[15px] font-semibold text-[#111827]">Listing Updates</Label>
+              <p className="text-[13px] text-[#64748B] mt-0.5">Get notified about the status of your listings (approval, expiry).</p>
             </div>
           </div>
-          <Switch
+          <Switch className="data-[state=checked]:bg-[#2563EB]"
             id="listingNotifications"
             checked={settings.listingNotifications}
             onCheckedChange={(c) => handleToggle('listingNotifications', c)}
@@ -90,13 +90,13 @@ export function SellerNotificationPreferences({ settings }: SellerNotificationPr
 
         <div className="flex items-center justify-between">
           <div className="flex items-start gap-3">
-            <Smartphone className="w-5 h-5 text-muted-foreground mt-0.5" />
+            <div className="w-10 h-10 rounded-xl bg-[#F6F8FC] flex items-center justify-center shrink-0"><Smartphone className="w-5 h-5 text-[#94A3B8]" /></div>
             <div className="space-y-0.5">
-              <Label htmlFor="pushNotifications" className="text-base">Push Notifications</Label>
-              <p className="text-sm text-muted-foreground">Receive push notifications in your browser.</p>
+              <Label htmlFor="pushNotifications" className="text-[15px] font-semibold text-[#111827]">Push Notifications</Label>
+              <p className="text-[13px] text-[#64748B] mt-0.5">Receive push notifications in your browser.</p>
             </div>
           </div>
-          <Switch
+          <Switch className="data-[state=checked]:bg-[#2563EB]"
             id="pushNotifications"
             checked={settings.pushNotifications}
             onCheckedChange={(c) => handleToggle('pushNotifications', c)}
@@ -105,13 +105,13 @@ export function SellerNotificationPreferences({ settings }: SellerNotificationPr
 
         <div className="flex items-center justify-between">
           <div className="flex items-start gap-3">
-            <Megaphone className="w-5 h-5 text-muted-foreground mt-0.5" />
+            <div className="w-10 h-10 rounded-xl bg-[#F6F8FC] flex items-center justify-center shrink-0"><Megaphone className="w-5 h-5 text-[#94A3B8]" /></div>
             <div className="space-y-0.5">
-              <Label htmlFor="marketingEmails" className="text-base">Marketing & Promos</Label>
-              <p className="text-sm text-muted-foreground">Receive promotional emails and tips for sellers.</p>
+              <Label htmlFor="marketingEmails" className="text-[15px] font-semibold text-[#111827]">Marketing & Promos</Label>
+              <p className="text-[13px] text-[#64748B] mt-0.5">Receive promotional emails and tips for sellers.</p>
             </div>
           </div>
-          <Switch
+          <Switch className="data-[state=checked]:bg-[#2563EB]"
             id="marketingEmails"
             checked={settings.marketingEmails}
             onCheckedChange={(c) => handleToggle('marketingEmails', c)}

@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router';
 import { ArrowLeft, Download, FileText, Building2 } from 'lucide-react';
 import { Seo } from '@/components/shared/Seo';
-import { PageHeader } from '@/components/shared/PageHeader';
+import { BuyerPageHeader } from '@/components/buyer/BuyerPageHeader';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useBuyerStore } from '@/store/useBuyerStore';
@@ -35,7 +35,7 @@ export default function InvoiceDetails() {
     <>
       <Seo title={`Invoice ${invoice.invoiceNumber}`} />
 
-      <div className="max-w-4xl mx-auto space-y-8 pb-12">
+      <div className="w-full space-y-8">
         <Button variant="ghost" asChild className="mb-4">
           <Link to="/buyer/billing">
             <ArrowLeft className="w-4 h-4 mr-2" /> Back to Billing
@@ -43,7 +43,7 @@ export default function InvoiceDetails() {
         </Button>
 
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <PageHeader
+          <BuyerPageHeader
             title="Invoice Details"
             description="View details of your past transaction."
             className="mb-0"

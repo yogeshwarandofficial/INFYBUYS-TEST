@@ -13,7 +13,7 @@ export function SellerHeader() {
   const unreadNotificationsCount = notifications.filter((n) => !n.isRead).length;
 
   return (
-    <header className="h-16 border-b bg-card flex items-center justify-between px-4 sticky top-0 z-30">
+    <header className="h-16 border-b border-[#E5E9F2] bg-white/90 backdrop-blur-md flex items-center justify-between px-4 sticky top-0 z-30 shadow-sm">
       <div className="flex items-center gap-4 flex-1">
         <Sheet>
           <SheetTrigger asChild>
@@ -34,8 +34,8 @@ export function SellerHeader() {
 
       <div className="flex items-center gap-2 sm:gap-4">
         <div className="relative hidden sm:block w-64">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input type="search" placeholder="Search..." className="pl-9 bg-muted/50 w-full" />
+          <Search className="absolute left-3 top-2.5 h-4 w-4 text-[#94A3B8]" />
+          <Input type="search" placeholder="Search..." className="pl-10 bg-white/50 border border-[#E5E9F2] rounded-xl focus-visible:ring-1 focus-visible:ring-blue-500 w-full shadow-sm text-sm" />
         </div>
 
         <Button variant="ghost" size="icon" className="sm:hidden" aria-label="Search">
