@@ -96,12 +96,7 @@ export default function SellerCreateListing() {
       navigate(`/seller/listings/${id}`);
     } catch (error: any) {
       console.error('Failed to submit listing:', error);
-      if (error?.response?.data?.code === 'KYC_REQUIRED' || error?.message?.includes('KYC')) {
-        alert('KYC verification required\n\nYou need to complete business verification before submitting this listing.');
-        navigate('/seller/kyc');
-        return;
-      }
-      alert(`Failed to submit: ${error?.response?.data?.message || error?.message || 'Unknown error'}`);
+      alert(`Failed to submit: ${error?.message || 'Unknown error'}`);
     } finally {
       setIsSaving(false);
     }

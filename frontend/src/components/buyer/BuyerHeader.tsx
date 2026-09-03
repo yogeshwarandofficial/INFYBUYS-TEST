@@ -12,7 +12,7 @@ export function BuyerHeader() {
   const { unreadMessageCount } = useBuyerStore();
 
   return (
-    <header className="h-16 border-b bg-card flex items-center justify-between px-4 sticky top-0 z-30">
+    <header className="h-16 border-b border-[#E5E9F2] bg-white/80 backdrop-blur-md shadow-sm flex items-center justify-between px-4 sticky top-0 z-30">
       <div className="flex items-center gap-4 flex-1">
         <Sheet>
           <SheetTrigger asChild>
@@ -31,9 +31,9 @@ export function BuyerHeader() {
       </div>
 
       <div className="flex items-center gap-2 sm:gap-4">
-        <div className="relative hidden sm:block w-64">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input type="search" placeholder="Search businesses..." className="pl-9 bg-muted/50 w-full" />
+        <div className="relative hidden sm:block w-72">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#64748B]" />
+          <Input type="search" placeholder="Search businesses..." className="pl-9 bg-white/80 backdrop-blur-md border border-gray-200 shadow-sm rounded-lg h-10 w-full focus-visible:ring-[#2563EB]" />
         </div>
 
         <Button variant="ghost" size="icon" className="sm:hidden" aria-label="Search">

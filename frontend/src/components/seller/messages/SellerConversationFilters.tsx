@@ -44,14 +44,14 @@ export function SellerConversationFilters({
   hasActiveFilters,
 }: SellerConversationFiltersProps) {
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <div className="space-y-2">
-        <Label htmlFor="conv-status-filter">Status</Label>
+        <Label className="text-[#111827] font-semibold">Status</Label>
         <Select
           value={filters.status}
           onValueChange={(v) => updateFilter('status', v as SellerConversationStatusFilter)}
         >
-          <SelectTrigger id="conv-status-filter" aria-label="Filter by status">
+          <SelectTrigger id="conv-status-filter" aria-label="Filter by status" className="bg-white border-[#E5E9F2] rounded-xl focus:ring-blue-500 shadow-sm">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -65,7 +65,7 @@ export function SellerConversationFilters({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="conv-sort">Sort By</Label>
+        <Label className="text-[#111827] font-semibold">Sort By</Label>
         <Select
           value={filters.sort}
           onValueChange={(v) => updateFilter('sort', v as SellerConversationSort)}
@@ -85,8 +85,8 @@ export function SellerConversationFilters({
 
       {hasActiveFilters && (
         <>
-          <Separator />
-          <Button variant="outline" className="w-full" onClick={resetFilters}>
+          <Separator className="bg-[#E5E9F2]" />
+          <Button variant="outline" className="w-full bg-white hover:bg-slate-50 border-[#E5E9F2] rounded-xl shadow-sm text-[#111827]" onClick={resetFilters}>
             <X className="w-4 h-4 mr-2" aria-hidden="true" />
             Clear Filters
           </Button>

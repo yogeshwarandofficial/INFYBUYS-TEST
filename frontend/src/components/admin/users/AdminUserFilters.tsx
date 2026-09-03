@@ -22,10 +22,10 @@ function FilterContent({ filters, onFilterChange, sorting, onSortingChange, onRe
   return (
     <div className="space-y-6">
       <div className="space-y-4">
-        <h4 className="font-medium text-sm text-muted-foreground uppercase tracking-wider">Filters</h4>
+        <h4 className="font-semibold text-[13px] text-[#64748B] uppercase tracking-wider">Filters</h4>
 
         <div className="space-y-2">
-          <Label htmlFor="role-filter">Role</Label>
+          <Label htmlFor="role-filter" className="text-[#334155] font-medium">Role</Label>
           <Select
             value={filters.role || 'all'}
             onValueChange={(val) => onFilterChange({ role: val as any })}
@@ -43,7 +43,7 @@ function FilterContent({ filters, onFilterChange, sorting, onSortingChange, onRe
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="status-filter">Status</Label>
+          <Label htmlFor="status-filter" className="text-[#334155] font-medium">Status</Label>
           <Select
             value={filters.status || 'all'}
             onValueChange={(val) => onFilterChange({ status: val as any })}
@@ -63,7 +63,7 @@ function FilterContent({ filters, onFilterChange, sorting, onSortingChange, onRe
 
         <div className="space-y-4 pt-2">
           <div className="flex items-center justify-between">
-            <Label htmlFor="email-verified-filter" className="cursor-pointer">Email Verified</Label>
+            <Label htmlFor="email-verified-filter" className="cursor-pointer text-[#334155] font-medium">Email Verified</Label>
             <Switch
               id="email-verified-filter"
               checked={filters.emailVerified === true}
@@ -72,7 +72,7 @@ function FilterContent({ filters, onFilterChange, sorting, onSortingChange, onRe
             />
           </div>
           <div className="flex items-center justify-between">
-            <Label htmlFor="phone-verified-filter" className="cursor-pointer">Phone Verified</Label>
+            <Label htmlFor="phone-verified-filter" className="cursor-pointer text-[#334155] font-medium">Phone Verified</Label>
             <Switch
               id="phone-verified-filter"
               checked={filters.phoneVerified === true}
@@ -84,7 +84,7 @@ function FilterContent({ filters, onFilterChange, sorting, onSortingChange, onRe
       </div>
 
       <div className="space-y-4 pt-4 border-t">
-        <h4 className="font-medium text-sm text-muted-foreground uppercase tracking-wider">Sort By</h4>
+        <h4 className="font-semibold text-[13px] text-[#64748B] uppercase tracking-wider">Sort By</h4>
 
         <div className="space-y-2">
           <Select
@@ -106,9 +106,7 @@ function FilterContent({ filters, onFilterChange, sorting, onSortingChange, onRe
       </div>
 
       <div className="pt-4 border-t">
-        <Button
-          variant="outline"
-          className="w-full"
+        <Button variant="outline" className="w-full bg-white hover:bg-[#F8FAFC] border-[#E5E9F2] text-[#334155]"
           onClick={onReset}
         >
           <X className="mr-2 h-4 w-4" />
@@ -151,7 +149,7 @@ export function AdminUserFilters(props: AdminUserFiltersProps) {
   }
 
   return (
-    <div className="w-[280px] shrink-0">
+    <div className="w-[280px] shrink-0 bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl p-5">
       <FilterContent {...props} />
     </div>
   );

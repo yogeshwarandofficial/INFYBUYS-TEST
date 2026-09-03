@@ -9,16 +9,16 @@ interface SellerSocialLinksCardProps {
 
 export function SellerSocialLinksCard({ profile }: SellerSocialLinksCardProps) {
   return (
-    <Card className="h-full">
+    <Card className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl overflow-hidden">
       <CardHeader>
-        <CardTitle className="text-lg">Online Presence</CardTitle>
+        <CardTitle className="text-lg text-[#111827]">Online Presence</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {profile.website ? (
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center shrink-0">
-                <Globe className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
+              <div className="w-8 h-8 rounded-full bg-[#F6F8FC] flex items-center justify-center shrink-0">
+                <Globe className="w-4 h-4 text-[#64748B]" aria-hidden="true" />
               </div>
               <div>
                 <p className="text-sm font-medium">Website</p>
@@ -37,7 +37,7 @@ export function SellerSocialLinksCard({ profile }: SellerSocialLinksCardProps) {
             </Button>
           </div>
         ) : (
-          <div className="flex items-center gap-3 text-muted-foreground">
+          <div className="flex items-center gap-3 text-[#64748B]">
             <Globe className="w-4 h-4 shrink-0" aria-hidden="true" />
             <span className="text-sm">No website provided</span>
           </div>
@@ -66,7 +66,7 @@ export function SellerSocialLinksCard({ profile }: SellerSocialLinksCardProps) {
             </Button>
           </div>
         ) : (
-          <div className="flex items-center gap-3 text-muted-foreground">
+          <div className="flex items-center gap-3 text-[#64748B]">
             <LinkIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
             <span className="text-sm">No LinkedIn provided</span>
           </div>

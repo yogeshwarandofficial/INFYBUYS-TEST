@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router';
 import { apiClient } from '@/services/apiClient';
 import { useBuyerStore } from '@/store/useBuyerStore';
@@ -12,7 +12,6 @@ export interface SearchFilters {
   minRevenue: number;
   status: string;
   location: string;
-  listingType: string;
 }
 
 const defaultFilters: SearchFilters = {
@@ -23,17 +22,29 @@ const defaultFilters: SearchFilters = {
   minRevenue: 0,
   status: 'all',
   location: 'all',
-  listingType: 'all',
 };
 
 export function useListingSearch(itemsPerPage = 12) {
   const { addSearchHistory } = useBuyerStore();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [listings, setListings] = useState<Listing[]>([]);
-  const [totalResults, setTotalResults] = useState(0);
-  const [totalPages, setTotalPages] = useState(1);
+  const [allListings, setAllListings] = useState<Listing[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchListings = async () => {
+      try {
+        setIsLoading(true);
+        const data = await apiClient.get<{ data: Listing[] }>('/listings');
+        setAllListings(data.data);
+      } catch (err: any) {
+        setError(err.message || 'Failed to fetch listings');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchListings();
+  }, []);
 
   // Initialize from URL params or default
   const [filters, setFilters] = useState<SearchFilters>(() => {
@@ -45,7 +56,6 @@ export function useListingSearch(itemsPerPage = 12) {
       minRevenue: Number(searchParams.get('minR')) || defaultFilters.minRevenue,
       status: searchParams.get('st') || defaultFilters.status,
       location: searchParams.get('loc') || defaultFilters.location,
-      listingType: searchParams.get('type') || defaultFilters.listingType,
     };
   });
 
@@ -56,60 +66,17 @@ export function useListingSearch(itemsPerPage = 12) {
   useEffect(() => {
     const params = new URLSearchParams();
     if (filters.query) params.set('q', filters.query);
-    if (filters.category && filters.category !== 'all') params.set('cat', filters.category);
+    if (filters.category !== 'all') params.set('cat', filters.category);
     if (filters.minPrice > 0) params.set('minP', filters.minPrice.toString());
     if (filters.maxPrice > 0) params.set('maxP', filters.maxPrice.toString());
     if (filters.minRevenue > 0) params.set('minR', filters.minRevenue.toString());
-    if (filters.status && filters.status !== 'all') params.set('st', filters.status);
-    if (filters.location && filters.location !== 'all') params.set('loc', filters.location);
-    if (filters.listingType && filters.listingType !== 'all') params.set('type', filters.listingType);
-    if (sortBy && sortBy !== 'newest') params.set('sort', sortBy);
+    if (filters.status !== 'all') params.set('st', filters.status);
+    if (filters.location !== 'all') params.set('loc', filters.location);
+    if (sortBy !== 'newest') params.set('sort', sortBy);
     if (currentPage > 1) params.set('page', currentPage.toString());
 
     setSearchParams(params, { replace: true });
   }, [filters, sortBy, currentPage, setSearchParams]);
-
-  // Fetch listings from backend using current filters
-  useEffect(() => {
-    const fetchListings = async () => {
-      try {
-        setIsLoading(true);
-        
-        const params = new URLSearchParams();
-        if (filters.query) params.set('search', filters.query);
-        if (filters.category && filters.category !== 'all') params.set('category', filters.category);
-        if (filters.minPrice > 0) params.set('minPrice', filters.minPrice.toString());
-        if (filters.maxPrice > 0) params.set('maxPrice', filters.maxPrice.toString());
-        if (filters.minRevenue > 0) params.set('minTurnover', filters.minRevenue.toString());
-        if (filters.location && filters.location !== 'all') params.set('location', filters.location);
-        if (filters.listingType && filters.listingType !== 'all') params.set('listingType', filters.listingType);
-        
-        let apiSort = sortBy;
-        if (sortBy === 'price-asc') apiSort = 'price_low';
-        else if (sortBy === 'price-desc') apiSort = 'price_high';
-        params.set('sort', apiSort);
-        
-        params.set('page', currentPage.toString());
-        params.set('limit', itemsPerPage.toString());
-
-        const data = await apiClient.get<{ data: Listing[], meta: { total: number, totalPages: number } }>(`/listings?${params.toString()}`);
-        setListings(data.data || []);
-        setTotalResults(data.meta?.total || 0);
-        setTotalPages(data.meta?.totalPages || 1);
-      } catch (err: any) {
-        setError(err.message || 'Failed to fetch listings');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    // Debounce slightly to prevent rapid API calls while typing
-    const timeout = setTimeout(() => {
-      fetchListings();
-    }, 300);
-
-    return () => clearTimeout(timeout);
-  }, [filters, sortBy, currentPage, itemsPerPage]);
 
   const updateFilter = <K extends keyof SearchFilters>(key: K, value: SearchFilters[K]) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
@@ -117,6 +84,7 @@ export function useListingSearch(itemsPerPage = 12) {
 
     // If it's a search query, save to history
     if (key === 'query' && value && typeof value === 'string') {
+      // Debouncing could be added here, but for mock purposes we'll just add it
       const timeout = setTimeout(() => {
         addSearchHistory(value);
       }, 1000);
@@ -127,8 +95,71 @@ export function useListingSearch(itemsPerPage = 12) {
   const clearFilters = () => {
     setFilters(defaultFilters);
     setCurrentPage(1);
-    setSortBy('newest');
   };
+
+  const filteredListings = useMemo(() => {
+    let result = [...allListings];
+
+    // Query
+    if (filters.query) {
+      const q = filters.query.toLowerCase();
+      result = result.filter(
+        (l) =>
+          l.title.toLowerCase().includes(q) ||
+          l.description.toLowerCase().includes(q) ||
+          l.category.toLowerCase().includes(q) ||
+          l.tags?.some((t: string) => t.toLowerCase().includes(q))
+      );
+    }
+
+    // Category
+    if (filters.category && filters.category !== 'all') {
+      result = result.filter((l) => l.category.toLowerCase() === filters.category.toLowerCase());
+    }
+
+    // Price
+    if (filters.minPrice > 0) {
+      result = result.filter((l) => Number(l.priceOrRent) >= filters.minPrice);
+    }
+    if (filters.maxPrice > 0) {
+      result = result.filter((l) => Number(l.priceOrRent) <= filters.maxPrice);
+    }
+
+    // Revenue
+    if (filters.minRevenue > 0) {
+      result = result.filter((l) => (Number(l.turnover) || 0) >= filters.minRevenue);
+    }
+
+    // Location
+    if (filters.location && filters.location !== 'all') {
+      result = result.filter((l) => l.locationArea?.toLowerCase().includes(filters.location.toLowerCase()));
+    }
+
+    // Sort
+    switch (sortBy) {
+      case 'price-asc':
+        result.sort((a, b) => Number(a.priceOrRent) - Number(b.priceOrRent));
+        break;
+      case 'price-desc':
+        result.sort((a, b) => Number(b.priceOrRent) - Number(a.priceOrRent));
+        break;
+      case 'revenue-desc':
+        result.sort((a, b) => (Number(b.turnover) || 0) - (Number(a.turnover) || 0));
+        break;
+      case 'newest':
+      default:
+        // Mock data doesn't have reliable dates, we assume original array is "newest"
+        break;
+    }
+
+    return result;
+  }, [filters, sortBy, allListings]);
+
+  const totalPages = Math.ceil(filteredListings.length / itemsPerPage);
+  const paginatedListings = filteredListings.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   return {
     filters,
@@ -139,8 +170,8 @@ export function useListingSearch(itemsPerPage = 12) {
     currentPage,
     setCurrentPage,
     totalPages,
-    totalResults,
-    listings,
+    totalResults: filteredListings.length,
+    listings: paginatedListings,
     isLoading,
     error,
   };

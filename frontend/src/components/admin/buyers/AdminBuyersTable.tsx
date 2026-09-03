@@ -19,9 +19,9 @@ export function AdminBuyersTable({ buyers }: AdminBuyersTableProps) {
   };
 
   return (
-    <div className="w-full overflow-auto border rounded-md bg-card">
+    <div className="w-full overflow-auto rounded-2xl border border-[#E5E9F2] bg-white/85 backdrop-blur-md shadow-sm shadow-blue-900/5">
       <table className="w-full text-sm text-left">
-        <thead className="text-xs text-muted-foreground uppercase bg-muted/50 border-b">
+        <thead className="text-[12px] font-semibold text-[#64748B] uppercase bg-[#F8FAFC] border-b border-[#E5E9F2]">
           <tr>
             <th className="px-4 py-3 font-medium whitespace-nowrap">Buyer</th>
             <th className="px-4 py-3 font-medium whitespace-nowrap">Company & Location</th>
@@ -32,9 +32,9 @@ export function AdminBuyersTable({ buyers }: AdminBuyersTableProps) {
             <th className="px-4 py-3 font-medium whitespace-nowrap text-right">Actions</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-border">
+        <tbody className="divide-y divide-[#E5E9F2]">
           {buyers.map((buyer) => (
-            <tr key={buyer.id} className="hover:bg-muted/50 transition-colors">
+            <tr key={buyer.id} className="hover:bg-[#F8FAFC]/50 transition-colors">
               <td className="px-4 py-3">
                 <div className="flex items-center gap-3">
                   <Avatar className="h-9 w-9">
@@ -43,7 +43,7 @@ export function AdminBuyersTable({ buyers }: AdminBuyersTableProps) {
                   </Avatar>
                   <div className="flex flex-col">
                     <span className="font-semibold">{buyer.name}</span>
-                    <span className="text-xs text-muted-foreground">{buyer.email}</span>
+                    <span className="text-xs text-[#64748B]">{buyer.email}</span>
                   </div>
                 </div>
               </td>
@@ -51,14 +51,14 @@ export function AdminBuyersTable({ buyers }: AdminBuyersTableProps) {
                 <div className="flex flex-col gap-1">
                   {buyer.company ? (
                     <div className="flex items-center gap-1.5 text-xs">
-                      <Building2 className="h-3.5 w-3.5 text-muted-foreground" />
+                      <Building2 className="h-3.5 w-3.5 text-[#64748B]" />
                       <span>{buyer.company}</span>
                     </div>
                   ) : (
-                    <span className="text-xs text-muted-foreground italic">None specified</span>
+                    <span className="text-xs text-[#64748B] italic">None specified</span>
                   )}
                   {buyer.location && (
-                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-1.5 text-xs text-[#64748B]">
                       <MapPin className="h-3.5 w-3.5" />
                       <span>{buyer.location}</span>
                     </div>
@@ -75,11 +75,11 @@ export function AdminBuyersTable({ buyers }: AdminBuyersTableProps) {
                 <div className="flex items-center justify-center gap-4">
                   <div className="flex flex-col items-center">
                     <span className="font-medium text-xs">{buyer.totalEnquiries}</span>
-                    <span className="text-[10px] text-muted-foreground flex items-center gap-1"><Eye className="h-2.5 w-2.5" /> Enq</span>
+                    <span className="text-[10px] text-[#64748B] flex items-center gap-1"><Eye className="h-2.5 w-2.5" /> Enq</span>
                   </div>
                   <div className="flex flex-col items-center">
                     <span className="font-medium text-xs">{buyer.totalMessages}</span>
-                    <span className="text-[10px] text-muted-foreground flex items-center gap-1"><MessageSquare className="h-2.5 w-2.5" /> Msg</span>
+                    <span className="text-[10px] text-[#64748B] flex items-center gap-1"><MessageSquare className="h-2.5 w-2.5" /> Msg</span>
                   </div>
                 </div>
               </td>
@@ -87,7 +87,7 @@ export function AdminBuyersTable({ buyers }: AdminBuyersTableProps) {
                 <div className="flex flex-col gap-1 text-xs">
                   <span>{formatDate(buyer.joinedAt)}</span>
                   {buyer.lastActiveAt && (
-                    <span className="text-muted-foreground">Active: {formatDate(buyer.lastActiveAt)}</span>
+                    <span className="text-[#64748B]">Active: {formatDate(buyer.lastActiveAt)}</span>
                   )}
                 </div>
               </td>

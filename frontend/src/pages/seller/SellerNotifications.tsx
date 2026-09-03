@@ -35,11 +35,11 @@ export default function SellerNotifications() {
     <>
       <Seo title="Notifications - Seller Portal | InfyBuys" />
 
-      <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-6 sm:space-y-8">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Notifications</h1>
-            <p className="text-muted-foreground mt-1">
+      <div className="p-4 sm:p-6 space-y-6 max-w-7xl mx-auto pb-12">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 pt-2">
+          <div className="space-y-1">
+            <h1 className="text-3xl font-bold tracking-tight text-[#111827]">Notifications</h1>
+            <p className="text-[15px] text-[#64748B]">
               Manage your alerts and stay updated on your business activity.
             </p>
           </div>
@@ -78,28 +78,31 @@ export default function SellerNotifications() {
         </div>
 
         {/* Main Layout */}
-        <div className="flex flex-col lg:flex-row gap-6 items-start">
+        <div className="flex gap-8 mt-8 items-start">
           {/* Desktop Sidebar Filters */}
-          <aside className="hidden lg:block w-64 shrink-0 sticky top-24">
+          <aside className="hidden lg:block w-[280px] shrink-0 sticky top-24">
+            <div className="bg-white/85 backdrop-blur-md rounded-2xl border border-[#E5E9F2] shadow-sm shadow-blue-900/5 p-6">
+              <h2 className="font-bold text-base text-[#111827] mb-6">Filters</h2>
             <SellerNotificationFilters
               filters={filters}
               updateFilter={updateFilter}
               resetFilters={resetFilters}
               hasActiveFilters={hasActiveFilters}
             />
+          </div>
           </aside>
 
           {/* List Section */}
           <div className="flex-1 min-w-0 w-full space-y-4">
             {/* Search and Mobile Filters */}
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col sm:flex-row gap-4">
               <SellerNotificationSearch
                 value={filters.search}
                 onChange={(v) => updateFilter('search', v)}
               />
               <Sheet>
                 <SheetTrigger asChild>
-                  <Button variant="outline" className="lg:hidden w-full sm:w-auto">
+                  <Button variant="outline" className="relative lg:hidden w-full sm:w-auto bg-white/60 border-[#E5E9F2] rounded-xl shadow-sm h-10 text-[#111827]">
                     <Filter className="w-4 h-4 mr-2" />
                     Filters
                     {hasActiveFilters && (

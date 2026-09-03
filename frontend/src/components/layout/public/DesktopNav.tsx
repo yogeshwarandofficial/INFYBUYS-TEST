@@ -12,12 +12,16 @@ import { CATEGORIES } from '@/constants/marketing';
 import { cn } from '@/lib/utils';
 import React from 'react';
 
+const navLinkClasses = "relative text-[17px] font-bold text-slate-800 bg-transparent hover:bg-transparent hover:text-brand-blue data-[state=open]:!bg-transparent data-[state=open]:text-brand-blue px-4 focus:!bg-transparent focus:text-brand-blue after:absolute after:bottom-[8px] after:left-4 after:right-4 after:h-[2px] after:origin-center after:scale-x-0 hover:after:scale-x-100 data-[state=open]:after:scale-x-100 focus:after:scale-x-100 after:transition-transform after:duration-300 after:bg-brand-blue";
+
 export function DesktopNav() {
   return (
-    <NavigationMenu>
+    <NavigationMenu className="[&_[data-slot=navigation-menu-viewport]]:!bg-white">
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuTrigger className="uppercase tracking-widest text-xs font-semibold bg-transparent hover:bg-transparent hover:text-brand-blue data-[state=open]:bg-transparent data-[state=open]:text-brand-blue text-white/90">Browse Categories</NavigationMenuTrigger>
+          <NavigationMenuTrigger className={cn(navigationMenuTriggerStyle(), navLinkClasses)}>
+            Browse Categories
+          </NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
               {CATEGORIES.map((category) => (
@@ -33,17 +37,17 @@ export function DesktopNav() {
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), "uppercase tracking-widest text-xs font-semibold bg-transparent hover:bg-transparent hover:text-brand-blue text-white/90")}>
+          <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), navLinkClasses)}>
             <Link to="/pricing">Pricing</Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), "uppercase tracking-widest text-xs font-semibold bg-transparent hover:bg-transparent hover:text-brand-blue text-white/90")}>
+          <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), navLinkClasses)}>
             <Link to="/about">About Us</Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), "uppercase tracking-widest text-xs font-semibold bg-transparent hover:bg-transparent hover:text-brand-blue text-white/90")}>
+          <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), navLinkClasses)}>
             <Link to="/contact">Contact</Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
@@ -63,13 +67,13 @@ const ListItem = React.forwardRef<
           ref={ref}
           to={to}
           className={cn(
-            'block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
+            'block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-slate-100 hover:text-slate-900 focus:bg-slate-100 focus:text-slate-900',
             className
           )}
           {...props}
         >
-          <div className="text-sm font-medium leading-none">{title}</div>
-          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+          <div className="text-sm font-medium leading-none text-slate-900">{title}</div>
+          <p className="line-clamp-2 text-sm leading-snug text-slate-600">
             {children}
           </p>
         </Link>

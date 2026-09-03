@@ -1,12 +1,10 @@
 import { Seo } from '@/components/shared/Seo';
-import { PageHeader } from '@/components/shared/PageHeader';
 import { useSellerStore } from '@/store/useSellerStore';
 import { useUserStore } from '@/store/useUserStore';
-import { useSellerKyc } from '@/hooks/useSellerKyc';
 import { SellerStatCard } from '@/components/seller/dashboard/SellerStatCard';
 import { SellerRecentActivity } from '@/components/seller/dashboard/SellerRecentActivity';
 import { SellerQuickActions } from '@/components/seller/dashboard/SellerQuickActions';
-import { Building2, Activity, Clock, DollarSign, Mail, MessageSquare, BarChart3, AlertTriangle, ShieldCheck } from 'lucide-react';
+import { Building2, Activity, Clock, DollarSign, Mail, MessageSquare, BarChart3 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router';
@@ -27,88 +25,39 @@ export default function SellerDashboard() {
   // Live messaging KPIs derived from conversations array
   const unreadConversations = conversations.filter((c) => c.unreadCount > 0).length;
 
-  const { data: kycData } = useSellerKyc();
-
   return (
     <>
       <Seo title="Seller Dashboard" description="Manage your business listings, enquiries, and communications." />
 
       <div className="p-4 sm:p-6 lg:p-8 space-y-8 max-w-7xl mx-auto pb-12">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <PageHeader
-            title={`Welcome back, ${user?.name || 'Seller'}`}
-            description="Here's what's happening with your listings today."
-            breadcrumbs={[{ label: 'Dashboard' }]}
-            className="mb-0"
-          />
-          <div className="flex items-center gap-4">
-            <Button variant="outline" size="sm" asChild className="hidden sm:flex">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8 pt-2">
+          <div className="space-y-1">
+            <h1 className="text-3xl font-bold tracking-tight text-[#111827]">
+              Welcome back, {user?.name || 'Seller'}
+            </h1>
+            <p className="text-[15px] text-[#64748B]">
+              Here's what's happening with your listings today.
+            </p>
+          </div>
+          
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+            <div className="flex items-center gap-4 bg-white/60 backdrop-blur-md px-5 py-3.5 rounded-xl border border-[#E5E9F2] shadow-sm">
+              <div className="space-y-1.5 w-40 sm:w-48">
+                <div className="flex justify-between text-[13px] font-semibold text-[#111827]">
+                  <span>Profile setup</span>
+                  <span className="text-[#2563EB]">{stats.profileCompletion}%</span>
+                </div>
+                <Progress value={stats.profileCompletion} className="h-1.5 bg-slate-100 [&>div]:bg-[#2563EB]" />
+              </div>
+            </div>
+            <Button asChild className="hidden sm:flex bg-white/80 border border-[#E5E9F2] text-[#111827] rounded-xl shadow-sm hover:bg-slate-50 hover:shadow-md transition-all h-12 px-5 font-medium" variant="outline">
               <Link to="/seller/analytics">
-                <BarChart3 className="w-4 h-4 mr-2" />
+                <BarChart3 className="w-4 h-4 mr-2 text-[#2563EB]" />
                 View Analytics
               </Link>
             </Button>
-            <div className="flex items-center gap-4 bg-card px-4 py-3 rounded-lg border">
-              <div className="space-y-1 w-32 sm:w-48">
-                <div className="flex justify-between text-xs font-medium">
-                  <span>Profile setup</span>
-                  <span>{stats.profileCompletion}%</span>
-                </div>
-                <Progress value={stats.profileCompletion} className="h-2" />
-              </div>
-            </div>
           </div>
         </div>
-
-        {kycData?.status === 'NOT_STARTED' && (
-          <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg flex justify-between items-center">
-            <div className="flex items-center gap-3">
-              <AlertTriangle className="w-5 h-5 text-red-600" />
-              <div>
-                <h3 className="text-red-800 font-medium">KYC Verification Required</h3>
-                <p className="text-red-700 text-sm">Complete your business verification before submitting listings.</p>
-              </div>
-            </div>
-            <Button asChild variant="default" className="bg-red-600 hover:bg-red-700 text-white">
-              <Link to="/seller/kyc">Start Verification</Link>
-            </Button>
-          </div>
-        )}
-
-        {kycData?.status === 'PENDING' && (
-          <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg flex items-center gap-3">
-            <AlertTriangle className="w-5 h-5 text-yellow-600" />
-            <div>
-              <h3 className="text-yellow-800 font-medium">KYC Verification Pending</h3>
-              <p className="text-yellow-700 text-sm">Our team is reviewing your business information.</p>
-            </div>
-          </div>
-        )}
-
-        {kycData?.status === 'REJECTED' && (
-          <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg flex justify-between items-center">
-            <div className="flex items-center gap-3">
-              <AlertTriangle className="w-5 h-5 text-red-600" />
-              <div>
-                <h3 className="text-red-800 font-medium">KYC Verification Rejected</h3>
-                <p className="text-red-700 text-sm">Reason: {kycData.rejectionReason}. Please update your info.</p>
-              </div>
-            </div>
-            <Button asChild variant="default" className="bg-red-600 hover:bg-red-700 text-white">
-              <Link to="/seller/kyc">Resubmit KYC</Link>
-            </Button>
-          </div>
-        )}
-
-        {kycData?.status === 'APPROVED' && (
-          <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg flex items-center gap-3">
-            <ShieldCheck className="w-5 h-5 text-green-600" />
-            <div>
-              <h3 className="text-green-800 font-medium">KYC Verified</h3>
-              <p className="text-green-700 text-sm">Your business has been verified.</p>
-            </div>
-          </div>
-        )}
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <SellerStatCard

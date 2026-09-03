@@ -18,10 +18,10 @@ export default function SellerSettings() {
     <>
       <Seo title="Settings - Seller Portal | InfyBuys" />
 
-      <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto space-y-8 pb-12">
+      <div className="p-4 sm:p-6 space-y-6 max-w-7xl mx-auto pb-12">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Account Settings</h1>
-          <p className="text-muted-foreground mt-1">
+          <h1 className="text-3xl font-bold tracking-tight text-[#111827]">Account Settings</h1>
+          <p className="text-[15px] text-[#64748B] mt-1">
             Manage your account preferences, notifications, and privacy settings.
           </p>
         </div>
@@ -64,21 +64,21 @@ export default function SellerSettings() {
 
           {/* Danger Zone */}
           <section id="danger-zone">
-            <Card className="border-destructive/50">
+            <Card className="overflow-hidden bg-rose-50/50 backdrop-blur-md border border-rose-200 shadow-sm shadow-blue-900/5 rounded-2xl">
               <CardHeader>
-                <CardTitle className="text-lg text-destructive">Danger Zone</CardTitle>
-                <CardDescription>Irreversible and destructive actions.</CardDescription>
+                <CardTitle className="text-lg text-rose-700">Danger Zone</CardTitle>
+                <CardDescription className="text-rose-700/70">Irreversible and destructive actions.</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
-                    <h4 className="font-medium text-sm">Delete Account</h4>
-                    <p className="text-sm text-muted-foreground mt-1">
+                    <h4 className="font-semibold text-[15px] text-rose-900">Delete Account</h4>
+                    <p className="text-[13px] text-rose-700/80 mt-1">
                       Permanently delete your account and all associated data.
                     </p>
                   </div>
                   <Button
-                    variant="destructive"
+                    variant="destructive" className="rounded-xl shadow-sm"
                     onClick={() => setIsDeleteDialogOpen(true)}
                     disabled={settings.account.accountDeletionRequested}
                   >

@@ -1,81 +1,39 @@
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, CheckCircle2, ShieldCheck, Headset, TrendingUp } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Search } from 'lucide-react';
 
 export function HeroSection() {
   return (
-    <section className="relative w-full py-20 md:py-32 overflow-hidden flex items-center justify-center min-h-[70vh] bg-[#0A0E1A]">
-      {/* Background with dot grid and blue blobs */}
-      <div className="absolute inset-0 bg-[radial-gradient(#ffffff33_1px,transparent_1px)] [background-size:24px_24px] opacity-20 z-0" />
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-brand-blue/20 rounded-full blur-[120px] z-0 mix-blend-screen pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-brand-blue/10 rounded-full blur-[100px] z-0 mix-blend-screen pointer-events-none" />
-
-      {/* Floating Badge */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.3, duration: 0.5 }}
-        className="absolute top-32 right-[10%] hidden lg:flex items-center gap-3 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 shadow-[0_8px_30px_rgb(0,0,0,0.5)] z-20"
+    <section className="relative w-full h-[75vh] min-h-[600px] flex flex-col items-center justify-center pt-40 pb-16">
+      {/* Background Image & Overlay */}
+      <div 
+        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: 'url("/hero-marketplace.jpg")' }}
       >
-        <div className="w-12 h-12 rounded-full bg-brand-blue/20 flex items-center justify-center">
-          <TrendingUp className="text-brand-blue w-6 h-6" />
+        <div className="absolute inset-0 bg-white/40 backdrop-blur-[2px]"></div>
+        {/* Gradient overlay: Light at the top for dark navbar text readability, darker/blue at the bottom for hero text contrast */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white/80 via-[#0B4C8C]/50 to-[#0B152A]/90"></div>
+      </div>
+      
+      {/* Content */}
+      <div className="container relative z-10 mx-auto px-4 flex flex-col items-center text-center mt-8">
+        <h1 className="font-['Space_Grotesk'] text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-[#0B152A] mb-6 uppercase drop-shadow-lg">
+          Buy | Sell | Discover | Grow
+        </h1>
+        <p className="text-lg md:text-xl text-grey max-w-2xl font-medium drop-shadow-md mb-12">
+          The premium marketplace to discover vetted online businesses and securely list your own digital assets with confidence.
+        </p>
+
+        {/* Large Search Bar */}
+        <div className="w-full max-w-4xl  rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-slate-200/60 relative flex items-center">
+          <Input
+            type="text"
+            placeholder="Find Listings, Categories, Or Enter A Listing ID..."
+            className="w-full h-16 md:h-20 pl-8 pr-20 text-base md:text-lg bg-transparent border-transparent shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 text-white placeholder:text-slate-400 font-medium rounded-full"
+          />
+          <button className="absolute right-4 md:right-6 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full text-[#0B4C8C] bg-slate-50 transition-colors">
+            <Search className="w-6 h-6 md:w-7 md:h-7" />
+          </button>
         </div>
-        <div>
-          <div className="text-2xl font-black text-white tracking-tight">$200M+</div>
-          <div className="text-xs font-semibold text-white/50 uppercase tracking-widest">Total Volume</div>
-        </div>
-      </motion.div>
-
-      <div className="container relative z-10 mx-auto px-4 text-center mt-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="max-w-4xl mx-auto space-y-6"
-        >
-          <div className="inline-flex items-center rounded-full border border-primary-foreground/20 bg-primary-foreground/10 px-3 py-1 text-sm text-primary-foreground backdrop-blur-sm mb-4">
-            <span className="flex h-2 w-2 rounded-full bg-success mr-2"></span>
-            Over $150M+ in successful acquisitions
-          </div>
-
-          <h1 className="text-5xl md:text-7xl font-black tracking-tight text-white leading-[1.1]">
-            Buy and Sell <br className="hidden md:block" /><span className="text-brand-blue">Profitable Online Businesses</span>
-          </h1>
-
-          <p className="text-lg md:text-xl text-primary-foreground/80 dark:text-muted-foreground max-w-2xl mx-auto">
-            The premium marketplace for SaaS, E-commerce, and Digital Agencies. Join 15,000+ verified buyers and sellers today.
-          </p>
-
-          <div className="mt-8 max-w-2xl mx-auto flex flex-col sm:flex-row gap-3">
-            <div className="relative flex-1">
-              <Search className="absolute left-4 top-3.5 h-5 w-5 text-muted-foreground" />
-              <Input
-                type="text"
-                placeholder="Search businesses (e.g., SaaS, $500k MRR)..."
-                className="pl-12 h-14 text-base bg-black/50 text-white border border-white/10 shadow-lg rounded-full focus-visible:ring-1 focus-visible:ring-brand-blue focus-visible:border-brand-blue placeholder:text-muted-foreground/70"
-              />
-            </div>
-            <Button size="lg" className="h-14 px-8 rounded-full shadow-lg bg-brand-blue hover:bg-brand-blue/90 text-white font-bold tracking-wide uppercase text-sm">
-              Search
-            </Button>
-          </div>
-
-          <div className="pt-16 flex flex-wrap justify-center gap-4 md:gap-6 items-center text-white">
-            <div className="flex items-center gap-3 bg-[#0A0E1A]/80 border border-brand-blue/20 rounded-xl px-5 py-3 shadow-md">
-              <CheckCircle2 className="w-5 h-5 text-brand-blue" />
-              <span className="text-sm font-semibold tracking-wide">Verified Listings</span>
-            </div>
-            <div className="flex items-center gap-3 bg-[#0A0E1A]/80 border border-brand-blue/20 rounded-xl px-5 py-3 shadow-md">
-              <ShieldCheck className="w-5 h-5 text-brand-blue" />
-              <span className="text-sm font-semibold tracking-wide">Secure Escrow</span>
-            </div>
-            <div className="flex items-center gap-3 bg-[#0A0E1A]/80 border border-brand-blue/20 rounded-xl px-5 py-3 shadow-md">
-              <Headset className="w-5 h-5 text-brand-blue" />
-              <span className="text-sm font-semibold tracking-wide">Expert Support</span>
-            </div>
-          </div>
-        </motion.div>
       </div>
     </section>
   );

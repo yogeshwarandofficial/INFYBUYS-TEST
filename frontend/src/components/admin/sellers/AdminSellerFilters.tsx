@@ -59,7 +59,7 @@ export function AdminSellerFilters({
       <div className="space-y-4">
         {/* Sort */}
         <div className="space-y-2">
-          <Label htmlFor="sort">Sort By</Label>
+          <Label htmlFor="sort" className="text-[#334155] font-medium">Sort By</Label>
           <Select value={sorting} onValueChange={(v) => onSortChange(v as AdminSellerSortOption)}>
             <SelectTrigger id="sort">
               <SelectValue placeholder="Sort by..." />
@@ -78,7 +78,7 @@ export function AdminSellerFilters({
 
         {/* Status */}
         <div className="space-y-2">
-          <Label htmlFor="status">Status</Label>
+          <Label htmlFor="status" className="text-[#334155] font-medium">Status</Label>
           <Select
             value={filters.status}
             onValueChange={(v) => onFilterChange({ status: v as any })}
@@ -99,7 +99,7 @@ export function AdminSellerFilters({
 
         {/* Seller Type */}
         <div className="space-y-2">
-          <Label htmlFor="sellerType">Seller Type</Label>
+          <Label htmlFor="sellerType" className="text-[#334155] font-medium">Seller Type</Label>
           <Select
             value={filters.sellerType}
             onValueChange={(v) => onFilterChange({ sellerType: v })}
@@ -119,7 +119,7 @@ export function AdminSellerFilters({
 
         {/* Verifications */}
         <div className="space-y-2">
-          <Label htmlFor="emailVerified">Email Verification</Label>
+          <Label htmlFor="emailVerified" className="text-[#334155] font-medium">Email Verification</Label>
           <Select
             value={filters.emailVerified?.toString() || 'all'}
             onValueChange={(v) => onFilterChange({ emailVerified: v === 'all' ? 'all' : v === 'true' })}

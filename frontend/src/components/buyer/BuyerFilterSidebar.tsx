@@ -14,22 +14,22 @@ export function BuyerFilterSidebar({ filters, updateFilter, clearFilters }: Buye
   return (
     <div className="space-y-6">
       <div>
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold">Filters</h3>
-          <Button variant="link" size="sm" onClick={clearFilters} className="h-auto p-0">
+        <div className="flex items-center justify-between mb-5">
+          <h3 className="font-bold text-[#111827] text-lg">Filters</h3>
+          <Button variant="ghost" size="sm" onClick={clearFilters} className="h-auto px-2 py-1 text-[#2563EB] hover:bg-blue-50/50 hover:text-[#1D4ED8] rounded-md font-medium">
             Reset
           </Button>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-5">
           <div className="space-y-2">
-            <Label>Category</Label>
+            <Label className="text-[#111827] font-semibold text-sm">Category</Label>
             <Select
               value={filters.category}
               onValueChange={(val) => updateFilter('category', val)}
             >
-              <SelectTrigger>
-                <SelectValue placeholder="All Categories" />
+              <SelectTrigger className="bg-white/80 backdrop-blur-sm border-[#E5E9F2] text-[#334155] rounded-lg shadow-sm focus:ring-[#2563EB] focus:border-[#2563EB]">
+                <SelectValue placeholder={<span className="text-[#64748B]">All Categories</span>} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Categories</SelectItem>
@@ -42,43 +42,46 @@ export function BuyerFilterSidebar({ filters, updateFilter, clearFilters }: Buye
           </div>
 
           <div className="space-y-2">
-            <Label>Min Price ($)</Label>
+            <Label className="text-[#111827] font-semibold text-sm">Min Price ($)</Label>
             <Input
               type="number"
               placeholder="e.g. 50000"
+              className="bg-white/80 backdrop-blur-sm border-[#E5E9F2] text-[#334155] rounded-lg shadow-sm focus-visible:ring-[#2563EB] focus-visible:border-[#2563EB] placeholder:text-[#64748B]"
               value={filters.minPrice || ''}
               onChange={(e) => updateFilter('minPrice', Number(e.target.value))}
             />
           </div>
 
           <div className="space-y-2">
-            <Label>Max Price ($)</Label>
+            <Label className="text-[#111827] font-semibold text-sm">Max Price ($)</Label>
             <Input
               type="number"
               placeholder="e.g. 1000000"
+              className="bg-white/80 backdrop-blur-sm border-[#E5E9F2] text-[#334155] rounded-lg shadow-sm focus-visible:ring-[#2563EB] focus-visible:border-[#2563EB] placeholder:text-[#64748B]"
               value={filters.maxPrice || ''}
               onChange={(e) => updateFilter('maxPrice', Number(e.target.value))}
             />
           </div>
 
           <div className="space-y-2">
-            <Label>Min Monthly Revenue ($)</Label>
+            <Label className="text-[#111827] font-semibold text-sm">Min Monthly Revenue ($)</Label>
             <Input
               type="number"
               placeholder="e.g. 5000"
+              className="bg-white/80 backdrop-blur-sm border-[#E5E9F2] text-[#334155] rounded-lg shadow-sm focus-visible:ring-[#2563EB] focus-visible:border-[#2563EB] placeholder:text-[#64748B]"
               value={filters.minRevenue || ''}
               onChange={(e) => updateFilter('minRevenue', Number(e.target.value))}
             />
           </div>
 
           <div className="space-y-2">
-            <Label>Location</Label>
+            <Label className="text-[#111827] font-semibold text-sm">Location</Label>
             <Select
               value={filters.location}
               onValueChange={(val) => updateFilter('location', val)}
             >
-              <SelectTrigger>
-                <SelectValue placeholder="Any Location" />
+              <SelectTrigger className="bg-white/80 backdrop-blur-sm border-[#E5E9F2] text-[#334155] rounded-lg shadow-sm focus:ring-[#2563EB] focus:border-[#2563EB]">
+                <SelectValue placeholder={<span className="text-[#64748B]">Any Location</span>} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Any Location</SelectItem>

@@ -65,10 +65,10 @@ export default function SellerEnquiries() {
 
       <div className="p-4 sm:p-6 space-y-6 max-w-7xl mx-auto pb-12">
         {/* Page header */}
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">Enquiries</h1>
-            <p className="text-sm text-muted-foreground">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 pt-2">
+          <div className="space-y-1">
+            <h1 className="text-3xl font-bold tracking-tight text-[#111827]">Enquiries</h1>
+            <p className="text-[15px] text-[#64748B]">
               {totalCount} enquir{totalCount !== 1 ? 'ies' : 'y'} found
             </p>
           </div>
@@ -91,7 +91,7 @@ export default function SellerEnquiries() {
         </div>
 
         {/* Search + Sort + Filter controls */}
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-4">
           <SellerEnquirySearch
             value={filters.search}
             onChange={(v) => updateFilter('search', v)}
@@ -101,7 +101,7 @@ export default function SellerEnquiries() {
             value={filters.sort}
             onValueChange={(v) => updateFilter('sort', v as SellerEnquirySort)}
           >
-            <SelectTrigger className="w-48" aria-label="Sort enquiries by">
+            <SelectTrigger className="w-[180px] bg-white/60 border-[#E5E9F2] rounded-xl focus:ring-blue-500 shadow-sm h-10" aria-label="Sort enquiries by">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -116,7 +116,7 @@ export default function SellerEnquiries() {
           {/* Mobile filter trigger */}
           <Sheet open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen}>
             <SheetTrigger asChild>
-              <Button variant="outline" className="relative" aria-label="Open filters">
+              <Button variant="outline" className="relative lg:hidden bg-white/60 border-[#E5E9F2] rounded-xl shadow-sm h-10 text-[#111827]" aria-label="Open filters">
                 <SlidersHorizontal className="w-4 h-4 mr-2" aria-hidden="true" />
                 Filters
                 {hasActiveFilters && (
@@ -142,11 +142,11 @@ export default function SellerEnquiries() {
           </Sheet>
         </div>
 
-        <div className="flex gap-6">
+        <div className="flex gap-8 mt-8">
           {/* Desktop Filters Sidebar */}
-          <aside className="hidden lg:block w-56 shrink-0" aria-label="Enquiry filters">
-            <div className="bg-card rounded-lg border p-4 sticky top-20">
-              <h2 className="font-semibold text-sm mb-4">Filters</h2>
+          <aside className="hidden lg:block w-[280px] shrink-0" aria-label="Enquiry filters">
+            <div className="bg-white/85 backdrop-blur-md rounded-2xl border border-[#E5E9F2] shadow-sm shadow-blue-900/5 p-6 sticky top-24">
+              <h2 className="font-bold text-base text-[#111827] mb-6">Filters</h2>
               <SellerEnquiryFilters
                 filters={filters}
                 updateFilter={updateFilter}

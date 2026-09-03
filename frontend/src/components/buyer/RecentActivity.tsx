@@ -17,9 +17,9 @@ export function RecentActivity() {
   const { recentActivity } = useBuyerStore();
 
   return (
-    <Card className="col-span-1 md:col-span-2 lg:col-span-3">
-      <CardHeader>
-        <CardTitle>Recent Activity</CardTitle>
+    <Card className="col-span-1 md:col-span-2 lg:col-span-3 bg-white/80 backdrop-blur-md border border-gray-100 shadow-sm rounded-xl overflow-hidden">
+      <CardHeader className="pb-4">
+        <CardTitle className="text-lg font-bold text-[#111827]">Recent Activity</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-6">

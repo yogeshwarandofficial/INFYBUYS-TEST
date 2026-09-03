@@ -17,7 +17,7 @@ export function AdminSellerSearch({
 }: AdminSellerSearchProps) {
   return (
     <div className={`relative ${className}`}>
-      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" aria-hidden="true" />
+      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#64748B]" aria-hidden="true" />
       <Input
         type="text"
         value={value}

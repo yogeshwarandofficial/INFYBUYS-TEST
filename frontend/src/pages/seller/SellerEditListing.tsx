@@ -1,11 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router';
 import { Seo } from '@/components/shared/Seo';
 import { SellerListingForm, type ListingFormValues } from '@/components/seller/listings/SellerListingForm';
 import { useSellerStore } from '@/store/useSellerStore';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft } from 'lucide-react';
-import { apiClient } from '@/services/apiClient';
 
 export default function SellerEditListing() {
   const { id } = useParams<{ id: string }>();
@@ -13,20 +12,6 @@ export default function SellerEditListing() {
   const { listings, updateListing, submitListing } = useSellerStore();
 
   const listing = listings.find((l) => l.id === id);
-  const [revisionData, setRevisionData] = useState<any>(null);
-  const [isLoadingRevision, setIsLoadingRevision] = useState(false);
-
-  useEffect(() => {
-    if (listing && ['changes_pending_review', 'rejected_changes'].includes(listing.status)) {
-      setIsLoadingRevision(true);
-      apiClient.get(`/listings/${listing.id}/revision`)
-        .then((data: any) => {
-          setRevisionData(data);
-        })
-        .catch(console.error)
-        .finally(() => setIsLoadingRevision(false));
-    }
-  }, [listing]);
 
   if (!listing) {
     return (
@@ -114,12 +99,7 @@ export default function SellerEditListing() {
       navigate(`/seller/listings/${listing.id}`);
     } catch (error: any) {
       console.error('Failed to submit listing:', error);
-      if (error?.response?.data?.code === 'KYC_REQUIRED' || error?.message?.includes('KYC')) {
-        alert('KYC verification required\n\nYou need to complete business verification before submitting this listing.');
-        navigate('/seller/kyc');
-        return;
-      }
-      alert(`Failed to save: ${error?.response?.data?.message || error?.message || 'Unknown error'}`);
+      alert(`Failed to save: ${error?.message || 'Unknown error'}`);
     } finally {
       setIsSaving(false);
     }
@@ -139,41 +119,35 @@ export default function SellerEditListing() {
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Edit Listing</h1>
             <p className="text-sm text-muted-foreground truncate max-w-xs">{listing.title}</p>
-            {listing.status === 'changes_pending_review' && <p className="text-xs text-orange-500 font-medium">Changes pending admin review</p>}
-            {listing.status === 'rejected_changes' && <p className="text-xs text-red-500 font-medium">Your proposed changes were rejected</p>}
           </div>
         </div>
 
-        {isLoadingRevision ? (
-          <div className="p-8 text-center text-muted-foreground">Loading pending changes...</div>
-        ) : (
-          <SellerListingForm
-            defaultValues={{
-              title: revisionData?.proposedData?.title ?? listing.title,
-              category: revisionData?.proposedData?.category ?? listing.category,
-              subCategory: revisionData?.proposedData?.subCategory ?? listing.subCategory,
-              location: revisionData?.proposedData?.locationArea ?? listing.location,
-              description: revisionData?.proposedData?.description ?? listing.description,
-              askingPrice: (revisionData?.proposedData?.priceOrRent ?? listing.askingPrice).toString(),
-              revenue: (revisionData?.proposedData?.turnover ?? listing.revenue)?.toString(),
-              profit: (revisionData?.proposedData?.netProfit ?? listing.profit)?.toString(),
-              establishedYear: (revisionData?.proposedData?.establishedYear ?? listing.establishedYear)?.toString(),
-              employees: (revisionData?.proposedData?.employees ?? listing.employees)?.toString(),
-              contactName: revisionData?.proposedData?.contactName ?? listing.contactName,
-              contactEmail: revisionData?.proposedData?.contactEmail ?? listing.contactEmail,
-              contactPhone: revisionData?.proposedData?.contactPhone ?? listing.contactPhone,
-              ndaRequired: revisionData?.proposedData?.ndaRequired ?? listing.ndaRequired,
-              image: '', 
-            }}
-            listingId={listing.id}
-            media={revisionData?.media ? [...(listing.media||[]).filter((m:any) => !(revisionData.proposedData?.proposedMediaDeletions||[]).includes(m.id)), ...revisionData.media] : listing.media}
-            coverMediaId={listing.coverMediaId}
+        <SellerListingForm
+          defaultValues={{
+            title: listing.title,
+            category: listing.category,
+            subCategory: listing.subCategory,
+            location: listing.location,
+            description: listing.description,
+            askingPrice: listing.askingPrice.toString(),
+            revenue: listing.revenue?.toString(),
+            profit: listing.profit?.toString(),
+            establishedYear: listing.establishedYear?.toString(),
+            employees: listing.employees?.toString(),
+            contactName: listing.contactName,
+            contactEmail: listing.contactEmail,
+            contactPhone: listing.contactPhone,
+            ndaRequired: listing.ndaRequired,
+            image: '', // Reset image field as we now show uploaded media separately
+          }}
+          listingId={listing.id}
+          media={listing.media}
+          coverMediaId={listing.coverMediaId}
           isLoading={isSaving}
           onSaveDraft={handleSaveDraft}
           onSubmit={handleSubmit}
-          submitLabel={['draft', 'rejected', 'changes_pending_review', 'rejected_changes'].includes(listing.status) ? 'Submit for Review' : 'Save Changes'}
+          submitLabel={listing.status === 'draft' ? 'Submit for Review' : 'Save Changes'}
         />
-        )}
       </div>
     </>
   );

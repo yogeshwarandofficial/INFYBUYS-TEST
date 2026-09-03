@@ -16,6 +16,8 @@ const About = lazy(() => import('../pages/public/About'));
 const Pricing = lazy(() => import('../pages/public/Pricing'));
 const Contact = lazy(() => import('../pages/public/Contact'));
 const FAQ = lazy(() => import('../pages/public/FAQ'));
+const Help = lazy(() => import('../pages/public/Help'));
+const Guides = lazy(() => import('../pages/public/Guides'));
 const Categories = lazy(() => import('../pages/public/Categories'));
 const CategoryDetails = lazy(() => import('../pages/public/CategoryDetails'));
 const BusinessDetails = lazy(() => import('../pages/public/BusinessDetails'));
@@ -26,6 +28,7 @@ const BlogDetails = lazy(() => import('../pages/public/BlogDetails'));
 const PrivacyPolicy = lazy(() => import('../pages/public/PrivacyPolicy'));
 const TermsConditions = lazy(() => import('../pages/public/TermsConditions'));
 const CookiePolicy = lazy(() => import('../pages/public/CookiePolicy'));
+const AdvisoryBooking = lazy(() => import('../pages/public/AdvisoryBooking'));
 const NotFound = lazy(() => import('../pages/public/NotFound'));
 const ServerError = lazy(() => import('../pages/public/ServerError'));
 const Maintenance = lazy(() => import('../pages/public/Maintenance'));
@@ -76,7 +79,6 @@ const SellerNotifications = lazy(() => import('../pages/seller/SellerNotificatio
 const SellerAnalytics = lazy(() => import('../pages/seller/SellerAnalytics'));
 const SellerProfile = lazy(() => import('../pages/seller/SellerProfile'));
 const SellerSettings = lazy(() => import('../pages/seller/SellerSettings'));
-const SellerKyc = lazy(() => import('../pages/seller/SellerKyc'));
 
 // Admin Pages
 const AdminLayout = lazy(() => import('../layouts/AdminLayout'));
@@ -100,8 +102,6 @@ const AdminNotifications = lazy(() => import('../pages/admin/AdminNotifications'
 const AdminAnalytics = lazy(() => import('../pages/admin/AdminAnalytics'));
 const AdminReviews = lazy(() => import('../pages/admin/AdminReviews'));
 const AdminReviewDetails = lazy(() => import('../pages/admin/AdminReviewDetails'));
-const AdminKyc = lazy(() => import('../pages/admin/AdminKyc'));
-const AdminKycDetails = lazy(() => import('../pages/admin/AdminKycDetails'));
 
 const PageLoader = () => (
   <div className="flex-1 flex items-center justify-center min-h-[50vh]">
@@ -140,6 +140,8 @@ export const router = createBrowserRouter([
           { path: 'pricing', element: <Suspense fallback={<PageLoader />}><Pricing /></Suspense> },
           { path: 'contact', element: <Suspense fallback={<PageLoader />}><Contact /></Suspense> },
           { path: 'faq', element: <Suspense fallback={<PageLoader />}><FAQ /></Suspense> },
+          { path: 'help', element: <Suspense fallback={<PageLoader />}><Help /></Suspense> },
+          { path: 'guides', element: <Suspense fallback={<PageLoader />}><Guides /></Suspense> },
           { path: 'categories', element: <Suspense fallback={<PageLoader />}><Categories /></Suspense> },
           { path: 'category/:slug', element: <Suspense fallback={<PageLoader />}><CategoryDetails /></Suspense> },
           { path: 'listing/:id', element: <Suspense fallback={<PageLoader />}><BusinessDetails /></Suspense> },
@@ -150,6 +152,7 @@ export const router = createBrowserRouter([
           { path: 'privacy', element: <Suspense fallback={<PageLoader />}><PrivacyPolicy /></Suspense> },
           { path: 'terms', element: <Suspense fallback={<PageLoader />}><TermsConditions /></Suspense> },
           { path: 'cookie-policy', element: <Suspense fallback={<PageLoader />}><CookiePolicy /></Suspense> },
+          { path: 'advisory-booking', element: <Suspense fallback={<PageLoader />}><AdvisoryBooking /></Suspense> },
           { path: '*', element: <Suspense fallback={<PageLoader />}><NotFound /></Suspense> }
         ]
       },
@@ -221,8 +224,7 @@ export const router = createBrowserRouter([
               { path: 'notifications', element: <Suspense fallback={<PageLoader />}><SellerNotifications /></Suspense> },
               { path: 'analytics', element: <Suspense fallback={<PageLoader />}><SellerAnalytics /></Suspense> },
               { path: 'profile', element: <Suspense fallback={<PageLoader />}><SellerProfile /></Suspense> },
-              { path: 'settings', element: <Suspense fallback={<PageLoader />}><SellerSettings /></Suspense> },
-              { path: 'kyc', element: <Suspense fallback={<PageLoader />}><SellerKyc /></Suspense> }
+              { path: 'settings', element: <Suspense fallback={<PageLoader />}><SellerSettings /></Suspense> }
             ]
           }
         ]
@@ -263,8 +265,6 @@ export const router = createBrowserRouter([
               { path: 'reviews/:id', element: <Suspense fallback={<PageLoader />}><AdminReviewDetails /></Suspense> },
               { path: 'reports', element: <Suspense fallback={<PageLoader />}><AdminReports /></Suspense> },
               { path: 'activity', element: <Suspense fallback={<PageLoader />}><AdminActivityLog /></Suspense> },
-              { path: 'kyc', element: <Suspense fallback={<PageLoader />}><AdminKyc /></Suspense> },
-              { path: 'kyc/:id', element: <Suspense fallback={<PageLoader />}><AdminKycDetails /></Suspense> },
               { path: 'settings', element: <Suspense fallback={<PageLoader />}><AdminSettings /></Suspense> }
             ]
           }

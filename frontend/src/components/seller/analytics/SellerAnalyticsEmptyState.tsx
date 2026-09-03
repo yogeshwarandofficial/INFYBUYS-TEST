@@ -5,12 +5,12 @@ import { Link } from 'react-router';
 
 export function SellerAnalyticsEmptyState() {
   return (
-    <Card className="border-dashed">
+    <Card className="overflow-hidden bg-white/85 backdrop-blur-md border border-[#E5E9F2] border-dashed rounded-2xl shadow-sm shadow-blue-900/5">
       <CardContent className="flex flex-col items-center justify-center py-16 text-center">
         <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-6">
           <BarChart3 className="w-8 h-8 text-muted-foreground" />
         </div>
-        <h3 className="text-xl font-bold mb-2">No Analytics Data Yet</h3>
+        <h3 className="text-xl font-bold mb-2 text-[#111827]">No Analytics Data Yet</h3>
         <p className="text-muted-foreground max-w-md mx-auto mb-8">
           Create your first listing to start receiving views, enquiries, and messages. Your performance metrics will appear here once buyers start interacting with your business.
         </p>

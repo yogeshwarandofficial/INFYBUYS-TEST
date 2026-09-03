@@ -4,7 +4,6 @@ import { AdminBuyersTable } from '../../components/admin/buyers/AdminBuyersTable
 import { AdminBuyerCard } from '../../components/admin/buyers/AdminBuyerCard';
 import { AdminBuyerSearch } from '../../components/admin/buyers/AdminBuyerSearch';
 import { AdminBuyerFilters } from '../../components/admin/buyers/AdminBuyerFilters';
-import { PageHeader } from '../../components/shared/PageHeader';
 import { EmptyState } from '../../components/shared/EmptyState';
 import { Users, CheckCircle2, Clock, AlertTriangle, ShieldCheck } from 'lucide-react';
 import { Button } from '../../components/ui/button';
@@ -42,50 +41,41 @@ export default function AdminBuyers() {
   const verifiedBuyers = buyers.filter(b => b.verificationStatus === 'verified').length;
 
   return (
-    <div className="flex flex-col min-h-screen pb-12">
-      <PageHeader
-        title="Buyers Management"
-        description={`Manage ${totalBuyers} total buyers across the platform`}
-        breadcrumbs={[{ label: 'Admin', href: '/admin' }, { label: 'Buyers' }]}
-      />
+    <div className="p-4 sm:p-6 space-y-8 max-w-7xl mx-auto pb-12">
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight text-[#111827]">Buyers Management</h1>
+        <p className="text-[15px] text-[#64748B] mt-1">Manage {totalBuyers} total buyers across the platform</p>
+      </div>
 
       {/* KPI Cards */}
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-          <div className="bg-card border rounded-xl p-4 flex flex-col gap-2 shadow-sm">
+      <div className="space-y-6 min-w-0">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+          <div className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl p-4 flex flex-col justify-between transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
             <div className="flex items-center gap-2 text-muted-foreground">
               <Users className="h-4 w-4" />
-              <span className="text-sm font-medium">Total</span>
-            </div>
-            <span className="text-2xl font-bold">{totalBuyers}</span>
+              </div><span className="text-[13px] font-semibold text-[#64748B] uppercase tracking-wider mt-4">Total</span>
+            <span className="text-3xl font-bold text-[#111827] mt-1">{totalBuyers}</span>
           </div>
-          <div className="bg-emerald-50 dark:bg-emerald-950/20 border-emerald-100 dark:border-emerald-900/50 rounded-xl p-4 flex flex-col gap-2">
-            <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
-              <CheckCircle2 className="h-4 w-4" />
-              <span className="text-sm font-medium">Active</span>
-            </div>
-            <span className="text-2xl font-bold text-emerald-700 dark:text-emerald-300">{activeBuyers}</span>
+          <div className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl p-4 flex flex-col justify-between transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+            <div className="flex items-center justify-between"><div className="w-10 h-10 rounded-xl bg-emerald-50/80 text-emerald-600 border border-emerald-100/50 flex items-center justify-center"><CheckCircle2 className="h-5 w-5" /></div>
+              </div><span className="text-[13px] font-semibold text-[#64748B] uppercase tracking-wider mt-4">Active</span>
+            <span className="text-3xl font-bold text-[#111827] mt-1">{activeBuyers}</span>
           </div>
-          <div className="bg-blue-50 dark:bg-blue-950/20 border-blue-100 dark:border-blue-900/50 rounded-xl p-4 flex flex-col gap-2">
-            <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400">
-              <Clock className="h-4 w-4" />
-              <span className="text-sm font-medium">Pending</span>
-            </div>
-            <span className="text-2xl font-bold text-blue-700 dark:text-blue-300">{pendingBuyers}</span>
+          <div className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl p-4 flex flex-col justify-between transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+            <div className="flex items-center justify-between"><div className="w-10 h-10 rounded-xl bg-blue-50/80 text-blue-600 border border-blue-100/50 flex items-center justify-center"><Clock className="h-5 w-5" /></div>
+              </div><span className="text-[13px] font-semibold text-[#64748B] uppercase tracking-wider mt-4">Pending</span>
+            <span className="text-3xl font-bold text-[#111827] mt-1">{pendingBuyers}</span>
           </div>
-          <div className="bg-amber-50 dark:bg-amber-950/20 border-amber-100 dark:border-amber-900/50 rounded-xl p-4 flex flex-col gap-2">
-            <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400">
-              <AlertTriangle className="h-4 w-4" />
-              <span className="text-sm font-medium">Suspended</span>
-            </div>
-            <span className="text-2xl font-bold text-amber-700 dark:text-amber-300">{suspendedBuyers}</span>
+          <div className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl p-4 flex flex-col justify-between transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+            <div className="flex items-center justify-between"><div className="w-10 h-10 rounded-xl bg-amber-50/80 text-amber-600 border border-amber-100/50 flex items-center justify-center"><AlertTriangle className="h-5 w-5" /></div>
+              </div><span className="text-[13px] font-semibold text-[#64748B] uppercase tracking-wider mt-4">Suspended</span>
+            <span className="text-3xl font-bold text-[#111827] mt-1">{suspendedBuyers}</span>
           </div>
-          <div className="bg-slate-50 dark:bg-slate-900 border rounded-xl p-4 flex flex-col gap-2">
+          <div className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl p-4 flex flex-col justify-between transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
             <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
               <ShieldCheck className="h-4 w-4" />
-              <span className="text-sm font-medium">Verified</span>
-            </div>
-            <span className="text-2xl font-bold">{verifiedBuyers}</span>
+              </div><span className="text-[13px] font-semibold text-[#64748B] uppercase tracking-wider mt-4">Verified</span>
+            <span className="text-3xl font-bold text-[#111827] mt-1">{verifiedBuyers}</span>
           </div>
         </div>
 

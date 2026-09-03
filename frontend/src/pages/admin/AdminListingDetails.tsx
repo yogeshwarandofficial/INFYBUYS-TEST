@@ -13,7 +13,6 @@ export default function AdminListingDetails() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [listing, setListing] = useState<any>(null);
-  const [revision, setRevision] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -21,16 +20,8 @@ export default function AdminListingDetails() {
     const fetchListing = async () => {
       try {
         setIsLoading(true);
-        const data: any = await apiClient.get(`/admin/listings/${id}`);
+        const data = await apiClient.get(`/admin/listings/${id}`);
         setListing(data);
-        if (data.status === 'CHANGES_PENDING_REVIEW' || data.status === 'REJECTED_CHANGES') {
-          try {
-            const revData: any = await apiClient.get(`/admin/listings/${id}/revision`);
-            setRevision(revData.revision);
-          } catch (e) {
-            console.error("Failed to fetch revision", e);
-          }
-        }
       } catch (err: any) {
         setError(err.message || 'Failed to fetch listing');
       } finally {
@@ -118,79 +109,6 @@ export default function AdminListingDetails() {
 
           {/* Left Column - Details & Seller */}
           <div className="lg:col-span-2 space-y-6">
-
-            {revision && (
-              <Card className={listing.status === 'REJECTED_CHANGES' ? "border-red-200 bg-red-50/50" : "border-orange-200 bg-orange-50/50"}>
-                <CardHeader>
-                  <CardTitle className={`text-lg ${listing.status === 'REJECTED_CHANGES' ? 'text-red-700' : 'text-orange-700'}`}>
-                    {listing.status === 'REJECTED_CHANGES' ? 'Rejected Changes' : 'Pending Changes Review'}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <p className={`text-sm ${listing.status === 'REJECTED_CHANGES' ? 'text-red-800' : 'text-orange-800'}`}>
-                    {listing.status === 'REJECTED_CHANGES' 
-                      ? 'The seller\'s proposed changes were rejected.'
-                      : 'The seller has proposed changes to this listing.'}
-                  </p>
-                  <div className="bg-white p-4 rounded border text-sm">
-                    {(() => {
-                      const changes: { field: string; oldVal: any; newVal: any }[] = [];
-                      const propsToCheck = ['title', 'description', 'priceOrRent', 'turnover', 'netProfit', 'locationArea', 'category', 'subCategory', 'contactName', 'contactEmail', 'contactPhone', 'ndaRequired', 'establishedYear', 'employees'];
-                      
-                      propsToCheck.forEach(prop => {
-                        const newVal = revision.proposedData[prop];
-                        if (newVal !== undefined && newVal !== listing[prop]) {
-                          changes.push({ field: prop, oldVal: listing[prop], newVal });
-                        }
-                      });
-                      
-                      const mediaDeletions = Array.isArray(revision.proposedData.proposedMediaDeletions) ? revision.proposedData.proposedMediaDeletions : [];
-                      if (mediaDeletions.length > 0) {
-                        changes.push({ field: 'Deleted Media', oldVal: `${mediaDeletions.length} files removed`, newVal: 'Deleted' });
-                      }
-                      
-                      if (revision.media && revision.media.length > 0) {
-                        changes.push({ field: 'Added Media', oldVal: 'None', newVal: `${revision.media.length} new files uploaded` });
-                      }
-
-                      if (changes.length === 0) return <p className="text-muted-foreground text-sm italic">No changes detected.</p>;
-
-                      return (
-                        <div className="space-y-3">
-                          <div className="grid grid-cols-3 gap-4 border-b pb-2 font-medium text-muted-foreground">
-                            <div>Field</div>
-                            <div>Current (Live)</div>
-                            <div>Proposed Change</div>
-                          </div>
-                          {changes.map(c => (
-                            <div key={c.field} className="grid grid-cols-3 gap-4 border-b pb-2 last:border-0 text-xs sm:text-sm">
-                              <div className="font-semibold capitalize break-words">{c.field.replace(/([A-Z])/g, ' $1').trim()}</div>
-                              <div className="text-red-600 line-through break-words whitespace-pre-wrap max-h-48 overflow-y-auto">{String(c.oldVal ?? 'N/A')}</div>
-                              <div className="text-green-600 break-words whitespace-pre-wrap max-h-48 overflow-y-auto">{String(c.newVal ?? 'N/A')}</div>
-                            </div>
-                          ))}
-                        </div>
-                      );
-                    })()}
-                  </div>
-                  {listing.status === 'CHANGES_PENDING_REVIEW' && (
-                    <div className="flex gap-2">
-                      <Button 
-                        onClick={() => {
-                          apiClient.post(`/admin/listings/${id}/revision/approve`, {}).then(() => window.location.reload());
-                        }}
-                        className="bg-green-600 hover:bg-green-700 text-white">Approve Changes</Button>
-                      <Button 
-                        onClick={() => {
-                          apiClient.post(`/admin/listings/${id}/revision/reject`, { rejectionReasonCode: 'Rejected by admin' }).then(() => window.location.reload());
-                        }}
-                        variant="destructive">Reject Changes</Button>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            )}
-
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">Business Information</CardTitle>

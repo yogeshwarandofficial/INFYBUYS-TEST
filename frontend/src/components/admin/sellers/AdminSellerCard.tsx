@@ -15,7 +15,7 @@ export function AdminSellerCard({ seller }: AdminSellerCardProps) {
   };
 
   return (
-    <Card className="overflow-hidden transition-all hover:shadow-md">
+    <Card className="overflow-hidden transition-all bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 hover:shadow-md hover:-translate-y-0.5 rounded-2xl">
       <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-4">
         <div className="flex items-center gap-3">
           <Avatar className="h-12 w-12 border">
@@ -23,10 +23,10 @@ export function AdminSellerCard({ seller }: AdminSellerCardProps) {
             <AvatarFallback>{getInitials(seller.companyName || seller.name)}</AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
-            <h3 className="font-semibold text-lg leading-tight truncate max-w-[200px]">
+            <h3 className="font-bold text-[16px] text-[#111827] leading-tight truncate max-w-[200px]">
               {seller.companyName}
             </h3>
-            <span className="text-sm text-muted-foreground truncate max-w-[200px]">
+            <span className="text-[13px] text-[#64748B] truncate max-w-[200px]">
               {seller.name}
             </span>
           </div>
@@ -44,7 +44,7 @@ export function AdminSellerCard({ seller }: AdminSellerCardProps) {
             </div>
           </div>
 
-          <div className="flex flex-col gap-2 text-sm text-muted-foreground">
+          <div className="flex flex-col gap-2 text-[13px] text-[#64748B]">
             <div className="flex items-center gap-2">
               <Mail className="h-3.5 w-3.5 shrink-0" />
               <span className="truncate">{seller.email}</span>

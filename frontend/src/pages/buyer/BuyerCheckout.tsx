@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { ShieldCheck, ArrowLeft } from 'lucide-react';
 import { Seo } from '@/components/shared/Seo';
-import { PageHeader } from '@/components/shared/PageHeader';
+import { BuyerPageHeader } from '@/components/buyer/BuyerPageHeader';
 import { Button } from '@/components/ui/button';
 import { useBuyerStore } from '@/store/useBuyerStore';
 import { CheckoutSummary } from '@/components/buyer/billing/CheckoutSummary';
@@ -59,12 +59,12 @@ export default function BuyerCheckout() {
     <>
       <Seo title="Checkout" description="Complete your subscription purchase." />
 
-      <div className="max-w-5xl mx-auto space-y-8 pb-12">
+      <div className="w-full space-y-8">
         <Button variant="ghost" onClick={() => navigate('/buyer/subscription')} className="mb-4">
           <ArrowLeft className="w-4 h-4 mr-2" /> Back to Plans
         </Button>
 
-        <PageHeader
+        <BuyerPageHeader
           title="Checkout"
           description="Review your plan and complete your mock payment."
           breadcrumbs={[{ label: 'Subscription', href: '/buyer/subscription' }, { label: 'Checkout' }]}

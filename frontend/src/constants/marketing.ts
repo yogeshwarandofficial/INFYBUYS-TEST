@@ -1,21 +1,72 @@
 export const CATEGORIES = [
-  { id: '1', name: 'SaaS', icon: 'Cloud' },
-  { id: '2', name: 'E-Commerce', icon: 'ShoppingCart' },
-  { id: '3', name: 'Agencies', icon: 'Briefcase' },
-  { id: '4', name: 'Marketplaces', icon: 'Store' },
-  { id: '5', name: 'Content Sites', icon: 'FileText' },
-  { id: '6', name: 'Mobile Apps', icon: 'Smartphone' },
+  { id: '1', name: 'SaaS', icon: 'Cloud', description: 'Software-as-a-Service businesses with recurring revenue models.' },
+  { id: '2', name: 'E-Commerce', icon: 'ShoppingCart', description: 'Online stores and D2C brands with physical or digital products.' },
+  { id: '3', name: 'Agencies', icon: 'Briefcase', description: 'Service-based digital marketing, design, and development firms.' },
+  { id: '4', name: 'Marketplaces', icon: 'Store', description: 'Platforms connecting buyers and sellers for various niches.' },
+  { id: '5', name: 'Content Sites', icon: 'FileText', description: 'Blogs, newsletters, and media properties with established traffic.' },
+  { id: '6', name: 'Mobile Apps', icon: 'Smartphone', description: 'iOS and Android applications with active user bases.' },
 ];
 
 export const PRICING = {
-  seller: [
-    { range: 'Under $1M', fee: '8%', description: 'Standard success fee' },
-    { range: '$1M - $5M', fee: '6%', description: 'Reduced tier for mid-market' },
-    { range: 'Over $5M', fee: '4%', description: 'Enterprise acquisition rate' }
+  plans: [
+    {
+      name: 'Buyer Plan',
+      price: 'Free',
+      period: 'Forever',
+      description: 'Essential tools for discovering your next acquisition.',
+      isPopular: false,
+      ctaText: 'Get Started',
+      features: [
+        'Browse Verified Businesses',
+        'Access Business Listings',
+        'Save Opportunities',
+        'Basic Business Insights',
+        'Buyer Support'
+      ]
+    },
+    {
+      name: 'Professional Plan',
+      price: '$49',
+      period: 'per month',
+      description: 'Advanced features and priority access for serious acquirers.',
+      isPopular: true,
+      ctaText: 'Upgrade to Pro',
+      features: [
+        'Everything in Buyer',
+        'Advanced Business Insights',
+        'Priority Opportunity Access',
+        'Detailed Listing Information',
+        'Buyer Advisory Support',
+        'Priority Assistance'
+      ]
+    },
+    {
+      name: 'Business Plan',
+      price: '$199',
+      period: 'per month',
+      description: 'Complete marketplace access with premium visibility and support.',
+      isPopular: false,
+      ctaText: 'Contact Sales',
+      features: [
+        'Everything in Professional',
+        'Premium Business Visibility',
+        'Advanced Listing Tools',
+        'Seller Analytics',
+        'Dedicated Advisory Support',
+        'Priority Listing Assistance'
+      ]
+    }
   ],
-  buyer: [
-    { plan: 'Basic Buyer', price: 'Free', features: ['Browse public listings', 'Basic filters', 'Standard support'] },
-    { plan: 'Premium Buyer', price: '$49/mo', features: ['Access locked financials (subject to NDA)', 'Advanced search & alerts', 'Priority support', 'Due diligence tools'], isPopular: true }
+  comparison: [
+    { feature: 'Browse Verified Businesses', buyer: true, professional: true, business: true },
+    { feature: 'Save Opportunities', buyer: true, professional: true, business: true },
+    { feature: 'Basic Business Insights', buyer: true, professional: true, business: true },
+    { feature: 'Advanced Business Insights', buyer: false, professional: true, business: true },
+    { feature: 'Priority Opportunity Access', buyer: false, professional: true, business: true },
+    { feature: 'Buyer Advisory Support', buyer: false, professional: true, business: true },
+    { feature: 'Premium Business Visibility', buyer: false, professional: false, business: true },
+    { feature: 'Seller Analytics', buyer: false, professional: false, business: true },
+    { feature: 'Dedicated Advisory Support', buyer: false, professional: false, business: true },
   ]
 };
 
@@ -59,6 +110,46 @@ export const BLOG_POSTS = [
     date: 'Jul 28, 2026',
     readTime: '12 min read',
     image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070',
+  },
+  {
+    id: 'b3',
+    title: 'What to Look for When Buying an Online Business',
+    excerpt: 'Key factors buyers should evaluate before acquiring an online business, from revenue quality and growth potential to operations and risk.',
+    category: 'Business Acquisition',
+    author: 'Marcus Vance',
+    date: 'Jul 15, 2026',
+    readTime: '8 min read',
+    image: 'https://images.unsplash.com/photo-1664575602276-acd073f104c1?q=80&w=2070'
+  },
+  {
+    id: 'b4',
+    title: 'Why Digital Assets Are Becoming Valuable Acquisition Opportunities',
+    excerpt: 'Explore how websites, SaaS products, e-commerce stores, and other digital assets can create attractive opportunities for buyers.',
+    category: 'Digital Assets',
+    author: 'Sarah Jenkins',
+    date: 'Jul 02, 2026',
+    readTime: '7 min read',
+    image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072'
+  },
+  {
+    id: 'b5',
+    title: 'A Practical Guide to Business Due Diligence',
+    excerpt: 'Understand the essential financial, operational, technical, and market checks to complete before acquiring a business.',
+    category: 'Due Diligence',
+    author: 'David Chen',
+    date: 'Jun 22, 2026',
+    readTime: '15 min read',
+    image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=2070'
+  },
+  {
+    id: 'b6',
+    title: 'How to Prepare Your Business for a Successful Sale',
+    excerpt: 'Learn how founders can organize their financials, operations, documentation, and business metrics before listing an online business for sale.',
+    category: 'Selling a Business',
+    author: 'Elena Rodriguez',
+    date: 'Jun 10, 2026',
+    readTime: '10 min read',
+    image: 'https://images.unsplash.com/photo-1556761175-5973dc0f32d7?q=80&w=2070'
   }
 ];
 

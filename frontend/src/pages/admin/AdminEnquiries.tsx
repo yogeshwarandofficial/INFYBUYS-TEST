@@ -4,7 +4,6 @@ import { AdminEnquiriesTable } from '../../components/admin/enquiries/AdminEnqui
 import { AdminEnquiryCard } from '../../components/admin/enquiries/AdminEnquiryCard';
 import { AdminEnquirySearch } from '../../components/admin/enquiries/AdminEnquirySearch';
 import { AdminEnquiryFilters } from '../../components/admin/enquiries/AdminEnquiryFilters';
-import { PageHeader } from '../../components/shared/PageHeader';
 import { EmptyState } from '../../components/shared/EmptyState';
 import { MessageSquare, Mail, Handshake, Ban } from 'lucide-react';
 import { Button } from '../../components/ui/button';
@@ -41,47 +40,49 @@ export default function AdminEnquiries() {
   const closedEnquiries = enquiries.filter(e => e.status === 'closed').length;
 
   return (
-    <div className="flex flex-col min-h-screen pb-12">
-      <PageHeader
-        title="Enquiries Management"
-        description={`Manage ${totalEnquiries} total buyer-seller enquiries across the platform`}
-        breadcrumbs={[{ label: 'Admin', href: '/admin' }, { label: 'Enquiries' }]}
-      />
+    <div className="p-4 sm:p-6 space-y-8 max-w-7xl mx-auto pb-12">
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight text-[#111827]">Enquiries Management</h1>
+        <p className="text-[15px] text-[#64748B] mt-1">Manage {totalEnquiries} total buyer-seller enquiries across the platform</p>
+      </div>
 
       {/* KPI Cards */}
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-card border rounded-xl p-4 flex flex-col gap-2 shadow-sm">
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <MessageSquare className="h-4 w-4" />
-              <span className="text-sm font-medium">Total Enquiries</span>
-            </div>
-            <span className="text-2xl font-bold">{totalEnquiries}</span>
+      <div className="space-y-6 min-w-0">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl p-4 flex flex-col justify-between transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+            <div className="flex items-center justify-between"><div className="w-10 h-10 rounded-xl bg-blue-50/80 text-blue-600 border border-blue-100/50 flex items-center justify-center"><MessageSquare className="h-5 w-5" /></div></div><span className="text-[13px] font-semibold text-[#64748B] uppercase tracking-wider mt-4">Total Enquiries</span>
+            <span className="text-3xl font-bold text-[#111827] mt-1">{totalEnquiries}</span>
           </div>
-          <div className="bg-blue-50 dark:bg-blue-950/20 border-blue-100 dark:border-blue-900/50 rounded-xl p-4 flex flex-col gap-2">
-            <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400">
-              <Mail className="h-4 w-4" />
-              <span className="text-sm font-medium">New</span>
+          <div className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl p-4 flex flex-col justify-between transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+            <div className="flex items-center justify-between">
+              <div className="w-10 h-10 rounded-xl bg-blue-50/80 text-blue-600 border border-blue-100/50 flex items-center justify-center">
+                <Mail className="h-5 w-5" />
+              </div>
             </div>
-            <span className="text-2xl font-bold text-blue-700 dark:text-blue-300">{newEnquiries}</span>
+            <span className="text-[13px] font-semibold text-[#64748B] uppercase tracking-wider mt-4">New</span>
+            <span className="text-3xl font-bold text-[#111827] mt-1">{newEnquiries}</span>
           </div>
-          <div className="bg-purple-50 dark:bg-purple-950/20 border-purple-100 dark:border-purple-900/50 rounded-xl p-4 flex flex-col gap-2">
-            <div className="flex items-center gap-2 text-purple-600 dark:text-purple-400">
-              <Handshake className="h-4 w-4" />
-              <span className="text-sm font-medium">Active Discussions</span>
+          <div className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl p-4 flex flex-col justify-between transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+            <div className="flex items-center justify-between">
+              <div className="w-10 h-10 rounded-xl bg-purple-50/80 text-purple-600 border border-purple-100/50 flex items-center justify-center">
+                <Handshake className="h-5 w-5" />
+              </div>
             </div>
-            <span className="text-2xl font-bold text-purple-700 dark:text-purple-300">{activeEnquiries}</span>
+            <span className="text-[13px] font-semibold text-[#64748B] uppercase tracking-wider mt-4">Active Discussions</span>
+            <span className="text-3xl font-bold text-[#111827] mt-1">{activeEnquiries}</span>
           </div>
-          <div className="bg-emerald-50 dark:bg-emerald-950/20 border-emerald-100 dark:border-emerald-900/50 rounded-xl p-4 flex flex-col gap-2">
-            <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
-              <Ban className="h-4 w-4" />
-              <span className="text-sm font-medium">Closed</span>
+          <div className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl p-4 flex flex-col justify-between transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+            <div className="flex items-center justify-between">
+              <div className="w-10 h-10 rounded-xl bg-emerald-50/80 text-emerald-600 border border-emerald-100/50 flex items-center justify-center">
+                <Ban className="h-5 w-5" />
+              </div>
             </div>
-            <span className="text-2xl font-bold text-emerald-700 dark:text-emerald-300">{closedEnquiries}</span>
+            <span className="text-[13px] font-semibold text-[#64748B] uppercase tracking-wider mt-4">Closed</span>
+            <span className="text-3xl font-bold text-[#111827] mt-1">{closedEnquiries}</span>
           </div>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex flex-col lg:flex-row gap-6 mb-8">
           {/* Desktop Filters */}
           <div className="hidden lg:block w-64 shrink-0">
             <div className="sticky top-24">
@@ -97,7 +98,7 @@ export default function AdminEnquiries() {
 
           <div className="flex-1 flex flex-col gap-6 min-w-0">
             {/* Search and Mobile Filters */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl p-2">
               <AdminEnquirySearch
                 value={search}
                 onChange={setSearch}
@@ -125,12 +126,16 @@ export default function AdminEnquiries() {
             </div>
 
             {paginatedEnquiries.length === 0 ? (
-              <EmptyState
+              <div className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl p-8 flex items-center justify-center">
+                <div className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl p-8 flex items-center justify-center min-h-[300px]">
+                <EmptyState
                 title="No enquiries found"
                 description="No enquiries match your current search and filter criteria."
                 actionLabel="Clear Filters"
                 onAction={resetFilters}
               />
+              </div>
+              </div>
             ) : (
               <div className="space-y-4">
                 {/* Desktop Table View */}

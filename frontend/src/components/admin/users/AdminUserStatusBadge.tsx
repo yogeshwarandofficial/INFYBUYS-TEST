@@ -13,25 +13,25 @@ export function AdminUserStatusBadge({ status, className }: AdminUserStatusBadge
     active: {
       label: 'Active',
       icon: CheckCircle2,
-      className: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800',
+      className: 'bg-[#ECFDF5] text-[#10B981] border border-[#10B981]/20 rounded-full',
       variant: 'outline'
     },
     suspended: {
       label: 'Suspended',
       icon: AlertCircle,
-      className: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 border-amber-200 dark:border-amber-800',
+      className: 'bg-[#FFFBEB] text-[#F59E0B] border border-[#F59E0B]/20 rounded-full',
       variant: 'outline'
     },
     pending: {
       label: 'Pending',
       icon: Clock,
-      className: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 border-blue-200 dark:border-blue-800',
+      className: 'bg-[#EFF6FF] text-[#3B82F6] border border-[#3B82F6]/20 rounded-full',
       variant: 'outline'
     },
     blocked: {
       label: 'Blocked',
       icon: XCircle,
-      className: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 border-red-200 dark:border-red-800',
+      className: 'bg-[#FEF2F2] text-[#EF4444] border border-[#EF4444]/20 rounded-full',
       variant: 'outline'
     }
   };

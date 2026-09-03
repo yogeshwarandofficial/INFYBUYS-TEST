@@ -23,7 +23,7 @@ export function SellerProfileMenu() {
   const { setTheme } = useTheme();
 
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8 border border-border">

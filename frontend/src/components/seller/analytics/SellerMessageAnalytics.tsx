@@ -10,10 +10,10 @@ interface SellerMessageAnalyticsProps {
 
 export function SellerMessageAnalyticsCard({ analytics }: SellerMessageAnalyticsProps) {
   return (
-    <Card className="h-full flex flex-col">
+    <Card className="h-full flex flex-col overflow-hidden bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl">
       <CardHeader className="pb-4 shrink-0">
-        <CardTitle className="text-lg">Messaging Overview</CardTitle>
-        <CardDescription>Status of your buyer communications.</CardDescription>
+        <CardTitle className="text-lg text-[#111827]">Messaging Overview</CardTitle>
+        <CardDescription className="text-[#64748B]">Status of your buyer communications.</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 flex flex-col justify-between">
         <div className="space-y-4">

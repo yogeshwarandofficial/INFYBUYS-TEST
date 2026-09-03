@@ -14,33 +14,35 @@ export default function BuyerDashboard() {
   const { savedCount, savedSearchesCount, enquiryCount, unreadMessageCount } = useBuyerStore();
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="w-full space-y-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-2">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Welcome back, {user?.name.split(' ')[0]}!</h1>
-          <p className="text-muted-foreground mt-1 flex items-center gap-2">
+          <h1 className="text-3xl font-bold tracking-tight text-[#111827]">Welcome back, {user?.name.split(' ')[0]}!</h1>
+          <p className="text-[#64748B] mt-2 flex items-center gap-2 text-base">
             Here's what's happening with your account today.
             {user?.verified && <Badge variant="secondary" className="bg-success/10 text-success border-success/20">Verified Buyer</Badge>}
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline">Complete Profile</Button>
-          <Button>Browse Businesses</Button>
+        <div className="flex gap-3">
+          <Button variant="outline" className="bg-white/80 backdrop-blur-md border border-gray-200 text-[#111827] shadow-sm hover:bg-gray-50 rounded-lg h-10 px-5">Complete Profile</Button>
+          <Button className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white shadow-md rounded-lg h-10 px-5">Browse Businesses</Button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <BuyerStatCard
           title="Saved Listings"
           value={savedCount}
           icon={Heart}
           trend={{ value: 12, isPositive: true }}
           description="from last month"
+          iconBgClass="bg-[#EFF6FF] text-[#2563EB]"
         />
         <BuyerStatCard
           title="Saved Searches"
           value={savedSearchesCount}
           icon={Bookmark}
+          iconBgClass="bg-[#DCFCE7] text-[#166534]"
         />
         <BuyerStatCard
           title="Active Enquiries"
@@ -48,12 +50,14 @@ export default function BuyerDashboard() {
           icon={Mail}
           trend={{ value: 2, isPositive: true }}
           description="new this week"
+          iconBgClass="bg-[#F5F3FF] text-[#7C3AED]"
         />
         <BuyerStatCard
           title="Unread Messages"
           value={unreadMessageCount}
           icon={MessageSquare}
           className={unreadMessageCount > 0 ? 'border-primary' : ''}
+          iconBgClass="bg-[#FFEDD5] text-[#C2410C]"
         />
       </div>
 

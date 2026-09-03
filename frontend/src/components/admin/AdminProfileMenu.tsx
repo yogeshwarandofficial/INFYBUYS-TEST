@@ -38,7 +38,7 @@ export function AdminProfileMenu() {
   };
 
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger className="outline-none">
         <Avatar className="h-9 w-9 border-2 border-primary/10">
           <AvatarFallback className="bg-primary/10 text-primary font-semibold">
@@ -89,7 +89,7 @@ export function AdminProfileMenu() {
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
+        <DropdownMenuItem onClick={handleLogout} className="text-red-600 focus:bg-red-50 focus:text-red-700 cursor-pointer font-medium">
           <LogOut className="mr-2 h-4 w-4" />
           <span>Log out</span>
         </DropdownMenuItem>

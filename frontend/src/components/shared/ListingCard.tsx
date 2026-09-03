@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Building2, TrendingUp, DollarSign } from 'lucide-react';
-import { FavoriteButton } from './FavoriteButton';
+import { FavoriteButton } from '../buyer/FavoriteButton';
 
 export type ListingCardVariant = 'featured' | 'latest' | 'premium' | 'similar' | 'compact';
 

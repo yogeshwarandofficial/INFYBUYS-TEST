@@ -36,28 +36,32 @@ export default function BuyerBrowse() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-background">
+    <div className="flex flex-col h-full bg-transparent">
       {/* Top Search Bar Area */}
-      <div className="border-b bg-card p-4 sticky top-0 z-20">
+      <div className="bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm p-4 sticky top-0 z-20">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row gap-4 items-center">
           <BuyerSearchBar
             value={searchInput}
             onChange={setSearchInput}
             onSearch={handleSearch}
           />
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-            <Button size="lg" className="h-12 flex-1 sm:flex-none" onClick={() => handleSearch(searchInput)}>
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            <Button size="lg" className="h-12 flex-1 sm:flex-none bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-xl shadow-md" onClick={() => handleSearch(searchInput)}>
               Search
             </Button>
 
             {/* Save Search Button for Desktop */}
             <div className="hidden sm:block">
-              <SaveSearchDialog filters={filters} resultCount={totalResults} />
+              <SaveSearchDialog 
+                filters={filters} 
+                resultCount={totalResults} 
+                trigger={<Button variant="outline" size="lg" className="h-12 bg-white/80 backdrop-blur-md border border-gray-200 text-[#111827] shadow-sm hover:bg-gray-50 rounded-xl">Save Search</Button>}
+              />
             </div>
 
             <Sheet open={showMobileFilters} onOpenChange={setShowMobileFilters}>
               <SheetTrigger asChild>
-                <Button size="lg" variant="outline" className="h-12 lg:hidden">
+                <Button size="lg" variant="outline" className="h-12 lg:hidden rounded-xl">
                   <SlidersHorizontal className="w-5 h-5 mr-2" />
                   Filters
                 </Button>
@@ -77,10 +81,10 @@ export default function BuyerBrowse() {
         </div>
       </div>
 
-      <div className="flex-1 max-w-7xl mx-auto w-full p-4 md:p-6 flex gap-6">
+      <div className="flex-1 w-full flex gap-6 mt-6 max-w-7xl mx-auto px-4 xl:px-0">
         {/* Desktop Sidebar */}
-        <aside className="hidden lg:block w-64 shrink-0">
-          <div className="sticky top-24">
+        <aside className="hidden lg:block w-[280px] shrink-0">
+          <div className="sticky top-28 bg-white/80 backdrop-blur-md border border-gray-100 shadow-sm rounded-xl p-5">
             <BuyerFilterSidebar
               filters={filters}
               updateFilter={updateFilter}
@@ -96,10 +100,10 @@ export default function BuyerBrowse() {
         <main className="flex-1 min-w-0 flex flex-col">
           {/* Controls */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground font-medium">
-              {totalResults} Businesses Found
+            <div className="flex items-center gap-2 text-[15px] text-[#64748B] font-medium">
+              <span className="text-[#111827] font-semibold">{totalResults}</span> Businesses Found
               {filters.query && (
-                <Badge variant="secondary" className="ml-2 font-normal">
+                <Badge variant="secondary" className="ml-2 font-normal bg-blue-50 text-blue-700 border-blue-100">
                   "{filters.query}"
                   <X
                     className="w-3 h-3 ml-1 cursor-pointer"
@@ -116,14 +120,14 @@ export default function BuyerBrowse() {
                 <SaveSearchDialog
                   filters={filters}
                   resultCount={totalResults}
-                  trigger={<Button variant="outline" size="sm">Save</Button>}
+                  trigger={<Button variant="outline" size="sm" className="rounded-lg">Save</Button>}
                 />
               </div>
             </div>
 
-            <div className="flex items-center gap-4 self-end sm:self-auto">
+            <div className="flex items-center gap-3 self-end sm:self-auto">
               <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-[160px] h-9">
+                <SelectTrigger className="w-[180px] h-10 bg-white/80 backdrop-blur-md border border-gray-200 rounded-lg shadow-sm text-[#334155]">
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
                 <SelectContent>
@@ -134,20 +138,20 @@ export default function BuyerBrowse() {
                 </SelectContent>
               </Select>
 
-              <div className="flex items-center border rounded-md hidden sm:flex">
+              <div className="flex items-center bg-white/80 backdrop-blur-md border border-gray-200 rounded-lg shadow-sm hidden sm:flex overflow-hidden p-0.5">
                 <Button
-                  variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
+                  variant="ghost"
                   size="icon"
-                  className="rounded-none rounded-l-md h-9 w-9"
+                  className={`rounded-md h-8 w-8 ${viewMode === 'grid' ? 'bg-[#EFF6FF] text-[#2563EB]' : 'text-[#64748B] hover:text-[#111827]'}`}
                   onClick={() => setViewMode('grid')}
                   aria-label="Grid view"
                 >
                   <LayoutGrid className="w-4 h-4" />
                 </Button>
                 <Button
-                  variant={viewMode === 'list' ? 'secondary' : 'ghost'}
+                  variant="ghost"
                   size="icon"
-                  className="rounded-none rounded-r-md h-9 w-9"
+                  className={`rounded-md h-8 w-8 ${viewMode === 'list' ? 'bg-[#EFF6FF] text-[#2563EB]' : 'text-[#64748B] hover:text-[#111827]'}`}
                   onClick={() => setViewMode('list')}
                   aria-label="List view"
                 >
@@ -159,15 +163,15 @@ export default function BuyerBrowse() {
 
           {/* Results */}
           {listings.length === 0 ? (
-            <div className="flex-1 flex flex-col items-center justify-center py-12 text-center">
-              <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
-                <SearchIcon className="w-8 h-8 text-muted-foreground" />
+            <div className="flex-1 flex flex-col items-center justify-center py-16 text-center bg-white/60 backdrop-blur-sm border border-gray-100 shadow-sm rounded-xl mb-8">
+              <div className="w-20 h-20 bg-[#EFF6FF] rounded-full flex items-center justify-center mb-5 shadow-inner">
+                <SearchIcon className="w-8 h-8 text-[#2563EB]" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">No businesses found</h3>
-              <p className="text-muted-foreground mb-4">
+              <h3 className="text-xl font-bold text-[#111827] mb-2">No businesses found</h3>
+              <p className="text-[#64748B] mb-6 max-w-sm">
                 We couldn't find any listings matching your current filters.
               </p>
-              <Button onClick={() => { clearFilters(); setSearchInput(''); }}>
+              <Button className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg shadow-md px-6 h-11" onClick={() => { clearFilters(); setSearchInput(''); }}>
                 Clear all filters
               </Button>
             </div>
@@ -176,7 +180,7 @@ export default function BuyerBrowse() {
               <div className={
                 viewMode === 'grid'
                   ? "grid sm:grid-cols-2 xl:grid-cols-3 gap-6"
-                  : "flex flex-col gap-4"
+                  : "flex flex-col gap-5"
               }>
                 {listings.map(listing => (
                   <Link key={listing.id} to={`/listing/${listing.id}`} className="block h-full group">

@@ -101,7 +101,7 @@ export function SellerConversationCard({ conversation }: SellerConversationCardP
             {/* Row 1: Name + badges + time */}
             <div className="flex items-start justify-between gap-2 mb-0.5">
               <div className="flex items-center flex-wrap gap-1.5 min-w-0">
-                <span className={cn('text-sm font-semibold truncate', isUnread && 'text-foreground')}>
+                <span className={cn('text-[15px] font-semibold text-[#111827] truncate', isUnread && 'text-foreground')}>
                   {conversation.buyerName}
                 </span>
                 {isUnread && (
@@ -121,14 +121,14 @@ export function SellerConversationCard({ conversation }: SellerConversationCardP
               </div>
               <time
                 dateTime={conversation.lastMessageAt}
-                className="text-xs text-muted-foreground shrink-0"
+                className="text-xs text-[#64748B] shrink-0"
               >
                 {formatDistanceToNow(conversation.lastMessageAt)}
               </time>
             </div>
 
             {/* Row 2: Company + listing */}
-            <div className="flex items-center gap-3 text-xs text-muted-foreground mb-1.5 flex-wrap">
+            <div className="flex items-center gap-3 text-xs text-[#64748B] mb-1.5 flex-wrap">
               {conversation.buyerCompany && (
                 <span className="flex items-center gap-1">
                   <Building className="w-3 h-3 shrink-0" aria-hidden="true" />
@@ -145,17 +145,17 @@ export function SellerConversationCard({ conversation }: SellerConversationCardP
             <div className="flex items-center gap-2">
               <p className={cn(
                 'text-xs line-clamp-1 flex-1',
-                isUnread ? 'text-foreground font-medium' : 'text-muted-foreground'
+                isUnread ? 'text-foreground font-medium' : 'text-[#64748B]'
               )}>
                 {conversation.lastMessage}
               </p>
               {hasAttachments && (
                 <Paperclip
-                  className="w-3 h-3 text-muted-foreground shrink-0"
+                  className="w-3 h-3 text-[#64748B] shrink-0"
                   aria-label="Has attachments"
                 />
               )}
-              <span className="flex items-center gap-0.5 text-xs text-muted-foreground shrink-0">
+              <span className="flex items-center gap-0.5 text-xs text-[#64748B] shrink-0">
                 <Clock className="w-3 h-3" aria-hidden="true" />
                 {conversation.messages.length}
               </span>

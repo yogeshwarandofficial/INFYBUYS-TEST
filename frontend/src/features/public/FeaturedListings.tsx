@@ -27,30 +27,22 @@ export function FeaturedListings() {
   }, []);
 
   return (
-    <section className="py-24 bg-[#0A0E1A] text-white relative">
-      <div className="absolute inset-0 bg-[radial-gradient(#ffffff33_1px,transparent_1px)] [background-size:24px_24px] opacity-10 z-0" />
+    <section className="py-24 bg-white relative">
       <div className="container relative mx-auto px-4 z-10">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-12">
-          <div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Premium Acquisitions</h2>
-            <p className="text-lg text-white/70 max-w-2xl">
-              Hand-picked, highly profitable businesses vetted by our expert team.
-            </p>
-          </div>
-          <Button asChild className="hidden md:flex bg-brand-blue hover:bg-brand-blue/90 text-white rounded-full uppercase tracking-widest text-xs font-bold px-6">
-            <Link to="/search?featured=true">
-              View all premium <ArrowRight className="ml-2 w-4 h-4" />
-            </Link>
-          </Button>
+        <div className="text-center mb-16 max-w-3xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-extrabold mb-4 tracking-tight text-slate-900">Explore Businesses</h2>
+          <p className="text-lg text-slate-600">
+            A glimpse of premium online businesses currently available for acquisition.
+          </p>
         </div>
 
         {loading ? (
           <div className="flex justify-center items-center py-20">
-             <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+             <Loader2 className="h-8 w-8 animate-spin text-brand-blue" />
           </div>
         ) : featured.length === 0 ? (
-          <div className="text-center py-20 bg-muted/10 rounded-xl border border-dashed">
-            <p className="text-muted-foreground">No featured listings found.</p>
+          <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-slate-300 shadow-sm">
+            <p className="text-slate-500 font-medium">No featured listings found.</p>
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -61,17 +53,20 @@ export function FeaturedListings() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
+                className="group"
               >
-                <ListingCard listing={listing} variant="featured" />
+                <div className="h-full rounded-2xl transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-[0_20px_50px_rgb(0,0,0,0.1)]">
+                  <ListingCard listing={listing} variant="featured" className="h-full border-slate-200 shadow-sm rounded-2xl" />
+                </div>
               </motion.div>
             ))}
           </div>
         )}
 
-        <div className="mt-10 text-center md:hidden">
-          <Button asChild className="w-full bg-brand-blue hover:bg-brand-blue/90 text-white rounded-full uppercase tracking-widest text-xs font-bold px-6">
+        <div className="mt-12 text-center">
+          <Button asChild variant="outline" className="h-12 px-8 rounded-full border-slate-300 text-slate-700 hover:bg-slate-50 font-bold transition-all text-sm uppercase tracking-wide bg-white shadow-sm">
             <Link to="/search?featured=true">
-              View all premium <ArrowRight className="ml-2 w-4 h-4" />
+              View More Businesses <ArrowRight className="ml-2 w-4 h-4" />
             </Link>
           </Button>
         </div>

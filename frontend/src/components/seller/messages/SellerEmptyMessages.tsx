@@ -37,11 +37,11 @@ export function SellerEmptyMessages({ variant, onClearFilters }: SellerEmptyMess
 
   return (
     <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
-      <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
-        <Icon className="w-8 h-8 text-muted-foreground" aria-hidden="true" />
+      <div className="w-16 h-16 rounded-2xl bg-[#F6F8FC] flex items-center justify-center mb-4">
+        <Icon className="w-8 h-8 text-[#94A3B8]" aria-hidden="true" />
       </div>
-      <h2 className="text-lg font-semibold mb-2">{content.title}</h2>
-      <p className="text-sm text-muted-foreground max-w-sm mb-6">{content.description}</p>
+      <h2 className="text-lg font-semibold mb-2 text-[#111827]">{content.title}</h2>
+      <p className="text-sm text-[#64748B] max-w-sm mb-6">{content.description}</p>
 
       <div className="flex flex-wrap gap-3 justify-center">
         {variant === 'no-results' && onClearFilters && (

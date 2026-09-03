@@ -22,8 +22,8 @@ export function ConversationListItem({ conversation, isActive, onClick }: Conver
     <div
       onClick={onClick}
       className={cn(
-        "flex gap-3 p-4 cursor-pointer transition-colors border-b",
-        isActive ? "bg-primary/5" : "hover:bg-muted/50"
+        "flex gap-3 p-4 cursor-pointer transition-colors border-b border-[#E5E9F2]/50",
+        isActive ? "bg-blue-50/50" : "hover:bg-slate-50/50"
       )}
       role="button"
       tabIndex={0}
@@ -35,35 +35,35 @@ export function ConversationListItem({ conversation, isActive, onClick }: Conver
       }}
     >
       <div className="relative">
-        <Avatar className="h-10 w-10 border">
+        <Avatar className="h-10 w-10 border border-[#E5E9F2]">
           <AvatarImage src={conversation.sellerAvatar} alt={conversation.sellerName} />
-          <AvatarFallback>{conversation.sellerName.substring(0, 2).toUpperCase()}</AvatarFallback>
+          <AvatarFallback className="bg-slate-100 text-slate-600 font-medium">{conversation.sellerName.substring(0, 2).toUpperCase()}</AvatarFallback>
         </Avatar>
         {conversation.unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-primary border-2 border-background" />
+          <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-[#2563EB] border-2 border-white shadow-sm" />
         )}
       </div>
 
       <div className="flex-1 min-w-0">
         <div className="flex justify-between items-baseline mb-0.5">
-          <h4 className="text-sm font-semibold truncate pr-2">{conversation.businessName}</h4>
-          <span className="text-xs text-muted-foreground whitespace-nowrap">{timeString}</span>
+          <h4 className="text-sm font-semibold text-[#111827] truncate pr-2">{conversation.businessName}</h4>
+          <span className="text-[11px] font-medium text-[#94A3B8] whitespace-nowrap">{timeString}</span>
         </div>
 
-        <div className="text-xs text-muted-foreground truncate mb-1">
+        <div className="text-[13px] text-[#64748B] truncate mb-1.5">
           {conversation.sellerName}
         </div>
 
         <div className="flex justify-between items-center gap-2">
           <p className={cn(
-            "text-sm truncate",
-            conversation.unreadCount > 0 ? "text-foreground font-medium" : "text-muted-foreground"
+            "text-[13px] truncate leading-tight",
+            conversation.unreadCount > 0 ? "text-[#111827] font-medium" : "text-[#64748B]"
           )}>
             {conversation.lastMessage || 'No messages yet'}
           </p>
 
           {conversation.unreadCount > 0 && (
-            <Badge variant="default" className="h-5 px-1.5 min-w-[20px] justify-center text-[10px]">
+            <Badge className="h-5 px-1.5 min-w-[20px] justify-center text-[10px] bg-[#2563EB] text-white hover:bg-[#2563EB]">
               {conversation.unreadCount}
             </Badge>
           )}

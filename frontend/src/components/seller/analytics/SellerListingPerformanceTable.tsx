@@ -13,15 +13,15 @@ export function SellerListingPerformanceTable({ performance }: SellerListingPerf
   if (performance.length === 0) return null;
 
   return (
-    <Card>
+    <Card className="overflow-hidden bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl">
       <CardHeader>
-        <CardTitle className="text-lg">Listing Performance</CardTitle>
-        <CardDescription>Detailed metrics for all your listings in the selected period.</CardDescription>
+        <CardTitle className="text-lg text-[#111827]">Listing Performance</CardTitle>
+        <CardDescription className="text-[#64748B]">Detailed metrics for all your listings in the selected period.</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
-            <thead className="text-xs text-muted-foreground uppercase bg-muted/50">
+            <thead className="text-xs text-[#64748B] uppercase bg-muted/50">
               <tr>
                 <th className="px-4 py-3 font-medium rounded-tl-md rounded-bl-md">Listing</th>
                 <th className="px-4 py-3 font-medium text-center">Status</th>

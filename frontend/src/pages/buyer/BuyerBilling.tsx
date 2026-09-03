@@ -1,5 +1,5 @@
 import { Seo } from '@/components/shared/Seo';
-import { PageHeader } from '@/components/shared/PageHeader';
+import { BuyerPageHeader } from '@/components/buyer/BuyerPageHeader';
 import { useBuyerStore } from '@/store/useBuyerStore';
 import { BillingHistoryTable } from '@/components/buyer/billing/BillingHistoryTable';
 import { PaymentMethodCard } from '@/components/buyer/billing/PaymentMethodCard';
@@ -28,8 +28,8 @@ export default function BuyerBilling() {
     <>
       <Seo title="Billing & Payments" description="Manage your billing history and payment methods." />
 
-      <div className="max-w-6xl mx-auto space-y-8">
-        <PageHeader
+      <div className="w-full space-y-8">
+        <BuyerPageHeader
           title="Billing & Payments"
           description="View your billing history, manage payment methods, and download invoices."
           breadcrumbs={[{ label: 'Billing' }]}

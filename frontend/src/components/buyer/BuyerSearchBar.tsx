@@ -40,11 +40,11 @@ export function BuyerSearchBar({ value, onChange, onSearch }: BuyerSearchBarProp
 
   return (
     <div className="relative flex-1 w-full" ref={containerRef}>
-      <SearchIcon className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+      <SearchIcon className="absolute left-4 top-3.5 h-5 w-5 text-[#64748B]" />
       <Input
         type="text"
         placeholder="Search businesses, niches, or keywords..."
-        className="pl-10 h-12 bg-background shadow-sm rounded-lg"
+        className="pl-12 h-12 bg-white/80 backdrop-blur-md border border-gray-200 shadow-sm rounded-xl focus-visible:ring-[#2563EB] text-[#111827] placeholder:text-[#64748B]"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={handleKeyDown}

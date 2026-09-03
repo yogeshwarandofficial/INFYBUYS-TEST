@@ -22,23 +22,31 @@ export function SellerAnalyticsStatCard({
   trend,
   className,
 }: SellerAnalyticsStatCardProps) {
+  const getIconStyle = () => {
+    const t = title.toLowerCase();
+    if (t.includes('active')) return 'bg-blue-50/80 text-blue-600 border-blue-100/50';
+    if (t.includes('view')) return 'bg-purple-50/80 text-purple-600 border-purple-100/50';
+    if (t.includes('enquir')) return 'bg-emerald-50/80 text-emerald-600 border-emerald-100/50';
+    if (t.includes('conversation')) return 'bg-orange-50/80 text-orange-600 border-orange-100/50';
+    return 'bg-blue-50/80 text-blue-600 border-blue-100/50';
+  };
   return (
-    <Card className={cn('overflow-hidden', className)}>
+    <Card className={cn("bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 overflow-hidden", className)}>
       <CardContent className="p-5 sm:p-6">
         <div className="flex items-center justify-between space-y-0 pb-2">
-          <p className="text-sm font-medium text-muted-foreground tracking-tight">
+          <p className="text-[13px] font-semibold text-[#64748B] uppercase tracking-wider">
             {title}
           </p>
-          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-            <Icon className="h-4 w-4 text-primary" aria-hidden="true" />
+          <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center shadow-sm border shrink-0", getIconStyle())}>
+            <Icon className="h-5 w-5" aria-hidden="true" />
           </div>
         </div>
         <div className="mt-2 flex flex-col gap-1">
-          <div className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+          <div className="text-3xl font-bold text-[#111827]">
             {value}
           </div>
           {trend ? (
-            <p className="flex items-center text-xs text-muted-foreground">
+            <p className="flex items-center text-[13px] text-[#64748B]">
               <span
                 className={cn(
                   'flex items-center font-medium mr-1.5',
@@ -55,7 +63,7 @@ export function SellerAnalyticsStatCard({
               {description}
             </p>
           ) : description ? (
-            <p className="text-xs text-muted-foreground">{description}</p>
+            <p className="text-[13px] text-[#64748B]">{description}</p>
           ) : null}
         </div>
       </CardContent>

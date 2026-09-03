@@ -153,23 +153,12 @@ export default function AdminActivityLog() {
   const handleClearConfirm = () => { clearAuditLogs(); setClearDialogOpen(false); };
 
   return (
-    <div className="flex flex-col min-h-screen pb-12">
-      {/* ── Header ── */}
-      <div className="border-b bg-background/95 backdrop-blur sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="p-4 sm:p-6 space-y-8 max-w-7xl mx-auto pb-12">
+      <div>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
-              <span className="hover:text-foreground cursor-pointer">Admin</span>
-              <span>/</span>
-              <span>Activity Log</span>
-            </div>
-            <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-              <ClipboardList className="w-6 h-6 text-primary" />
-              Activity &amp; Audit Log
-            </h1>
-            <p className="text-muted-foreground text-sm mt-1">
-              Track all administrative actions performed on the platform.
-            </p>
+            <h1 className="text-3xl font-bold tracking-tight text-[#111827]">Activity & Audit Log</h1>
+            <p className="text-[15px] text-[#64748B] mt-1">Track all administrative actions performed on the platform.</p>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
             <Button variant="outline" size="sm" className="gap-2" onClick={handleExportJSON}>
@@ -190,7 +179,7 @@ export default function AdminActivityLog() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8 space-y-8">
+      <div className="space-y-6 min-w-0">
 
         {/* ── KPI Cards ── */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">

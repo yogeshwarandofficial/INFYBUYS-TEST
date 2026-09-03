@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useAdminAnalytics } from '../../hooks/useAdminAnalytics';
-import { PageHeader } from '../../components/shared/PageHeader';
 import { AdminAnalyticsPeriodSelector } from '../../components/admin/analytics/AdminAnalyticsPeriodSelector';
 import { AdminAnalyticsOverview } from '../../components/admin/analytics/AdminAnalyticsOverview';
 import { AdminUserGrowthChart } from '../../components/admin/analytics/AdminUserGrowthChart';
@@ -22,16 +21,15 @@ export default function AdminAnalytics() {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen pb-12">
-      <PageHeader
-        title="Analytics & Reporting"
-        description="Monitor platform growth, listing performance, and user engagement."
-        breadcrumbs={[{ label: 'Admin', href: '/admin' }, { label: 'Analytics' }]}
-      />
+    <div className="p-4 sm:p-6 space-y-8 max-w-7xl mx-auto pb-12">
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight text-[#111827]">Platform Analytics</h1>
+        <p className="text-[15px] text-[#64748B] mt-1">Monitor key performance metrics and platform growth</p>
+      </div>
 
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-          <div className="flex flex-wrap items-center p-1 bg-muted rounded-md space-x-1">
+          <div className="flex flex-wrap items-center p-1 bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl space-x-1">
             {tabs.map(tab => (
               <Button
                 key={tab.id}

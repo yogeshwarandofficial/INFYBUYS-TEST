@@ -29,7 +29,6 @@ const navItems = [
   { title: 'Messages', path: '/seller/messages', icon: MessageSquare },
   { title: 'Notifications', path: '/seller/notifications', icon: Bell },
   { title: 'Analytics', path: '/seller/analytics', icon: BarChart },
-  { title: 'KYC Verification', path: '/seller/kyc', icon: User },
   { title: 'Profile', path: '/seller/profile', icon: User },
   { title: 'Settings', path: '/seller/settings', icon: Settings },
 ];
@@ -39,12 +38,12 @@ export function SellerSidebar({ collapsed, setCollapsed, isMobile }: SidebarProp
 
   return (
     <div className={cn(
-      "flex flex-col h-full bg-card border-r transition-all duration-300",
+      "flex flex-col h-full bg-[#0B152A] text-slate-300 transition-all duration-300",
       collapsed && !isMobile ? "w-20" : "w-64"
     )}>
-      <div className="h-16 flex items-center justify-between px-4 border-b shrink-0">
+      <div className="h-16 flex items-center justify-between px-4 border-b border-white/10 shrink-0">
         {!collapsed || isMobile ? (
-          <Link to="/seller" className="font-bold text-lg tracking-tight truncate text-primary">
+          <Link to="/seller" className="font-bold text-lg tracking-tight truncate text-white">
             Seller Portal
           </Link>
         ) : (
@@ -57,7 +56,7 @@ export function SellerSidebar({ collapsed, setCollapsed, isMobile }: SidebarProp
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 ml-auto"
+            className="h-8 w-8 ml-auto text-slate-400 hover:text-white hover:bg-white/10"
             onClick={() => setCollapsed(!collapsed)}
             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
@@ -79,12 +78,12 @@ export function SellerSidebar({ collapsed, setCollapsed, isMobile }: SidebarProp
                       className={cn(
                         "flex items-center gap-3 px-3 py-2 rounded-md transition-colors text-sm font-medium",
                         isActive
-                          ? "bg-primary/10 text-primary"
-                          : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                          ? "bg-[#0B4C8C] text-white"
+                          : "text-slate-400 hover:bg-white/5 hover:text-white",
                         collapsed && !isMobile ? "justify-center px-0" : ""
                       )}
                     >
-                      <item.icon className={cn("h-5 w-5 shrink-0", isActive ? "text-primary" : "")} />
+                      <item.icon className={cn("h-5 w-5 shrink-0", isActive ? "text-white" : "")} />
                       {(!collapsed || isMobile) && <span className="truncate">{item.title}</span>}
                     </Link>
                   </TooltipTrigger>

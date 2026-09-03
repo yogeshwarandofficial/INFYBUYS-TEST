@@ -62,14 +62,14 @@ export function SellerNotificationFilters({
   hasActiveFilters,
 }: SellerNotificationFiltersProps) {
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <div className="space-y-2">
-        <Label htmlFor="notif-status-filter">Status</Label>
+        <Label className="text-[#111827] font-semibold">Status</Label>
         <Select
           value={filters.status}
           onValueChange={(v) => updateFilter('status', v as SellerNotificationStatusFilter)}
         >
-          <SelectTrigger id="notif-status-filter" aria-label="Filter by status">
+          <SelectTrigger id="notif-status-filter" aria-label="Filter by status" className="bg-white border-[#E5E9F2] rounded-xl focus:ring-blue-500 shadow-sm">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -83,12 +83,12 @@ export function SellerNotificationFilters({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="notif-type-filter">Type</Label>
+        <Label className="text-[#111827] font-semibold">Type</Label>
         <Select
           value={filters.type}
           onValueChange={(v) => updateFilter('type', v as SellerNotificationTypeFilter)}
         >
-          <SelectTrigger id="notif-type-filter" aria-label="Filter by type">
+          <SelectTrigger id="notif-type-filter" aria-label="Filter by type" className="bg-white border-[#E5E9F2] rounded-xl focus:ring-blue-500 shadow-sm">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -102,12 +102,12 @@ export function SellerNotificationFilters({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="notif-priority-filter">Priority</Label>
+        <Label className="text-[#111827] font-semibold">Priority</Label>
         <Select
           value={filters.priority}
           onValueChange={(v) => updateFilter('priority', v as SellerNotificationPriorityFilter)}
         >
-          <SelectTrigger id="notif-priority-filter" aria-label="Filter by priority">
+          <SelectTrigger id="notif-priority-filter" aria-label="Filter by priority" className="bg-white border-[#E5E9F2] rounded-xl focus:ring-blue-500 shadow-sm">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -121,7 +121,7 @@ export function SellerNotificationFilters({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="notif-sort">Sort By</Label>
+        <Label className="text-[#111827] font-semibold">Sort By</Label>
         <Select
           value={filters.sort}
           onValueChange={(v) => updateFilter('sort', v as SellerNotificationSort)}
@@ -141,8 +141,8 @@ export function SellerNotificationFilters({
 
       {hasActiveFilters && (
         <>
-          <Separator />
-          <Button variant="outline" className="w-full" onClick={resetFilters}>
+          <Separator className="bg-[#E5E9F2]" />
+          <Button variant="outline" className="w-full bg-white hover:bg-slate-50 border-[#E5E9F2] rounded-xl shadow-sm text-[#111827]" onClick={resetFilters}>
             <X className="w-4 h-4 mr-2" aria-hidden="true" />
             Clear Filters
           </Button>

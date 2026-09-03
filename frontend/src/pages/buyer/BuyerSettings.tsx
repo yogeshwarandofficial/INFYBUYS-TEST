@@ -1,5 +1,5 @@
 import { Seo } from '@/components/shared/Seo';
-import { PageHeader } from '@/components/shared/PageHeader';
+import { BuyerPageHeader } from '@/components/buyer/BuyerPageHeader';
 import { BuyerPreferencesCard } from '@/components/buyer/profile/BuyerPreferencesCard';
 import { AccountStatusCard } from '@/components/buyer/profile/AccountStatusCard';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -29,8 +29,8 @@ export default function BuyerSettings() {
     <>
       <Seo title="Account Settings" description="Manage your account preferences and settings." />
 
-      <div className="max-w-4xl mx-auto space-y-8 pb-12">
-        <PageHeader
+      <div className="w-full space-y-8">
+        <BuyerPageHeader
           title="Account Settings"
           description="Manage your notifications, appearance, and account status."
           breadcrumbs={[{ label: 'Settings' }]}

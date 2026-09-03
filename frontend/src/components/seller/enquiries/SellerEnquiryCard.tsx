@@ -54,7 +54,7 @@ export function SellerEnquiryCard({ enquiry }: SellerEnquiryCardProps) {
           <div className="flex-1 min-w-0">
             {/* Buyer name */}
             <div className="flex items-center flex-wrap gap-2 mb-1">
-              <p className={cn('text-sm font-semibold leading-tight truncate', isUnread && 'text-foreground')}>
+              <p className={cn('text-[15px] font-semibold text-[#111827] leading-tight truncate', isUnread && 'text-foreground')}>
                 {enquiry.buyer?.name}
               </p>
             </div>
@@ -72,19 +72,19 @@ export function SellerEnquiryCard({ enquiry }: SellerEnquiryCardProps) {
         </div>
 
         {/* Listing */}
-        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+        <div className="flex items-center gap-1.5 text-xs text-[#64748B]">
           <Building2 className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
           <span className="truncate">{enquiry.listing?.title}</span>
         </div>
 
         {/* Message preview */}
         {enquiry.lastMessage && (
-          <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed mt-2">
+          <p className="text-xs text-[#64748B] line-clamp-2 leading-relaxed mt-2">
             "{enquiry.lastMessage.messageText}"
           </p>
         )}
 
-        <div className="flex items-center justify-between text-xs text-muted-foreground pt-2 mt-2 border-t border-border/40">
+        <div className="flex items-center justify-between text-xs text-[#64748B] pt-2 mt-2 border-t border-border/40">
           <div className="flex items-center gap-1">
             <Clock className="w-3 h-3" aria-hidden="true" />
             <time dateTime={enquiry.updatedAt}>

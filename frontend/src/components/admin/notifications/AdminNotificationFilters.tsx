@@ -33,7 +33,7 @@ export function AdminNotificationFilters({
   const activeFiltersCount = Object.values(filters).filter(v => v !== 'all').length;
 
   return (
-    <div className={`flex flex-col gap-6 ${className}`}>
+    <div className={`flex flex-col gap-6 bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl p-6 ${className}`}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 font-semibold">
           <Filter className="h-4 w-4" />

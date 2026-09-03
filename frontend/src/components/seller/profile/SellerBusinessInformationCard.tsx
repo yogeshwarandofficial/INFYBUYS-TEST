@@ -8,32 +8,32 @@ interface SellerBusinessInformationCardProps {
 
 export function SellerBusinessInformationCard({ profile }: SellerBusinessInformationCardProps) {
   return (
-    <Card className="h-full">
+    <Card className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl">
       <CardHeader>
-        <CardTitle className="text-lg">Business Details</CardTitle>
+        <CardTitle className="text-lg text-[#111827]">Business Details</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <p className="text-sm font-medium text-muted-foreground">Seller Type</p>
-            <p className="text-sm font-medium capitalize mt-1">{profile.sellerType}</p>
+            <p className="text-sm font-semibold text-[#64748B]">Seller Type</p>
+            <p className="text-[15px] font-medium text-[#111827] capitalize mt-1">{profile.sellerType}</p>
           </div>
           <div>
-            <p className="text-sm font-medium text-muted-foreground">Experience</p>
-            <p className="text-sm font-medium mt-1">{profile.yearsOfExperience || 'Not specified'}</p>
+            <p className="text-sm font-semibold text-[#64748B]">Experience</p>
+            <p className="text-[15px] font-medium text-[#111827] mt-1">{profile.yearsOfExperience || 'Not specified'}</p>
           </div>
           <div>
-            <p className="text-sm font-medium text-muted-foreground">Job Title</p>
-            <p className="text-sm font-medium mt-1">{profile.jobTitle || 'Not specified'}</p>
+            <p className="text-sm font-semibold text-[#64748B]">Job Title</p>
+            <p className="text-[15px] font-medium text-[#111827] mt-1">{profile.jobTitle || 'Not specified'}</p>
           </div>
         </div>
 
         <div className="space-y-2">
-          <p className="text-sm font-medium text-muted-foreground">Preferred Categories</p>
+          <p className="text-sm font-semibold text-[#64748B]">Preferred Categories</p>
           <div className="flex flex-wrap gap-2">
             {profile.preferredCategories.length > 0 ? (
               profile.preferredCategories.map((cat) => (
-                <Badge key={cat} variant="secondary">{cat}</Badge>
+                <Badge key={cat} variant="secondary" className="bg-[#EFF6FF] text-[#2563EB] hover:bg-blue-100/50">{cat}</Badge>
               ))
             ) : (
               <span className="text-sm text-muted-foreground">None selected</span>
@@ -42,11 +42,11 @@ export function SellerBusinessInformationCard({ profile }: SellerBusinessInforma
         </div>
 
         <div className="space-y-2">
-          <p className="text-sm font-medium text-muted-foreground">Preferred Locations</p>
+          <p className="text-sm font-semibold text-[#64748B]">Preferred Locations</p>
           <div className="flex flex-wrap gap-2">
             {profile.preferredLocations.length > 0 ? (
               profile.preferredLocations.map((loc) => (
-                <Badge key={loc} variant="outline">{loc}</Badge>
+                <Badge key={loc} variant="outline" className="border-purple-200 bg-purple-50 text-purple-700 hover:bg-purple-100/50">{loc}</Badge>
               ))
             ) : (
               <span className="text-sm text-muted-foreground">None selected</span>

@@ -28,10 +28,10 @@ export function ConversationFilters({ currentFilter, onFilterChange }: Conversat
             size="sm"
             onClick={() => onFilterChange(filter.value)}
             className={cn(
-              "h-7 px-3 text-xs rounded-full",
+              "h-8 px-4 text-[13px] font-medium rounded-full transition-colors",
               currentFilter === filter.value
-                ? "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground"
-                : "bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground"
+                ? "bg-[#2563EB] text-white hover:bg-[#1D4ED8] hover:text-white shadow-sm"
+                : "bg-white/50 text-[#64748B] hover:bg-white/80 hover:text-[#111827] border border-[#E5E9F2]"
             )}
           >
             {filter.label}
