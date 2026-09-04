@@ -1,40 +1,15 @@
 import { useBuyerStore } from '@/store/useBuyerStore';
-import { useState, useEffect } from 'react';
-import { apiClient } from '@/services/apiClient';
-import type { Listing } from '@/types/api';
+import { useFavorites } from '@/hooks/useFavorites';
 import { ListingCard } from '@/components/shared/ListingCard';
 import { Button } from '@/components/ui/button';
 import { Heart } from 'lucide-react';
 import { Link } from 'react-router';
 
 export default function BuyerFavorites() {
-  const { favorites, viewMode } = useBuyerStore();
+  const { viewMode } = useBuyerStore();
+  const { data: favoritesData, isLoading, error } = useFavorites();
 
-  const [favoriteListings, setFavoriteListings] = useState<Listing[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchFavorites = async () => {
-      try {
-        setIsLoading(true);
-        if (favorites.length === 0) {
-          setFavoriteListings([]);
-          return;
-        }
-        // Fetch all listings and filter by favorite ids
-        // Alternatively, the backend could support a query by ids,
-        // but fetching all is a fallback that works.
-        const data = await apiClient.get<{ data: Listing[] }>('/listings');
-        setFavoriteListings(data.data.filter(l => favorites.includes(l.id)));
-      } catch (err: any) {
-        setError(err.message || 'Failed to load favorites');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchFavorites();
-  }, [favorites]);
+  const favoriteListings = favoritesData ? favoritesData.map(f => f.listing) : [];
 
   return (
     <div className="w-full space-y-8 max-w-7xl mx-auto px-4 xl:px-0 mt-6">
@@ -56,7 +31,7 @@ export default function BuyerFavorites() {
         </div>
       ) : error ? (
         <div className="flex flex-col items-center justify-center py-20 text-center bg-white/60 backdrop-blur-md rounded-2xl border border-[#E5E9F2] shadow-sm text-red-500 font-medium">
-          {error}
+          {error instanceof Error ? error.message : 'Failed to load favorites'}
         </div>
       ) : favoriteListings.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 text-center bg-white/85 backdrop-blur-md rounded-2xl border border-[#E5E9F2] shadow-sm">

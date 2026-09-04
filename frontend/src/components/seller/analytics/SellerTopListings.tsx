@@ -17,7 +17,7 @@ export function SellerTopListings({ listings }: SellerTopListingsProps) {
           <Trophy className="w-5 h-5 text-amber-500" aria-hidden="true" />
           <CardTitle className="text-lg text-[#111827]">Top Performing Listings</CardTitle>
         </div>
-        <CardDescription className="text-[#64748B]">Your best listings by conversion rate.</CardDescription>
+        <CardDescription className="text-[#64748B]">Your best listings by views and enquiries.</CardDescription>
       </CardHeader>
       <CardContent className="flex-1">
         <div className="space-y-4">
@@ -44,12 +44,12 @@ export function SellerTopListings({ listings }: SellerTopListingsProps) {
                 </div>
               </div>
               <div className="text-right shrink-0">
-                <div className="flex items-center gap-1 text-emerald-600 font-semibold text-sm">
+                <div className="flex items-center gap-1 text-emerald-600 font-semibold text-sm justify-end">
                   <TrendingUp className="w-3.5 h-3.5" aria-hidden="true" />
-                  {listing.conversionRate.toFixed(1)}%
+                  Top
                 </div>
                 <p className="text-[10px] text-[#64748B] uppercase tracking-wider mt-1 font-medium">
-                  Conversion
+                  Performing
                 </p>
               </div>
             </div>

@@ -1,7 +1,7 @@
 import { Building2, MapPin, Eye, Edit } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { useBuyerStore } from '@/store/useBuyerStore';
+import { useBuyerProfile } from '@/hooks/useBuyerProfile';
 
 interface ProfileHeaderProps {
   onEdit: () => void;
@@ -9,7 +9,9 @@ interface ProfileHeaderProps {
 }
 
 export function ProfileHeader({ onEdit, onPreview }: ProfileHeaderProps) {
-  const { profile } = useBuyerStore();
+  const { data: profile } = useBuyerProfile();
+
+  if (!profile) return null;
 
   return (
     <div className="bg-card border rounded-lg overflow-hidden">
@@ -20,8 +22,8 @@ export function ProfileHeader({ onEdit, onPreview }: ProfileHeaderProps) {
         <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-end -mt-12 sm:-mt-16">
             <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-card bg-muted flex items-center justify-center overflow-hidden shrink-0">
-              {profile.avatar ? (
-                <img src={profile.avatar} alt={profile.fullName} className="w-full h-full object-cover" />
+              {profile.avatarUrl ? (
+                <img src={profile.avatarUrl} alt={profile.fullName} className="w-full h-full object-cover" />
               ) : (
                 <span className="text-4xl font-bold text-muted-foreground">{profile.fullName.charAt(0)}</span>
               )}

@@ -1,38 +1,76 @@
 import { useState, useEffect } from 'react';
 import { Seo } from '@/components/shared/Seo';
 import { motion } from 'framer-motion';
-import { FilterSidebar } from '@/components/shared/FilterSidebar';
+import { BuyerFilterSidebar as FilterSidebar } from '@/components/buyer/BuyerFilterSidebar';
 import { ListingCard } from '@/components/shared/ListingCard';
 import { Pagination } from '@/components/shared/Pagination';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { apiClient } from '@/services/apiClient';
-import type { Listing } from '@/types/api';
-import { Search as SearchIcon, SlidersHorizontal, LayoutGrid, List, X } from 'lucide-react';
+import { useListingSearch } from '@/hooks/useListingSearch';
+import { Search as SearchIcon, SlidersHorizontal, LayoutGrid, List, X, BookmarkPlus } from 'lucide-react';
+import { useUserStore } from '@/store/useUserStore';
+import { useCreateSavedSearch } from '@/hooks/useSavedSearches';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { toast } from 'react-hot-toast';
 
 export default function Search() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showMobileFilters, setShowMobileFilters] = useState(false);
-  const [listings, setListings] = useState<Listing[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [searchInput, setSearchInput] = useState('');
+  
+  const {
+    filters,
+    updateFilter,
+    clearFilters,
+    currentPage,
+    setCurrentPage,
+    totalPages,
+    totalResults,
+    listings,
+    isLoading,
+    error,
+  } = useListingSearch(12);
+
+  const { user } = useUserStore();
+  const isBuyer = user?.roles?.includes('buyer');
+  const { mutate: createSavedSearch, isPending: isSavingSearch } = useCreateSavedSearch();
+  const [saveSearchOpen, setSaveSearchOpen] = useState(false);
+  const [saveSearchName, setSaveSearchName] = useState('');
 
   useEffect(() => {
-    const fetchListings = async () => {
-      try {
-        setIsLoading(true);
-        const data = await apiClient.get<{ data: Listing[] }>('/listings');
-        setListings(data.data);
-      } catch (err: any) {
-        setError(err.message || 'Failed to load listings');
-      } finally {
-        setIsLoading(false);
+    if (filters.query !== undefined) {
+      setSearchInput(filters.query);
+    }
+  }, [filters.query]);
+
+  const handleSaveSearch = () => {
+    if (!saveSearchName.trim()) {
+      toast.error('Please enter a name for your saved search');
+      return;
+    }
+    
+    createSavedSearch({
+      name: saveSearchName,
+      search: filters.query || undefined,
+      category: filters.category !== 'all' ? filters.category : undefined,
+      location: filters.location !== 'all' ? filters.location : undefined,
+      listingType: filters.listingType !== 'all' ? filters.listingType : undefined,
+      minPrice: filters.minPrice > 0 ? filters.minPrice : undefined,
+      maxPrice: filters.maxPrice > 0 ? filters.maxPrice : undefined,
+    }, {
+      onSuccess: () => {
+        toast.success('Search saved successfully');
+        setSaveSearchOpen(false);
+        setSaveSearchName('');
+      },
+      onError: () => {
+        toast.error('Failed to save search');
       }
-    };
-    fetchListings();
-  }, []);
+    });
+  };
 
   return (
     <>
@@ -88,9 +126,13 @@ export default function Search() {
                 type="text"
                 placeholder="Find Listings, Categories, Or Enter A Listing ID..."
                 className="flex-1 h-14 bg-transparent border-none shadow-none text-white text-base md:text-lg placeholder:text-white/70 focus-visible:ring-0 px-0"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && updateFilter('query', searchInput)}
               />
               <button 
                 type="button"
+                onClick={() => updateFilter('query', searchInput)}
                 className="w-12 h-12 md:w-14 md:h-14 flex-shrink-0 bg-white rounded-full flex items-center justify-center hover:bg-slate-100 hover:scale-105 active:scale-95 transition-all ml-4 shadow-md"
               >
                 <SearchIcon className="w-5 h-5 md:w-6 md:h-6 text-[#0B4C8C]" />
@@ -124,7 +166,7 @@ export default function Search() {
                 <X className="w-5 h-5" />
               </Button>
             </div>
-            <FilterSidebar />
+            <FilterSidebar filters={filters} updateFilter={updateFilter} clearFilters={clearFilters} />
           </div>
 
           {/* Main Content */}
@@ -133,18 +175,41 @@ export default function Search() {
             <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6 mb-8">
               <div className="flex flex-wrap items-center gap-3">
                 <span className="text-base text-slate-800 mr-4 font-bold">
-                  {listings.length} Results
+                  {totalResults} Results
                 </span>
-                {/* Mock Active Chips */}
-                <Badge variant="secondary" className="px-4 py-1.5 text-sm font-medium bg-[#0B4C8C]/10 text-[#0B4C8C] hover:bg-[#0B4C8C]/20 border-none transition-colors">
-                  SaaS <X className="w-4 h-4 ml-2 cursor-pointer hover:text-red-500" />
-                </Badge>
-                <Badge variant="secondary" className="px-4 py-1.5 text-sm font-medium bg-[#0B4C8C]/10 text-[#0B4C8C] hover:bg-[#0B4C8C]/20 border-none transition-colors">
-                  Over $500k <X className="w-4 h-4 ml-2 cursor-pointer hover:text-red-500" />
-                </Badge>
-                <Button variant="link" size="sm" className="text-[#0B4C8C] font-semibold text-sm hover:text-[#0B152A] h-auto p-0 ml-2">
+                
+                {filters.query && (
+                  <Badge variant="secondary" className="px-4 py-1.5 text-sm font-medium bg-[#0B4C8C]/10 text-[#0B4C8C] hover:bg-[#0B4C8C]/20 border-none transition-colors">
+                    "{filters.query}" <X className="w-4 h-4 ml-2 cursor-pointer hover:text-red-500" onClick={() => updateFilter('query', '')} />
+                  </Badge>
+                )}
+                
+                {filters.category && filters.category !== 'all' && (
+                  <Badge variant="secondary" className="px-4 py-1.5 text-sm font-medium bg-[#0B4C8C]/10 text-[#0B4C8C] hover:bg-[#0B4C8C]/20 border-none transition-colors">
+                    {filters.category} <X className="w-4 h-4 ml-2 cursor-pointer hover:text-red-500" onClick={() => updateFilter('category', 'all')} />
+                  </Badge>
+                )}
+
+                {filters.location && filters.location !== 'all' && (
+                  <Badge variant="secondary" className="px-4 py-1.5 text-sm font-medium bg-[#0B4C8C]/10 text-[#0B4C8C] hover:bg-[#0B4C8C]/20 border-none transition-colors">
+                    {filters.location} <X className="w-4 h-4 ml-2 cursor-pointer hover:text-red-500" onClick={() => updateFilter('location', 'all')} />
+                  </Badge>
+                )}
+                
+                <Button variant="link" size="sm" className="text-[#0B4C8C] font-semibold text-sm hover:text-[#0B152A] h-auto p-0 ml-2" onClick={clearFilters}>
                   Clear all
                 </Button>
+                {isBuyer && (
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="ml-2 h-8 rounded-full border-[#0B4C8C] text-[#0B4C8C] hover:bg-[#0B4C8C] hover:text-white transition-colors"
+                    onClick={() => setSaveSearchOpen(true)}
+                  >
+                    <BookmarkPlus className="w-4 h-4 mr-2" />
+                    Save Search
+                  </Button>
+                )}
               </div>
 
               <div className="flex items-center gap-4 w-full xl:w-auto self-end xl:self-auto">
@@ -213,12 +278,52 @@ export default function Search() {
             </div>
 
             <div className="mt-12">
-              <Pagination currentPage={1} totalPages={5} onPageChange={() => {}} />
+              <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
             </div>
           </main>
         </div>
         </div>
       </div>
+
+      <Dialog open={saveSearchOpen} onOpenChange={setSaveSearchOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Save Search</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="name">Name your search</Label>
+              <Input
+                id="name"
+                placeholder="e.g. London Restaurants under £500k"
+                value={saveSearchName}
+                onChange={(e) => setSaveSearchName(e.target.value)}
+              />
+            </div>
+            <div className="text-sm text-slate-500 mt-2 bg-slate-50 p-3 rounded-lg border border-slate-100">
+              <p className="font-semibold mb-1 text-slate-700">Current Filters:</p>
+              <ul className="list-disc pl-4 space-y-1">
+                {filters.query && <li>Keyword: {filters.query}</li>}
+                {filters.listingType && filters.listingType !== 'all' && <li>Type: {filters.listingType}</li>}
+                {filters.category && filters.category !== 'all' && <li>Category: {filters.category}</li>}
+                {filters.location && filters.location !== 'all' && <li>Location: {filters.location}</li>}
+                {(filters.minPrice > 0 || filters.maxPrice > 0) && (
+                  <li>Price: {filters.minPrice > 0 ? `£${filters.minPrice.toLocaleString()}` : '£0'} - {filters.maxPrice > 0 ? `£${filters.maxPrice.toLocaleString()}` : 'Max'}</li>
+                )}
+                {!filters.query && filters.listingType === 'all' && filters.category === 'all' && filters.location === 'all' && filters.minPrice === 0 && filters.maxPrice === 0 && (
+                  <li className="text-slate-400 italic">No filters applied</li>
+                )}
+              </ul>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setSaveSearchOpen(false)}>Cancel</Button>
+            <Button onClick={handleSaveSearch} disabled={isSavingSearch} className="bg-[#0B4C8C] hover:bg-[#0B152A] text-white">
+              {isSavingSearch ? 'Saving...' : 'Save Search'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

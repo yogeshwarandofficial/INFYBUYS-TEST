@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useBuyerStore } from '@/store/useBuyerStore';
-import type { SavedSearch } from '@/store/useBuyerStore';
+import { useUpdateSavedSearch } from '@/hooks/useSavedSearches';
+import type { SavedSearch } from '@/hooks/useSavedSearches';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -16,11 +16,21 @@ interface SavedSearchCardProps {
 }
 
 export function SavedSearchCard({ search }: SavedSearchCardProps) {
-  const { toggleSearchAlert } = useBuyerStore();
+  const { mutate: updateSearch } = useUpdateSavedSearch();
   const [showEdit, setShowEdit] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
 
-  const { filters } = search;
+  const filters = search.filtersJson || {
+    query: search.search || '',
+    category: search.category || 'all',
+    location: search.location || 'all',
+    minPrice: search.minPrice || 0,
+    maxPrice: search.maxPrice || 0,
+    minRevenue: 0,
+    status: 'all',
+  };
+  const alertEnabled = search.alertFrequency && search.alertFrequency !== 'none';
+  const toggleSearchAlert = () => updateSearch({ id: search.id, data: { alertFrequency: alertEnabled ? 'none' : 'daily' } });
 
   // Build the URL for running the search
   const runUrl = new URL('/buyer/browse', window.location.origin);
@@ -66,8 +76,8 @@ export function SavedSearchCard({ search }: SavedSearchCardProps) {
                   <Edit2 className="w-4 h-4 mr-2" />
                   Edit Name & Alerts
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => toggleSearchAlert(search.id)}>
-                  {search.alertEnabled ? (
+                <DropdownMenuItem onClick={toggleSearchAlert}>
+                  {alertEnabled ? (
                     <><BellOff className="w-4 h-4 mr-2" /> Disable Alerts</>
                   ) : (
                     <><Bell className="w-4 h-4 mr-2" /> Enable Alerts</>
@@ -120,19 +130,19 @@ export function SavedSearchCard({ search }: SavedSearchCardProps) {
 
           <div className="bg-[#F8FAFC] p-3 rounded-lg flex justify-between items-center text-[13px] border border-[#E5E9F2]/50">
             <span className="text-[#64748B] font-medium">Approx. Results</span>
-            <span className="font-bold text-[#111827]">{search.resultCount} listings</span>
+            <span className="font-bold text-[#111827]">0 listings</span>
           </div>
         </CardContent>
 
         <CardFooter className="pt-4 border-t border-[#E5E9F2]/50 flex justify-between items-center bg-white/40">
           <div className="flex items-center gap-2">
             <Switch
-              checked={search.alertEnabled}
-              onCheckedChange={() => toggleSearchAlert(search.id)}
-              aria-label={search.alertEnabled ? "Disable alerts" : "Enable alerts"}
+              checked={!!alertEnabled}
+              onCheckedChange={toggleSearchAlert}
+              aria-label={alertEnabled ? "Disable alerts" : "Enable alerts"}
             />
-            <span className={`text-[13px] font-semibold ${search.alertEnabled ? 'text-[#2563EB]' : 'text-[#94A3B8]'}`}>
-              {search.alertEnabled ? 'Alerts On' : 'Alerts Off'}
+            <span className={`text-[13px] font-semibold ${alertEnabled ? 'text-[#2563EB]' : 'text-[#94A3B8]'}`}>
+              {alertEnabled ? 'Alerts On' : 'Alerts Off'}
             </span>
           </div>
           <Button size="sm" asChild className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white shadow-sm rounded-lg transition-colors">

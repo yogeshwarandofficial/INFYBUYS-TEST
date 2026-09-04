@@ -52,6 +52,8 @@ export function SellerNotificationIcon({ type, className }: SellerNotificationIc
         </div>
       );
     case 'nda':
+    case 'NDA_REQUESTED':
+    case 'NDA_SIGNED':
       return (
         <div className={cn(baseClasses, 'bg-indigo-500/10 border-indigo-500/20 text-indigo-500', className)} aria-hidden="true">
           <FileText className="w-4 h-4" />

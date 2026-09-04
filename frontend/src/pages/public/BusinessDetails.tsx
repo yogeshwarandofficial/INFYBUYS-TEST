@@ -4,13 +4,14 @@ import { Breadcrumb } from '@/components/shared/Breadcrumb';
 import { ImageGallery } from '@/components/shared/ImageGallery';
 import { ListingCard } from '@/components/shared/ListingCard';
 import { ContactSellerAction } from '@/components/buyer/ContactSellerAction';
+import { FavoriteButton } from '@/components/shared/FavoriteButton';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { apiClient } from '@/services/apiClient';
 import type { Listing } from '@/types/api';
 import { useParams, Link, useNavigate } from 'react-router';
-import { MapPin, Building2, FileText, CheckCircle2, ShieldCheck, Share2, Heart, Lock, Calendar, Briefcase, Flag, ArrowRight, User } from 'lucide-react';
+import { MapPin, Building2, FileText, CheckCircle2, ShieldCheck, Share2, Lock, Calendar, Briefcase, Flag, ArrowRight, User } from 'lucide-react';
 import { useUserStore } from '@/store/useUserStore';
 import { useBuyerStore } from '@/store/useBuyerStore';
 import { NDARequestDialog } from '@/components/buyer/nda/NDARequestDialog';
@@ -26,7 +27,7 @@ export default function BusinessDetails() {
   const [hasActiveSub, setHasActiveSub] = useState(false);
 
   const { user } = useUserStore();
-  const { favorites, toggleFavorite, conversations, createConversation } = useBuyerStore();
+  const { conversations, createConversation } = useBuyerStore();
   const [ndaDialogOpen, setNdaDialogOpen] = useState(false);
   const [ndaStatus, setNdaStatus] = useState<{ndaRequired: boolean, accepted: boolean} | null>(null);
   const [sellerContact, setSellerContact] = useState<{contactName: string | null, contactEmail: string | null, contactPhone: string | null} | null>(null);
@@ -77,8 +78,11 @@ export default function BusinessDetails() {
 
         if (id) {
           try {
-            const ndaRes = await apiClient.get<{ndaRequired: boolean, accepted: boolean}>(`/listings/${id}/nda`);
-            setNdaStatus(ndaRes);
+            const ndaRes = await apiClient.get<{ndaRequired: boolean, agreement: any}>(`/listings/${id}/nda/status`);
+            setNdaStatus({
+              ndaRequired: ndaRes.ndaRequired,
+              accepted: ndaRes.agreement?.status === 'SIGNED'
+            });
           } catch (e) {
             // ignore
           }
@@ -89,7 +93,7 @@ export default function BusinessDetails() {
     checkSubAndNda();
   }, [id, user]);
 
-  const isFavorite = listing ? favorites.includes(listing.id) : false;
+
 
   const hasAccess = Boolean(
     user &&
@@ -182,6 +186,11 @@ export default function BusinessDetails() {
                   Featured
                 </Badge>
               )}
+              {listing.status === 'SOLD_LET' && (
+                <Badge variant="destructive" className="bg-red-600 hover:bg-red-700 tracking-widest px-3 py-1 font-black">
+                  SOLD
+                </Badge>
+              )}
             </div>
             <h1 className="text-3xl md:text-4xl font-bold mb-4">{listing.title}</h1>
             <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
@@ -201,25 +210,10 @@ export default function BusinessDetails() {
                 listingTitle={listing.title}
                 sellerName={listing.seller?.name || 'Seller'}
               />
-              <Button
-                variant="outline"
-                size="icon"
-                aria-label={isFavorite ? "Remove from favorites" : "Favorite this listing"}
-                onClick={() => {
-                  if (!user) {
-                    alert('Please log in as a buyer to save listings.');
-                    return;
-                  }
-                  if (!user.roles?.some(r => r.toLowerCase() === 'buyer')) {
-                    alert('Only buyers can save listings.');
-                    return;
-                  }
-                  toggleFavorite(listing.id);
-                }}
-                className={isFavorite ? "text-red-500 hover:text-red-600 bg-red-50 hover:bg-red-100 border-red-200" : ""}
-              >
-                <Heart className={`w-5 h-5 ${isFavorite ? "fill-current" : ""}`} />
-              </Button>
+              <FavoriteButton 
+                listingId={listing.id} 
+                className="w-10 h-10 border border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex items-center justify-center whitespace-nowrap"
+              />
               <Button variant="outline" size="icon" aria-label="Share this listing"><Share2 className="w-5 h-5" /></Button>
             </div>
           </div>
@@ -304,11 +298,19 @@ export default function BusinessDetails() {
                   <div className="grid sm:grid-cols-2 gap-8">
                     <div>
                       <div className="text-sm text-muted-foreground mb-1">TTM Revenue (Turnover)</div>
-                      <div className="text-3xl font-bold">{hasAccess ? `$${(Number(listing.turnover) || 0).toLocaleString()}` : '$XXX,XXX'}</div>
+                      <div className="text-3xl font-bold">
+                        {hasAccess 
+                          ? (listing.turnover != null ? `$${Number(listing.turnover).toLocaleString()}` : 'Not Disclosed')
+                          : '$XXX,XXX'}
+                      </div>
                     </div>
                     <div>
                       <div className="text-sm text-muted-foreground mb-1">TTM Profit</div>
-                      <div className="text-3xl font-bold text-success">{hasAccess ? `$${(Number(listing.netProfit) || 0).toLocaleString()}` : '$XXX,XXX'}</div>
+                      <div className="text-3xl font-bold text-success">
+                        {hasAccess 
+                          ? (listing.netProfit != null ? `$${Number(listing.netProfit).toLocaleString()}` : 'Not Disclosed')
+                          : '$XXX,XXX'}
+                      </div>
                     </div>
                   </div>
                 </CardContent>
@@ -418,45 +420,49 @@ export default function BusinessDetails() {
                   </div>
                 </div>
 
-                <Button
-                  className="w-full mb-3"
-                  onClick={() => {
-                    if (!user) {
-                      navigate('/login');
-                      return;
-                    }
-                    if (!user.roles?.some(r => r.toLowerCase() === 'buyer')) {
-                      navigate('/unauthorized');
-                      return;
-                    }
+                {user?.id !== listing.sellerId && (
+                  <>
+                    <Button
+                      className="w-full mb-3"
+                      onClick={() => {
+                        if (!user) {
+                          navigate('/login');
+                          return;
+                        }
+                        if (!user.roles?.some(r => r.toLowerCase() === 'buyer')) {
+                          navigate('/unauthorized');
+                          return;
+                        }
 
-                    const existingConversation = conversations.find(c => c.listingId === listing.id);
+                        const existingConversation = conversations.find(c => c.listingId === listing.id);
 
-                    if (existingConversation) {
-                      navigate(`/buyer/messages/${existingConversation.id}`);
-                    } else {
-                      const newId = createConversation({
-                        listingId: listing.id,
-                        listingTitle: listing.title,
-                        businessName: listing.title,
-                        businessImage: listing.images?.[0] || '',
-                        sellerName: listing.seller?.name || 'Seller',
-                        sellerAvatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(listing.seller?.name || 'Seller')}`,
-                      });
-                      navigate(`/buyer/messages/${newId}`);
-                    }
-                  }}
-                >
-                  Message Seller
-                </Button>
-                {user?.roles?.some(r => r.toLowerCase() === 'buyer') && (
-                  <SubmitReviewDialog
-                    listingId={listing.id}
-                    listingTitle={listing.title}
-                    sellerId={listing.seller?.name?.toLowerCase().replace(/\s+/g, '-') || 'seller'}
-                    sellerName={listing.seller?.name || 'Seller'}
-                    trigger={<Button variant="outline" className="w-full mb-3">Leave a Review</Button>}
-                  />
+                        if (existingConversation) {
+                          navigate(`/buyer/messages/${existingConversation.id}`);
+                        } else {
+                          const newId = createConversation({
+                            listingId: listing.id,
+                            listingTitle: listing.title,
+                            businessName: listing.title,
+                            businessImage: listing.images?.[0] || '',
+                            sellerName: listing.seller?.name || 'Seller',
+                            sellerAvatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(listing.seller?.name || 'Seller')}`,
+                          });
+                          navigate(`/buyer/messages/${newId}`);
+                        }
+                      }}
+                    >
+                      Message Seller
+                    </Button>
+                    {user?.roles?.some(r => r.toLowerCase() === 'buyer') && (
+                      <SubmitReviewDialog
+                        listingId={listing.id}
+                        listingTitle={listing.title}
+                        sellerId={listing.seller?.name?.toLowerCase().replace(/\s+/g, '-') || 'seller'}
+                        sellerName={listing.seller?.name || 'Seller'}
+                        trigger={<Button variant="outline" className="w-full mb-3">Leave a Review</Button>}
+                      />
+                    )}
+                  </>
                 )}
                 <div className="text-center text-xs text-muted-foreground">
                   Response time: Usually within 24 hours

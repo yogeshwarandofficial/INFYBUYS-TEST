@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Seo } from '@/components/shared/Seo';
 import { useSellerStore } from '@/store/useSellerStore';
 import { SellerNotificationPreferences } from '@/components/seller/settings/SellerNotificationPreferences';
@@ -11,8 +11,12 @@ import { Button } from '@/components/ui/button';
 import { AlertCircle } from 'lucide-react';
 
 export default function SellerSettings() {
-  const { profile, settings, cancelSellerAccountDeletion } = useSellerStore();
+  const { profile, settings, cancelSellerAccountDeletion, initSellerSettings } = useSellerStore();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+  useEffect(() => {
+    initSellerSettings();
+  }, [initSellerSettings]);
 
   return (
     <>

@@ -1,4 +1,4 @@
-import { type SellerEnquiryAnalytics } from '@/store/useSellerStore';
+import { type SellerEnquiryAnalytics } from '@/hooks/useSellerAnalytics';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 
 interface SellerEnquiryAnalyticsProps {
@@ -12,11 +12,10 @@ export function SellerEnquiryAnalyticsCard({ analytics }: SellerEnquiryAnalytics
   };
 
   const metrics = [
-    { label: 'New', value: analytics.new, colorClass: 'bg-blue-500' },
-    { label: 'Contacted', value: analytics.contacted, colorClass: 'bg-amber-500' },
-    { label: 'Qualified', value: analytics.qualified, colorClass: 'bg-purple-500' },
-    { label: 'Negotiating', value: analytics.negotiating, colorClass: 'bg-indigo-500' },
-    { label: 'Closed (Won)', value: analytics.closed, colorClass: 'bg-emerald-500' },
+    { label: 'Pending', value: analytics.pending, colorClass: 'bg-blue-500' },
+    { label: 'In Discussion', value: analytics.inDiscussion, colorClass: 'bg-amber-500' },
+    { label: 'NDA', value: analytics.nda, colorClass: 'bg-purple-500' },
+    { label: 'Closed', value: analytics.closed, colorClass: 'bg-emerald-500' },
     { label: 'Rejected', value: analytics.rejected, colorClass: 'bg-rose-500' },
   ];
 

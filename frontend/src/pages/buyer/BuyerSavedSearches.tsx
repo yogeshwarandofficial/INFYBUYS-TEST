@@ -1,11 +1,15 @@
-import { useBuyerStore } from '@/store/useBuyerStore';
+import { useSavedSearches } from '@/hooks/useSavedSearches';
 import { SavedSearchCard } from '@/components/buyer/SavedSearchCard';
 import { Button } from '@/components/ui/button';
 import { Search, BellRing } from 'lucide-react';
 import { Link } from 'react-router';
 
 export default function BuyerSavedSearches() {
-  const { savedSearches } = useBuyerStore();
+  const { data: savedSearches = [], isLoading } = useSavedSearches();
+
+  if (isLoading) {
+    return <div className="p-8 text-center text-slate-500">Loading saved searches...</div>;
+  }
 
   return (
     <div className="w-full space-y-8 max-w-7xl mx-auto px-4 xl:px-0 mt-6">
@@ -22,7 +26,7 @@ export default function BuyerSavedSearches() {
       </div>
 
       {/* Mock Alert Display to demonstrate UI */}
-      {savedSearches.some(s => s.alertEnabled) && (
+      {savedSearches.some((s: any) => s.alertFrequency && s.alertFrequency !== 'none') && (
         <div className="mb-8 bg-white/80 backdrop-blur-md border border-blue-100 shadow-sm rounded-xl p-5 flex items-start gap-4">
           <div className="mt-1 bg-blue-50 p-2.5 rounded-full shadow-inner ring-4 ring-blue-50/50">
             <BellRing className="w-5 h-5 text-[#2563EB]" />

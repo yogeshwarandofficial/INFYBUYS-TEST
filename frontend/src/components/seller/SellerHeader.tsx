@@ -6,11 +6,14 @@ import { SellerSidebar } from './SellerSidebar';
 import { SellerProfileMenu } from './SellerProfileMenu';
 import { Input } from '@/components/ui/input';
 import { useSellerStore } from '@/store/useSellerStore';
+import { useUnreadNotificationCount } from '@/hooks/useNotifications';
 
 export function SellerHeader() {
-  const { conversations, notifications } = useSellerStore();
+  const { conversations } = useSellerStore();
   const unreadMessagesCount = conversations.filter((c) => c.unreadCount > 0).length;
-  const unreadNotificationsCount = notifications.filter((n) => !n.isRead).length;
+  
+  const { data: unreadNotifications } = useUnreadNotificationCount();
+  const unreadNotificationsCount = unreadNotifications?.count || 0;
 
   return (
     <header className="h-16 border-b border-[#E5E9F2] bg-white/90 backdrop-blur-md flex items-center justify-between px-4 sticky top-0 z-30 shadow-sm">
@@ -44,11 +47,11 @@ export function SellerHeader() {
 
         {/* Messages */}
         <Link
-          to="/seller/messages"
+          to="/seller/enquiries"
           aria-label={
             unreadMessagesCount > 0
-              ? `Messages — ${unreadMessagesCount} unread`
-              : 'Messages'
+              ? `Enquiries — ${unreadMessagesCount} unread`
+              : 'Enquiries'
           }
           className="relative"
         >

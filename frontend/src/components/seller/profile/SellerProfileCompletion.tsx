@@ -1,4 +1,4 @@
-import { type SellerProfile } from '@/store/useSellerStore';
+import { type SellerProfileData as SellerProfile } from '@/hooks/useSellerProfile';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { CheckCircle2, AlertCircle } from 'lucide-react';

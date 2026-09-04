@@ -52,7 +52,7 @@ export default function AdminKycDetails() {
             <ShieldCheck className="w-6 h-6 text-primary" />
             KYC Review: {details.businessName}
           </h1>
-          <p className="text-gray-500 mt-1">Submitted on {new Date(details.kycSubmittedAt).toLocaleString()}</p>
+          <p className="text-gray-500 mt-1">Submitted on {details.kycSubmittedAt ? new Date(details.kycSubmittedAt).toLocaleString() : 'N/A'}</p>
         </div>
         <div className="flex gap-3">
           {details.kycStatus === 'PENDING' && (

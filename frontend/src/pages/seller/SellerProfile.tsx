@@ -1,5 +1,5 @@
 import { Seo } from '@/components/shared/Seo';
-import { useSellerStore } from '@/store/useSellerStore';
+import { useSellerProfile } from '@/hooks/useSellerProfile';
 import { SellerProfileHeader } from '@/components/seller/profile/SellerProfileHeader';
 import { SellerProfileCompletion } from '@/components/seller/profile/SellerProfileCompletion';
 import { SellerContactInformationCard } from '@/components/seller/profile/SellerContactInformationCard';
@@ -7,7 +7,24 @@ import { SellerBusinessInformationCard } from '@/components/seller/profile/Selle
 import { SellerSocialLinksCard } from '@/components/seller/profile/SellerSocialLinksCard';
 
 export default function SellerProfile() {
-  const { profile } = useSellerStore();
+  const { data: profile, isLoading, error } = useSellerProfile();
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (error || !profile) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[50vh] text-center">
+        <h2 className="text-xl font-semibold mb-2">Failed to load profile</h2>
+        <p className="text-muted-foreground">Please try refreshing the page.</p>
+      </div>
+    );
+  }
 
   return (
     <>

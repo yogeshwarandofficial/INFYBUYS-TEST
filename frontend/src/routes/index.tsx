@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router';
+import { createBrowserRouter, Navigate } from 'react-router';
 import { lazy, Suspense } from 'react';
 import { RootLayout } from '../layouts/RootLayout';
 import { PublicLayout } from '../layouts/PublicLayout';
@@ -73,12 +73,11 @@ const SellerEditListing = lazy(() => import('../pages/seller/SellerEditListing')
 const SellerListingPreview = lazy(() => import('../pages/seller/SellerListingPreview'));
 const SellerEnquiries = lazy(() => import('../pages/seller/SellerEnquiries'));
 const SellerEnquiryDetails = lazy(() => import('../pages/seller/SellerEnquiryDetails'));
-const SellerMessages = lazy(() => import('../pages/seller/SellerMessages'));
-const SellerConversationDetails = lazy(() => import('../pages/seller/SellerConversationDetails'));
 const SellerNotifications = lazy(() => import('../pages/seller/SellerNotifications'));
 const SellerAnalytics = lazy(() => import('../pages/seller/SellerAnalytics'));
 const SellerProfile = lazy(() => import('../pages/seller/SellerProfile'));
 const SellerSettings = lazy(() => import('../pages/seller/SellerSettings'));
+const SellerKyc = lazy(() => import('../pages/seller/SellerKyc'));
 
 // Admin Pages
 const AdminLayout = lazy(() => import('../layouts/AdminLayout'));
@@ -102,6 +101,8 @@ const AdminNotifications = lazy(() => import('../pages/admin/AdminNotifications'
 const AdminAnalytics = lazy(() => import('../pages/admin/AdminAnalytics'));
 const AdminReviews = lazy(() => import('../pages/admin/AdminReviews'));
 const AdminReviewDetails = lazy(() => import('../pages/admin/AdminReviewDetails'));
+const AdminKyc = lazy(() => import('../pages/admin/AdminKyc'));
+const AdminKycDetails = lazy(() => import('../pages/admin/AdminKycDetails'));
 
 const PageLoader = () => (
   <div className="flex-1 flex items-center justify-center min-h-[50vh]">
@@ -219,12 +220,12 @@ export const router = createBrowserRouter([
               { path: 'listings/:id/edit', element: <Suspense fallback={<PageLoader />}><SellerEditListing /></Suspense> },
               { path: 'enquiries', element: <Suspense fallback={<PageLoader />}><SellerEnquiries /></Suspense> },
               { path: 'enquiries/:id', element: <Suspense fallback={<PageLoader />}><SellerEnquiryDetails /></Suspense> },
-              { path: 'messages', element: <Suspense fallback={<PageLoader />}><SellerMessages /></Suspense> },
-              { path: 'messages/:id', element: <Suspense fallback={<PageLoader />}><SellerConversationDetails /></Suspense> },
               { path: 'notifications', element: <Suspense fallback={<PageLoader />}><SellerNotifications /></Suspense> },
               { path: 'analytics', element: <Suspense fallback={<PageLoader />}><SellerAnalytics /></Suspense> },
               { path: 'profile', element: <Suspense fallback={<PageLoader />}><SellerProfile /></Suspense> },
-              { path: 'settings', element: <Suspense fallback={<PageLoader />}><SellerSettings /></Suspense> }
+              { path: 'settings', element: <Suspense fallback={<PageLoader />}><SellerSettings /></Suspense> },
+              { path: 'kyc', element: <Suspense fallback={<PageLoader />}><SellerKyc /></Suspense> },
+              { path: 'verification', element: <Navigate to="/seller/kyc" replace /> }
             ]
           }
         ]
@@ -264,6 +265,8 @@ export const router = createBrowserRouter([
               { path: 'reviews', element: <Suspense fallback={<PageLoader />}><AdminReviews /></Suspense> },
               { path: 'reviews/:id', element: <Suspense fallback={<PageLoader />}><AdminReviewDetails /></Suspense> },
               { path: 'reports', element: <Suspense fallback={<PageLoader />}><AdminReports /></Suspense> },
+              { path: 'kyc', element: <Suspense fallback={<PageLoader />}><AdminKyc /></Suspense> },
+              { path: 'kyc/:id', element: <Suspense fallback={<PageLoader />}><AdminKycDetails /></Suspense> },
               { path: 'activity', element: <Suspense fallback={<PageLoader />}><AdminActivityLog /></Suspense> },
               { path: 'settings', element: <Suspense fallback={<PageLoader />}><AdminSettings /></Suspense> }
             ]

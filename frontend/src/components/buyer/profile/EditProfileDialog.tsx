@@ -1,22 +1,24 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { useBuyerStore, type BuyerProfile } from '@/store/useBuyerStore';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useBuyerProfile, useUpdateBuyerProfile, useUploadAvatar } from '@/hooks/useBuyerProfile';
+import { Upload, X } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 const profileSchema = z.object({
   fullName: z.string().min(2, 'Full name is required'),
   email: z.string().email('Invalid email address'),
   phone: z.string().min(5, 'Phone number is too short').max(20, 'Phone number is too long').optional().or(z.literal('')),
-  company: z.string().min(2, 'Company is required'),
-  jobTitle: z.string().min(2, 'Job title is required'),
-  location: z.string().min(2, 'Location is required'),
+  company: z.string().optional().or(z.literal('')),
+  jobTitle: z.string().optional().or(z.literal('')),
+  location: z.string().optional().or(z.literal('')),
   bio: z.string().max(500, 'Bio cannot exceed 500 characters').optional().or(z.literal('')),
   buyerType: z.enum(['Individual', 'Corporate', 'Private Equity', 'Search Fund']),
   website: z.string().url('Must be a valid URL').optional().or(z.literal('')),
@@ -31,8 +33,13 @@ interface EditProfileDialogProps {
 }
 
 export function EditProfileDialog({ open, onOpenChange }: EditProfileDialogProps) {
-  const { profile, updateProfile } = useBuyerStore();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { data: profile } = useBuyerProfile();
+  const updateProfileMutation = useUpdateBuyerProfile();
+  const uploadAvatarMutation = useUploadAvatar();
+
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const {
     register,
@@ -61,7 +68,7 @@ export function EditProfileDialog({ open, onOpenChange }: EditProfileDialogProps
 
   // Reset form when dialog opens
   useEffect(() => {
-    if (open) {
+    if (open && profile) {
       reset({
         fullName: profile.fullName || '',
         email: profile.email || '',
@@ -70,23 +77,41 @@ export function EditProfileDialog({ open, onOpenChange }: EditProfileDialogProps
         jobTitle: profile.jobTitle || '',
         location: profile.location || '',
         bio: profile.bio || '',
-        buyerType: profile.buyerType || 'Corporate',
+        buyerType: profile.buyerType as any || 'Corporate',
         website: profile.website || '',
         linkedin: profile.linkedin || '',
       });
+      setAvatarFile(null);
+      setAvatarPreview(null);
     }
   }, [open, profile, reset]);
 
-  const onSubmit = async (data: ProfileFormValues) => {
-    setIsSubmitting(true);
-
-    // Simulate network delay
-    setTimeout(() => {
-      updateProfile(data as Partial<BuyerProfile>);
-      setIsSubmitting(false);
-      onOpenChange(false);
-    }, 600);
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setAvatarFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setAvatarPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
   };
+
+  const onSubmit = async (data: ProfileFormValues) => {
+    try {
+      if (avatarFile) {
+        await uploadAvatarMutation.mutateAsync(avatarFile);
+      }
+      await updateProfileMutation.mutateAsync(data);
+      toast.success('Profile updated successfully');
+      onOpenChange(false);
+    } catch (error) {
+      toast.error('Failed to update profile');
+    }
+  };
+
+  const isSubmitting = updateProfileMutation.isPending || uploadAvatarMutation.isPending;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -99,6 +124,46 @@ export function EditProfileDialog({ open, onOpenChange }: EditProfileDialogProps
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 pt-4">
+          
+          <div className="flex flex-col space-y-2">
+            <Label>Profile Picture</Label>
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 rounded-full border bg-muted flex items-center justify-center overflow-hidden">
+                {avatarPreview ? (
+                  <img src={avatarPreview} alt="Avatar Preview" className="w-full h-full object-cover" />
+                ) : profile?.avatarUrl ? (
+                  <img src={profile.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-xl font-bold text-muted-foreground">{profile?.fullName?.charAt(0) || 'U'}</span>
+                )}
+              </div>
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                className="hidden"
+                ref={fileInputRef}
+                onChange={handleAvatarChange}
+              />
+              <div className="flex gap-2">
+                <Button type="button" variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
+                  <Upload className="w-4 h-4 mr-2" />
+                  Upload New
+                </Button>
+                {avatarPreview && (
+                  <Button type="button" variant="ghost" size="sm" onClick={() => {
+                    setAvatarFile(null);
+                    setAvatarPreview(null);
+                    if (fileInputRef.current) fileInputRef.current.value = '';
+                  }}>
+                    <X className="w-4 h-4 mr-2" />
+                    Cancel
+                  </Button>
+                )}
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground">Max size: 5MB. Formats: JPEG, PNG, WebP.</p>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="fullName">Full Name</Label>

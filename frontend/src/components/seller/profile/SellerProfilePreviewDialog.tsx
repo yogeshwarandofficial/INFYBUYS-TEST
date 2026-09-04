@@ -1,4 +1,4 @@
-import { type SellerProfile } from '@/store/useSellerStore';
+import { type SellerProfileData as SellerProfile } from '@/hooks/useSellerProfile';
 import {
   Dialog,
   DialogContent,

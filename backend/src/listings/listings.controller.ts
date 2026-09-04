@@ -70,6 +70,18 @@ export class ListingsController {
     return this.listingsService.submitForReview(req.user.id, id);
   }
 
+  @Post(':id/sold')
+  @UseGuards(JwtAuthGuard)
+  markAsSold(@Request() req: any, @Param('id') id: string) {
+    return this.listingsService.markAsSold(req.user.id, id);
+  }
+
+  @Post(':id/active')
+  @UseGuards(JwtAuthGuard)
+  markAsActive(@Request() req: any, @Param('id') id: string) {
+    return this.listingsService.markAsActive(req.user.id, id);
+  }
+
   @Post(':id/approve')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
@@ -84,19 +96,7 @@ export class ListingsController {
     return this.listingsService.rejectListing(req.user.id, id, { rejectionReasonCode: body?.reason || 'Rejected by admin' });
   }
 
-  @Get(':id/nda')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.BUYER)
-  getNdaStatus(@Request() req: any, @Param('id') id: string) {
-    return this.listingsService.getNdaStatus(req.user.id, id);
-  }
 
-  @Post(':id/nda/accept')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.BUYER)
-  acceptNda(@Request() req: any, @Param('id') id: string) {
-    return this.listingsService.acceptNda(req.user.id, id);
-  }
   @Post(':id/media')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('file'))

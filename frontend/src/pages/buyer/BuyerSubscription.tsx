@@ -26,6 +26,7 @@ export default function BuyerSubscription() {
 
   const [plans, setPlans] = useState<any[]>([]);
   const [subscription, setSubscription] = useState<any>(null);
+  const [subscriptionHistory, setSubscriptionHistory] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -47,6 +48,7 @@ export default function BuyerSubscription() {
       }));
       setPlans(formattedPlans);
       setSubscription(meRes?.subscription || null);
+      setSubscriptionHistory(meRes?.history || []);
     } catch (err: any) {
       setError(err.message || 'Failed to load subscription data');
     } finally {
@@ -282,6 +284,47 @@ export default function BuyerSubscription() {
               </CardContent>
             </Card>
           </div>
+        </div>
+
+        {/* Subscription History */}
+        <div className="pt-8">
+          <h2 className="text-xl font-bold mb-6 text-[#0F172A]">Subscription History</h2>
+          <Card className="bg-white/85 backdrop-blur-md border border-[#DCE5F2] shadow-sm rounded-2xl overflow-hidden">
+            <CardContent className="p-0">
+              {subscriptionHistory.length === 0 ? (
+                <div className="p-6 text-center text-[#64748B] text-sm">No subscription history found.</div>
+              ) : (
+                <div className="divide-y divide-[#E2E8F0]">
+                  {subscriptionHistory.slice(0, 5).map((historyItem: any) => (
+                    <div key={historyItem.id} className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="font-semibold text-[#0F172A]">{historyItem.plan?.name || 'Unknown Plan'}</span>
+                          <Badge variant={historyItem.status === 'ACTIVE' ? 'default' : 'secondary'} className={historyItem.status === 'ACTIVE' ? 'bg-green-100 text-green-800 hover:bg-green-100 border-0 shadow-none dark:bg-green-900/30 dark:text-green-500' : ''}>
+                            {historyItem.status}
+                          </Badge>
+                        </div>
+                        <div className="text-sm text-[#64748B]">
+                          {new Date(historyItem.startDate || historyItem.createdAt).toLocaleDateString()} &rarr; {historyItem.renewalDate ? new Date(historyItem.renewalDate).toLocaleDateString() : 'N/A'}
+                        </div>
+                      </div>
+                      <div className="text-right flex sm:block items-center justify-between sm:justify-end">
+                        <div className="font-medium text-[#0F172A]">${historyItem.plan?.price || 0}</div>
+                        <div className="text-[12px] text-[#64748B]">{historyItem.plan?.billingCycle || 'MONTHLY'}</div>
+                      </div>
+                    </div>
+                  ))}
+                  {subscriptionHistory.length > 5 && (
+                    <div className="p-4 text-center bg-slate-50/50">
+                      <Button variant="ghost" size="sm" className="text-[#2563EB] hover:text-[#1D4ED8] hover:bg-blue-50/50">
+                        View More
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </div>
 
         {/* Available Plans */}

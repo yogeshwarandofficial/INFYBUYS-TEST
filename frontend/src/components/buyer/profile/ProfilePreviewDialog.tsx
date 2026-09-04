@@ -1,4 +1,4 @@
-import { useBuyerStore } from '@/store/useBuyerStore';
+import { useBuyerProfile } from '@/hooks/useBuyerProfile';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Building2, MapPin, Globe, Link, ShieldCheck } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -10,7 +10,9 @@ interface ProfilePreviewDialogProps {
 }
 
 export function ProfilePreviewDialog({ open, onOpenChange }: ProfilePreviewDialogProps) {
-  const { profile } = useBuyerStore();
+  const { data: profile } = useBuyerProfile();
+
+  if (!profile) return null;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -26,8 +28,8 @@ export function ProfilePreviewDialog({ open, onOpenChange }: ProfilePreviewDialo
           <div className="p-6 space-y-6">
             <div className="flex items-start gap-4">
               <div className="w-20 h-20 rounded-full border bg-muted flex items-center justify-center overflow-hidden shrink-0">
-                {profile.avatar ? (
-                  <img src={profile.avatar} alt={profile.fullName} className="w-full h-full object-cover" />
+                {profile.avatarUrl ? (
+                  <img src={profile.avatarUrl} alt={profile.fullName} className="w-full h-full object-cover" />
                 ) : (
                   <span className="text-3xl font-bold text-muted-foreground">{profile.fullName.charAt(0)}</span>
                 )}

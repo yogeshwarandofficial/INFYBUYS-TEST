@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Building2, TrendingUp, DollarSign } from 'lucide-react';
-import { FavoriteButton } from '../buyer/FavoriteButton';
+import { FavoriteButton } from './FavoriteButton';
 
 export type ListingCardVariant = 'featured' | 'latest' | 'premium' | 'similar' | 'compact';
 
@@ -14,7 +14,7 @@ interface ListingCardProps {
   showFavoriteButton?: boolean;
 }
 
-export function ListingCard({ listing, variant = 'latest', className, showFavoriteButton = false }: ListingCardProps) {
+export function ListingCard({ listing, variant = 'latest', className, showFavoriteButton = true }: ListingCardProps) {
   const isCompact = variant === 'compact' || variant === 'similar';
 
   return (
@@ -41,6 +41,13 @@ export function ListingCard({ listing, variant = 'latest', className, showFavori
             </div>
           );
         })()}
+        {listing.status === 'SOLD_LET' && (
+          <div className="absolute inset-0 bg-black/40 flex items-center justify-center z-20 backdrop-blur-[2px]">
+            <div className="bg-red-600 text-white font-black text-2xl tracking-widest px-6 py-2 rounded shadow-lg border-2 border-white/20 rotate-[-12deg]">
+              SOLD
+            </div>
+          </div>
+        )}
       </div>
       <CardHeader className={cn(isCompact ? 'p-4' : 'p-6', 'pb-4')}>
         <div className="flex justify-between items-start mb-2">

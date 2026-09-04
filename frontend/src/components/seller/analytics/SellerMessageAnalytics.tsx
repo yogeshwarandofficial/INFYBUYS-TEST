@@ -1,4 +1,4 @@
-import { type SellerMessageAnalytics } from '@/store/useSellerStore';
+import { type SellerMessageAnalytics } from '@/hooks/useSellerAnalytics';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Link } from 'react-router';
 import { MessageSquare, ArrowRight } from 'lucide-react';
@@ -12,7 +12,7 @@ export function SellerMessageAnalyticsCard({ analytics }: SellerMessageAnalytics
   return (
     <Card className="h-full flex flex-col overflow-hidden bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl">
       <CardHeader className="pb-4 shrink-0">
-        <CardTitle className="text-lg text-[#111827]">Messaging Overview</CardTitle>
+        <CardTitle className="text-lg text-[#111827]">Enquiry Communication</CardTitle>
         <CardDescription className="text-[#64748B]">Status of your buyer communications.</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 flex flex-col justify-between">
@@ -37,9 +37,9 @@ export function SellerMessageAnalyticsCard({ analytics }: SellerMessageAnalytics
 
         <div className="pt-6 mt-auto">
           <Button variant="outline" className="w-full" asChild>
-            <Link to="/seller/messages">
+            <Link to="/seller/enquiries">
               <MessageSquare className="w-4 h-4 mr-2" />
-              Go to Messages
+              Go to Enquiries
               <ArrowRight className="w-4 h-4 ml-auto" />
             </Link>
           </Button>

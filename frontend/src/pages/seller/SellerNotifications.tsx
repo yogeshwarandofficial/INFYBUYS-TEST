@@ -1,4 +1,4 @@
-import { useSellerStore } from '@/store/useSellerStore';
+import { useUnreadNotificationCount } from '@/hooks/useNotifications';
 import { Seo } from '@/components/shared/Seo';
 import { SellerStatCard } from '@/components/seller/dashboard/SellerStatCard';
 import { Bell, BellRing, MailOpen, AlertCircle } from 'lucide-react';
@@ -13,23 +13,25 @@ import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/s
 import { Filter } from 'lucide-react';
 
 export default function SellerNotifications() {
-  const { notifications } = useSellerStore();
   const {
     filters,
     updateFilter,
     resetFilters,
-    filtered,
     paginated,
     currentPage,
     setCurrentPage,
     totalPages,
+    totalCount,
     hasActiveFilters,
+    isLoading,
   } = useSellerNotificationSearch();
 
-  const totalNotifications = notifications.length;
-  const unreadNotifications = notifications.filter((n) => !n.isRead).length;
-  const readNotifications = totalNotifications - unreadNotifications;
-  const highPriority = notifications.filter((n) => n.priority === 'high' && !n.isRead).length;
+  const { data: unreadData } = useUnreadNotificationCount();
+
+  const totalNotifications = totalCount;
+  const unreadNotifications = unreadData?.count || 0;
+  const readNotifications = Math.max(0, totalNotifications - unreadNotifications);
+  const highPriority = 0; // Not implemented on backend yet
 
   return (
     <>
@@ -124,15 +126,15 @@ export default function SellerNotifications() {
 
             {/* List */}
             <div className="space-y-3">
-              {notifications.length === 0 ? (
+              {isLoading ? (
+                <div className="p-8 text-center text-sm text-muted-foreground">Loading...</div>
+              ) : totalCount === 0 ? (
                 <SellerNotificationEmptyState type="empty" />
-              ) : filtered.length === 0 ? (
+              ) : paginated.length === 0 ? (
                 <SellerNotificationEmptyState type="no-results" onClearFilters={resetFilters} />
-              ) : filtered.length === 0 && filters.status === 'unread' ? (
-                <SellerNotificationEmptyState type="all-read" />
               ) : (
                 paginated.map((notification) => (
-                  <SellerNotificationCard key={notification.id} notification={notification} />
+                  <SellerNotificationCard key={notification.id} notification={notification as any} />
                 ))
               )}
             </div>

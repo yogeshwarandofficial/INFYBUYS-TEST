@@ -1,10 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { CheckCircle2, Circle } from 'lucide-react';
-import { useBuyerStore } from '@/store/useBuyerStore';
+import { useBuyerProfile } from '@/hooks/useBuyerProfile';
 
 export function ProfileCompletion() {
-  const { profile } = useBuyerStore();
+  const { data: profile } = useBuyerProfile();
+
+  if (!profile) return null;
 
   const calculateCompletion = () => {
     let score = 0;
@@ -13,7 +15,7 @@ export function ProfileCompletion() {
     if (profile.fullName) score += 1;
     if (profile.email) score += 1;
     if (profile.phone) score += 1;
-    if (profile.avatar) score += 1;
+    if (profile.avatarUrl) score += 1;
     if (profile.company) score += 1;
     if (profile.location) score += 1;
     if (profile.bio) score += 1;
@@ -27,7 +29,7 @@ export function ProfileCompletion() {
   const steps = [
     { label: 'Basic Information', done: !!profile.fullName && !!profile.email },
     { label: 'Professional Details', done: !!profile.company && !!profile.jobTitle },
-    { label: 'Profile Picture', done: !!profile.avatar },
+    { label: 'Profile Picture', done: !!profile.avatarUrl },
     { label: 'Bio & Links', done: !!profile.bio && (!!profile.linkedin || !!profile.website) },
   ];
 

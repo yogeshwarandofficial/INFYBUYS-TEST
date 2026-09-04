@@ -15,9 +15,6 @@ import { Link } from 'react-router';
 
 export default function BuyerBrowse() {
   const { viewMode, setViewMode } = useBuyerStore();
-  const [showMobileFilters, setShowMobileFilters] = useState(false);
-  const [searchInput, setSearchInput] = useState('');
-
   const {
     filters,
     updateFilter,
@@ -30,6 +27,9 @@ export default function BuyerBrowse() {
     totalResults,
     listings,
   } = useListingSearch(12);
+
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const [searchInput, setSearchInput] = useState(filters.query || '');
 
   const handleSearch = (term: string) => {
     updateFilter('query', term);
@@ -53,7 +53,7 @@ export default function BuyerBrowse() {
             {/* Save Search Button for Desktop */}
             <div className="hidden sm:block">
               <SaveSearchDialog 
-                filters={filters} 
+                filters={{ ...filters, query: searchInput || filters.query }} 
                 resultCount={totalResults} 
                 trigger={<Button variant="outline" size="lg" className="h-12 bg-white/80 backdrop-blur-md border border-gray-200 text-[#111827] shadow-sm hover:bg-gray-50 rounded-xl">Save Search</Button>}
               />
@@ -118,7 +118,7 @@ export default function BuyerBrowse() {
               {/* Mobile Save Search Button */}
               <div className="sm:hidden ml-auto">
                 <SaveSearchDialog
-                  filters={filters}
+                  filters={{ ...filters, query: searchInput || filters.query }}
                   resultCount={totalResults}
                   trigger={<Button variant="outline" size="sm" className="rounded-lg">Save</Button>}
                 />

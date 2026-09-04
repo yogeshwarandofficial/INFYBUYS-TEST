@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useUserStore } from '@/store/useUserStore';
-import { useBuyerStore } from '@/store/useBuyerStore';
+
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,29 +18,36 @@ export function DeleteAccountDialog({ open, onOpenChange }: DeleteAccountDialogP
   const [isDeleting, setIsDeleting] = useState(false);
   const navigate = useNavigate();
   const { logout } = useUserStore();
-  const { deleteAccountRequest } = useBuyerStore();
+
+
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const isConfirmed = confirmText === 'DELETE';
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!isConfirmed) return;
 
     setIsDeleting(true);
+    setErrorMsg(null);
 
-    // Simulate network delay
-    setTimeout(() => {
+    try {
+      await import('@/services/apiClient').then(m => m.apiClient.delete('/users/me'));
       setIsDeleting(false);
       onOpenChange(false);
-      deleteAccountRequest(); // Adds notification and triggers mock flow
-      logout(); // Use existing logout to clear auth state and redirect
+      logout();
       navigate('/');
-    }, 1000);
+    } catch (err: any) {
+      setIsDeleting(false);
+      const msg = err.response?.data?.message || 'An error occurred while deleting your account.';
+      setErrorMsg(msg);
+    }
   };
 
   // Reset text when dialog opens/closes
   const handleOpenChange = (newOpen: boolean) => {
     if (!newOpen) {
       setConfirmText('');
+      setErrorMsg(null);
     }
     onOpenChange(newOpen);
   };
@@ -65,7 +72,6 @@ export function DeleteAccountDialog({ open, onOpenChange }: DeleteAccountDialogP
             <AlertTitle>Warning</AlertTitle>
             <AlertDescription>
               All your saved searches, favorites, active NDAs, and messages will be permanently lost.
-              (Note: This is a simulated frontend-only action).
             </AlertDescription>
           </Alert>
 
@@ -80,6 +86,9 @@ export function DeleteAccountDialog({ open, onOpenChange }: DeleteAccountDialogP
               placeholder="DELETE"
               className="font-mono"
             />
+            {errorMsg && (
+              <p className="text-sm font-medium text-destructive mt-2">{errorMsg}</p>
+            )}
           </div>
         </div>
 

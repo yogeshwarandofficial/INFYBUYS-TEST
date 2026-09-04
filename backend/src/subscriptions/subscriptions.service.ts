@@ -40,9 +40,16 @@ export class SubscriptionsService {
       orderBy: { createdAt: 'desc' }
     });
     
+    const history = await this.prisma.userSubscription.findMany({
+      where: { userId },
+      include: { plan: true },
+      orderBy: { createdAt: 'desc' }
+    });
+
     return {
       hasActiveSubscription: !!activeSub,
       subscription: activeSub || null,
+      history,
     };
   }
 

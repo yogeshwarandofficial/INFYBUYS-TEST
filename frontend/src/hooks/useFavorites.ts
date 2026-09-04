@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '../services/apiClient';
-import { Listing } from '@/types/listing';
+import type { Listing } from '@/types/api';
 
 export interface FavoriteItem {
   favoriteCreatedAt: string;
@@ -51,7 +51,7 @@ export const useAddFavorite = () => {
 
       return { previousFavorites };
     },
-    onError: (err, newFavorite, context) => {
+    onError: (_err, _newFavorite, context) => {
       if (context?.previousFavorites) {
         queryClient.setQueryData(['favorites'], context.previousFavorites);
       }
@@ -81,7 +81,7 @@ export const useRemoveFavorite = () => {
 
       return { previousFavorites };
     },
-    onError: (err, newFavorite, context) => {
+    onError: (_err, _newFavorite, context) => {
       if (context?.previousFavorites) {
         queryClient.setQueryData(['favorites'], context.previousFavorites);
       }

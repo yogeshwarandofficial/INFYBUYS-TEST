@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router';
-import { type SellerNotification, useSellerStore } from '@/store/useSellerStore';
+import { type Notification, useMarkNotificationAsRead } from '@/hooks/useNotifications';
 import { SellerNotificationIcon } from './SellerNotificationIcon';
 import { SellerNotificationPriorityBadge } from './SellerNotificationPriorityBadge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -12,22 +12,22 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { formatDistanceToNow } from '@/utils/dateUtils';
 import { cn } from '@/lib/utils';
-import { MoreHorizontal, Trash2, Eye } from 'lucide-react';
+import { MoreHorizontal, Eye } from 'lucide-react';
 
 interface SellerNotificationCardProps {
-  notification: SellerNotification;
+  notification: Notification;
 }
 
 export function SellerNotificationCard({ notification }: SellerNotificationCardProps) {
   const navigate = useNavigate();
-  const { markNotificationAsRead, deleteNotification } = useSellerStore();
+  const markAsRead = useMarkNotificationAsRead();
 
   const handleClick = () => {
     if (!notification.isRead) {
-      markNotificationAsRead(notification.id);
+      markAsRead.mutate(notification.id);
     }
-    if (notification.actionUrl) {
-      navigate(notification.actionUrl);
+    if (notification.link) {
+      navigate(notification.link);
     }
   };
 
@@ -40,20 +40,20 @@ export function SellerNotificationCard({ notification }: SellerNotificationCardP
 
   return (
     <Card
-      role={notification.actionUrl ? 'button' : 'article'}
+      role={notification.link ? 'button' : 'article'}
       tabIndex={0}
       aria-label={`${!notification.isRead ? 'Unread ' : ''}${notification.type} notification: ${notification.title}`}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       className={cn(
         'relative overflow-hidden transition-all',
-        notification.actionUrl && 'cursor-pointer hover:shadow-md hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+        notification.link && 'cursor-pointer hover:shadow-md hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
         !notification.isRead && 'border-primary/60 bg-primary/[0.02] dark:bg-primary/[0.04]'
       )}
     >
       <CardContent className="p-4 flex items-start gap-3 sm:gap-4">
         {/* Icon */}
-        <SellerNotificationIcon type={notification.type} />
+        <SellerNotificationIcon type={notification.type as any} />
 
         {/* Content */}
         <div className="flex-1 min-w-0 pr-8 sm:pr-12">
@@ -66,7 +66,7 @@ export function SellerNotificationCard({ notification }: SellerNotificationCardP
                 Unread
               </span>
             )}
-            <SellerNotificationPriorityBadge priority={notification.priority} />
+            <SellerNotificationPriorityBadge priority={'low' as any} />
           </div>
           <p className={cn('text-xs leading-relaxed max-w-2xl', !notification.isRead ? 'text-foreground font-medium' : 'text-[#64748B]')}>
             {notification.message}
@@ -86,18 +86,11 @@ export function SellerNotificationCard({ notification }: SellerNotificationCardP
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               {!notification.isRead && (
-                <DropdownMenuItem onClick={() => markNotificationAsRead(notification.id)}>
+                <DropdownMenuItem onClick={() => markAsRead.mutate(notification.id)}>
                   <Eye className="w-4 h-4 mr-2" aria-hidden="true" />
                   Mark as Read
                 </DropdownMenuItem>
               )}
-              <DropdownMenuItem
-                className="text-destructive focus:text-destructive"
-                onClick={() => deleteNotification(notification.id)}
-              >
-                <Trash2 className="w-4 h-4 mr-2" aria-hidden="true" />
-                Delete
-              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

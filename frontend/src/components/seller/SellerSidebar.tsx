@@ -6,7 +6,6 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import {
   LayoutDashboard,
   List,
-  MessageSquare,
   Mail,
   Bell,
   BarChart,
@@ -15,6 +14,7 @@ import {
   ChevronRight,
   User
 } from 'lucide-react';
+import { useUnreadNotificationCount } from '@/hooks/useNotifications';
 
 interface SidebarProps {
   collapsed: boolean;
@@ -26,15 +26,17 @@ const navItems = [
   { title: 'Dashboard', path: '/seller', icon: LayoutDashboard },
   { title: 'My Listings', path: '/seller/listings', icon: List },
   { title: 'Enquiries', path: '/seller/enquiries', icon: Mail },
-  { title: 'Messages', path: '/seller/messages', icon: MessageSquare },
   { title: 'Notifications', path: '/seller/notifications', icon: Bell },
   { title: 'Analytics', path: '/seller/analytics', icon: BarChart },
+  { title: 'KYC Verification', path: '/seller/kyc', icon: User },
   { title: 'Profile', path: '/seller/profile', icon: User },
   { title: 'Settings', path: '/seller/settings', icon: Settings },
 ];
 
 export function SellerSidebar({ collapsed, setCollapsed, isMobile }: SidebarProps) {
   const location = useLocation();
+  const { data: unreadData } = useUnreadNotificationCount();
+  const unreadNotificationsCount = unreadData?.count || 0;
 
   return (
     <div className={cn(
@@ -84,7 +86,16 @@ export function SellerSidebar({ collapsed, setCollapsed, isMobile }: SidebarProp
                       )}
                     >
                       <item.icon className={cn("h-5 w-5 shrink-0", isActive ? "text-white" : "")} />
-                      {(!collapsed || isMobile) && <span className="truncate">{item.title}</span>}
+                      {(!collapsed || isMobile) && (
+                        <div className="flex flex-1 items-center justify-between truncate">
+                          <span className="truncate">{item.title}</span>
+                          {item.title === 'Notifications' && unreadNotificationsCount > 0 && (
+                            <span className="ml-auto inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-[10px] font-medium bg-red-500 text-white rounded-full">
+                              {unreadNotificationsCount > 99 ? '99+' : unreadNotificationsCount}
+                            </span>
+                          )}
+                        </div>
+                      )}
                     </Link>
                   </TooltipTrigger>
                   {collapsed && !isMobile && (

@@ -1,31 +1,44 @@
 import { useState } from 'react';
-import { useBuyerStore } from '@/store/useBuyerStore';
-import type { NotificationType } from '@/store/useBuyerStore';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { Bell, MessageSquare, Search, Building2, User, Info, CheckCircle2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router';
 import { cn } from '@/lib/utils';
+import { useNotifications, useUnreadNotificationCount, useMarkNotificationAsRead, useMarkAllNotificationsAsRead } from '@/hooks/useNotifications';
 
 export function NotificationPopover() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const { notifications, notificationCount, markNotificationAsRead, markAllNotificationsAsRead } = useBuyerStore();
+  const { data, isLoading } = useNotifications(1, 5);
+  const { data: unreadData } = useUnreadNotificationCount();
+  const markAsRead = useMarkNotificationAsRead();
+  const markAllAsRead = useMarkAllNotificationsAsRead();
 
-  const latestNotifications = notifications.slice(0, 5);
+  const notifications = data?.data || [];
+  const notificationCount = unreadData?.count || 0;
 
-  const getIcon = (type: NotificationType) => {
+  const getIcon = (type: string) => {
     switch (type) {
-      case 'enquiry': return <MessageSquare className="w-4 h-4 text-blue-500" />;
-      case 'saved-search': return <Search className="w-4 h-4 text-purple-500" />;
-      case 'listing': return <Building2 className="w-4 h-4 text-amber-500" />;
-      case 'account': return <User className="w-4 h-4 text-green-500" />;
-      case 'system': return <Info className="w-4 h-4 text-slate-500" />;
+      case 'NEW_MESSAGE':
+      case 'NEW_ENQUIRY':
+        return <MessageSquare className="w-4 h-4 text-blue-500" />;
+      case 'SAVED_SEARCH_MATCH':
+        return <Search className="w-4 h-4 text-purple-500" />;
+      case 'LISTING_APPROVED':
+      case 'LISTING_REJECTED':
+        return <Building2 className="w-4 h-4 text-amber-500" />;
+      case 'KYC_APPROVED':
+      case 'KYC_REJECTED':
+      case 'NDA_REQUESTED':
+      case 'NDA_SIGNED':
+        return <User className="w-4 h-4 text-green-500" />;
+      default:
+        return <Info className="w-4 h-4 text-slate-500" />;
     }
   };
 
   const handleNotificationClick = (id: string, path?: string) => {
-    markNotificationAsRead(id);
+    markAsRead.mutate(id);
     setOpen(false);
     if (path) {
       navigate(path);
@@ -50,7 +63,8 @@ export function NotificationPopover() {
               variant="ghost"
               size="sm"
               className="text-xs h-auto p-0 text-muted-foreground hover:text-primary"
-              onClick={() => markAllNotificationsAsRead()}
+              onClick={() => markAllAsRead.mutate()}
+              disabled={markAllAsRead.isPending}
             >
               <CheckCircle2 className="w-3 h-3 mr-1" />
               Mark all read
@@ -59,20 +73,22 @@ export function NotificationPopover() {
         </div>
 
         <div className="max-h-[300px] overflow-y-auto">
-          {latestNotifications.length === 0 ? (
+          {isLoading ? (
+            <div className="p-8 text-center text-sm text-muted-foreground">Loading...</div>
+          ) : notifications.length === 0 ? (
             <div className="p-8 text-center text-sm text-muted-foreground">
               <Bell className="w-8 h-8 mx-auto mb-3 opacity-20" />
               <p>No notifications yet</p>
             </div>
           ) : (
             <div className="flex flex-col">
-              {latestNotifications.map(notification => (
+              {notifications.map(notification => (
                 <div
                   key={notification.id}
-                  onClick={() => handleNotificationClick(notification.id, notification.relatedPath)}
+                  onClick={() => handleNotificationClick(notification.id, notification.link)}
                   className={cn(
                     "p-4 border-b last:border-0 cursor-pointer hover:bg-muted/50 transition-colors flex gap-3",
-                    !notification.read ? "bg-primary/5" : ""
+                    !notification.isRead ? "bg-primary/5" : ""
                   )}
                 >
                   <div className="mt-0.5 shrink-0">
@@ -81,7 +97,7 @@ export function NotificationPopover() {
                   <div className="flex-1 space-y-1">
                     <p className={cn(
                       "text-sm leading-tight",
-                      !notification.read ? "font-semibold" : "font-medium"
+                      !notification.isRead ? "font-semibold" : "font-medium"
                     )}>
                       {notification.title}
                     </p>
@@ -92,7 +108,7 @@ export function NotificationPopover() {
                       {new Date(notification.createdAt).toLocaleDateString()}
                     </p>
                   </div>
-                  {!notification.read && (
+                  {!notification.isRead && (
                     <div className="w-2 h-2 bg-primary rounded-full mt-1.5 shrink-0" />
                   )}
                 </div>

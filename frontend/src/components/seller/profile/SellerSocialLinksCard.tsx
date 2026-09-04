@@ -1,4 +1,4 @@
-import { type SellerProfile } from '@/store/useSellerStore';
+import { type SellerProfileData as SellerProfile } from '@/hooks/useSellerProfile';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Globe, Link as LinkIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';

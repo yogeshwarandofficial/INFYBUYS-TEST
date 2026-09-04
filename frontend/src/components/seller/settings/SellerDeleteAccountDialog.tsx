@@ -22,11 +22,25 @@ export function SellerDeleteAccountDialog({ open, onOpenChange }: SellerDeleteAc
   const [confirmText, setConfirmText] = useState('');
   const { requestSellerAccountDeletion } = useSellerStore();
 
-  const handleConfirm = () => {
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  const handleConfirm = async () => {
     if (confirmText === 'DELETE') {
-      requestSellerAccountDeletion();
-      setConfirmText('');
-      onOpenChange(false);
+      setIsDeleting(true);
+      setErrorMsg(null);
+      try {
+        await import('@/services/apiClient').then(m => m.apiClient.delete('/users/me'));
+        setConfirmText('');
+        onOpenChange(false);
+        import('@/store/useUserStore').then(({ useUserStore }) => {
+          useUserStore.getState().logout(true);
+        });
+        window.location.href = '/';
+      } catch (err: any) {
+        setIsDeleting(false);
+        setErrorMsg(err.response?.data?.message || 'An error occurred while deleting your account.');
+      }
     }
   };
 
@@ -52,10 +66,7 @@ export function SellerDeleteAccountDialog({ open, onOpenChange }: SellerDeleteAc
         </DialogHeader>
 
         <div className="space-y-4 py-4">
-          <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-md text-sm text-destructive-foreground">
-            <p className="font-semibold mb-1">Warning: Frontend Mock</p>
-            <p>This will simulate an account deletion request in the frontend store without actually logging you out or deleting auth data.</p>
-          </div>
+
           <div className="space-y-2">
             <Label htmlFor="confirmDelete">
               Please type <span className="font-bold">DELETE</span> to confirm.
@@ -67,19 +78,22 @@ export function SellerDeleteAccountDialog({ open, onOpenChange }: SellerDeleteAc
               placeholder="DELETE"
               className="font-mono uppercase"
             />
+            {errorMsg && (
+              <p className="text-sm font-medium text-destructive mt-2">{errorMsg}</p>
+            )}
           </div>
         </div>
 
         <DialogFooter className="sm:justify-between flex-row">
-          <Button variant="ghost" onClick={() => handleOpenChange(false)}>
+          <Button variant="ghost" onClick={() => handleOpenChange(false)} disabled={isDeleting}>
             Cancel
           </Button>
           <Button
             variant="destructive"
             onClick={handleConfirm}
-            disabled={confirmText !== 'DELETE'}
+            disabled={confirmText !== 'DELETE' || isDeleting}
           >
-            Delete Account
+            {isDeleting ? 'Deleting...' : 'Delete Account'}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useBuyerStore } from '@/store/useBuyerStore';
-import type { SavedSearch } from '@/store/useBuyerStore';
+import { useUpdateSavedSearch } from '@/hooks/useSavedSearches';
+import type { SavedSearch } from '@/hooks/useSavedSearches';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,12 +15,13 @@ interface EditSavedSearchDialogProps {
 
 export function EditSavedSearchDialog({ search, open, onOpenChange }: EditSavedSearchDialogProps) {
   const [name, setName] = useState(search.name);
-  const [alertEnabled, setAlertEnabled] = useState(search.alertEnabled);
-  const { updateSavedSearch } = useBuyerStore();
+  const isAlertEnabled = search.alertFrequency && search.alertFrequency !== 'none';
+  const [alertEnabled, setAlertEnabled] = useState(!!isAlertEnabled);
+  const { mutate: updateSavedSearch, isPending } = useUpdateSavedSearch();
 
   const handleSave = () => {
     if (!name.trim()) return;
-    updateSavedSearch(search.id, { name, alertEnabled });
+    updateSavedSearch({ id: search.id, data: { name, alertFrequency: alertEnabled ? 'daily' : 'none' } });
     onOpenChange(false);
   };
 
@@ -61,7 +62,9 @@ export function EditSavedSearchDialog({ search, open, onOpenChange }: EditSavedS
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-          <Button onClick={handleSave} disabled={!name.trim()}>Save Changes</Button>
+          <Button onClick={handleSave} disabled={!name.trim() || isPending}>
+            {isPending ? 'Saving...' : 'Save Changes'}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

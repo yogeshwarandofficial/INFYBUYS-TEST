@@ -107,4 +107,6 @@ export interface Enquiry {
   lastMessage?: EnquiryMessage;
   unreadCount?: number;
   messages?: EnquiryMessage[];
+  status?: string;
+  lastMessageAt?: string;
 }

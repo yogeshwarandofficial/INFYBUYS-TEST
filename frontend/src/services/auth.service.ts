@@ -10,6 +10,8 @@ export interface User {
   phone?: string;
   verified: boolean;
   hasActiveSubscription?: boolean;
+  settings?: any;
+  createdAt?: string;
 }
 
 export interface AuthResponse {

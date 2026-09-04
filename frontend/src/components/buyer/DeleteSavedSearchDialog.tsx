@@ -1,4 +1,4 @@
-import { useBuyerStore } from '@/store/useBuyerStore';
+import { useDeleteSavedSearch } from '@/hooks/useSavedSearches';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 
@@ -9,7 +9,7 @@ interface DeleteSavedSearchDialogProps {
 }
 
 export function DeleteSavedSearchDialog({ searchId, open, onOpenChange }: DeleteSavedSearchDialogProps) {
-  const { deleteSavedSearch } = useBuyerStore();
+  const { mutate: deleteSavedSearch, isPending } = useDeleteSavedSearch();
 
   const handleDelete = () => {
     deleteSavedSearch(searchId);
@@ -27,7 +27,9 @@ export function DeleteSavedSearchDialog({ searchId, open, onOpenChange }: Delete
         </DialogHeader>
         <DialogFooter className="mt-4 gap-2 sm:gap-0">
           <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-          <Button variant="destructive" onClick={handleDelete}>Delete</Button>
+          <Button variant="destructive" onClick={handleDelete} disabled={isPending}>
+            {isPending ? 'Deleting...' : 'Delete'}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

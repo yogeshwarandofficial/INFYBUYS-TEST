@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ForbiddenException, ConflictException, BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException, ConflictException, BadRequestException, InternalServerErrorException, Inject, forwardRef } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { S3Service } from '../s3/s3.service.js';
 import { CreateListingDto } from './dto/create-listing.dto.js';
@@ -8,10 +8,11 @@ import { AddListingMediaDto } from './dto/add-listing-media.dto.js';
 import { ReorderListingMediaDto } from './dto/reorder-listing-media.dto.js';
 import { RejectListingDto } from '../admin/dto/reject-listing.dto.js';
 import { ListingStatus, MediaType, Role, KycStatus } from '../../generated/prisma/client.js';
+import { NotificationsService } from '../notifications/notifications.service';
 import * as crypto from 'crypto';
 import * as path from 'path';
 
-const publicListingSelect = {
+export const publicListingSelect = {
   id: true,
   sellerId: true,
   type: true,
@@ -32,7 +33,7 @@ const publicListingSelect = {
   createdAt: true,
   updatedAt: true,
   expiresAt: true,
-  media: true,
+  media: { where: { listingRevisionId: null } },
   contactName: true,
   contactEmail: true,
   contactPhone: true,
@@ -43,7 +44,8 @@ const publicListingSelect = {
 export class ListingsService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly s3Service: S3Service
+    private readonly s3Service: S3Service,
+    @Inject(forwardRef(() => NotificationsService)) private readonly notificationsService: NotificationsService
   ) {}
 
   async create(sellerId: string, createListingDto: CreateListingDto) {
@@ -52,6 +54,12 @@ export class ListingsService {
     });
 
     if (!sellerProfile || sellerProfile.kycStatus !== KycStatus.APPROVED) {
+      if (sellerProfile?.kycStatus === KycStatus.REJECTED) {
+        throw new ForbiddenException({
+          code: 'KYC_REJECTED',
+          message: sellerProfile.kycRejectionReason ? `Your KYC application was rejected. Reason: ${sellerProfile.kycRejectionReason}` : 'Your KYC application was rejected.'
+        });
+      }
       throw new ForbiddenException({
         code: 'KYC_REQUIRED',
         message: 'Seller KYC approval is required before creating a listing.'
@@ -90,7 +98,7 @@ export class ListingsService {
       throw new NotFoundException('Listing not found');
     }
 
-    const publicStatuses: ListingStatus[] = [ListingStatus.PUBLISHED, ListingStatus.CHANGES_PENDING_REVIEW, ListingStatus.REJECTED_CHANGES];
+    const publicStatuses: ListingStatus[] = [ListingStatus.PUBLISHED, ListingStatus.CHANGES_PENDING_REVIEW, ListingStatus.REJECTED_CHANGES, ListingStatus.SOLD_LET];
     if (!publicStatuses.includes(listing.status)) {
       const isOwner = user && user.id === listing.sellerId;
       const isAdmin = user && user.roles?.includes(Role.ADMIN);
@@ -100,10 +108,36 @@ export class ListingsService {
       }
     }
 
-    // Do NOT expose private data. Just return the listing fields.
-    // If we wanted to check if it's published and public user vs seller etc.,
-    // we would handle that either here or in the controller based on user role.
-    return await this.enrichAndSanitizeListing(listing, user);
+    let hasAccess = false;
+    if (user && user.userSubscriptions && user.userSubscriptions.length > 0) {
+      if (listing.ndaRequired) {
+        const nda = await this.prisma.ndaAgreement.findUnique({
+          where: {
+            listingId_buyerId: {
+              listingId: id,
+              buyerId: user.id
+            }
+          }
+        });
+        if (nda && nda.status === 'SIGNED') {
+          hasAccess = true;
+        }
+      } else {
+        hasAccess = true;
+      }
+    }
+
+    // Record view asynchronously if not owner and not admin
+    if (!isOwner && !isAdmin) {
+      this.prisma.listingView.create({
+        data: {
+          listingId: id,
+          viewerId: user?.id || null,
+        }
+      }).catch((err: any) => console.error('Failed to record view:', err));
+    }
+
+    return await this.enrichAndSanitizeListing(listing, user, { hasAccess });
   }
 
   async findSellerListings(sellerId: string) {
@@ -128,7 +162,7 @@ export class ListingsService {
       throw new ForbiddenException('You do not have permission to update this listing');
     }
 
-    const publicStatuses: ListingStatus[] = [ListingStatus.PUBLISHED, ListingStatus.CHANGES_PENDING_REVIEW, ListingStatus.REJECTED_CHANGES];
+    const publicStatuses: ListingStatus[] = [ListingStatus.PUBLISHED, ListingStatus.CHANGES_PENDING_REVIEW, ListingStatus.REJECTED_CHANGES, ListingStatus.SOLD_LET];
     if (publicStatuses.includes(listing.status)) {
       // Create or update a pending revision instead of touching the live listing
       let revision = await this.prisma.listingRevision.findFirst({
@@ -197,6 +231,12 @@ export class ListingsService {
     });
 
     if (!sellerProfile || sellerProfile.kycStatus !== KycStatus.APPROVED) {
+      if (sellerProfile?.kycStatus === KycStatus.REJECTED) {
+        throw new ForbiddenException({
+          code: 'KYC_REJECTED',
+          message: sellerProfile.kycRejectionReason ? `Your KYC application was rejected. Reason: ${sellerProfile.kycRejectionReason}` : 'Your KYC application was rejected.'
+        });
+      }
       throw new ForbiddenException({
         code: 'KYC_REQUIRED',
         message: 'Seller KYC approval is required before submitting a listing.'
@@ -211,6 +251,56 @@ export class ListingsService {
 
     return await this.enrichAndSanitizeListing(updated, { id: sellerId });
   }
+
+  async markAsSold(sellerId: string, id: string) {
+    const listing = await this.prisma.listing.findUnique({ where: { id } });
+
+    if (!listing) {
+      throw new NotFoundException('Listing not found');
+    }
+
+    if (listing.sellerId !== sellerId) {
+      throw new ForbiddenException('You do not have permission to modify this listing');
+    }
+
+    const publicStatuses: ListingStatus[] = [ListingStatus.PUBLISHED, ListingStatus.CHANGES_PENDING_REVIEW, ListingStatus.REJECTED_CHANGES, ListingStatus.SOLD_LET];
+    if (!publicStatuses.includes(listing.status)) {
+      throw new ConflictException('Only active listings can be marked as sold');
+    }
+
+    const updated = await this.prisma.listing.update({
+      where: { id },
+      data: { status: ListingStatus.SOLD_LET },
+      include: { media: true }
+    });
+
+    return await this.enrichAndSanitizeListing(updated, { id: sellerId });
+  }
+
+  async markAsActive(sellerId: string, id: string) {
+    const listing = await this.prisma.listing.findUnique({ where: { id } });
+
+    if (!listing) {
+      throw new NotFoundException('Listing not found');
+    }
+
+    if (listing.sellerId !== sellerId) {
+      throw new ForbiddenException('You do not have permission to modify this listing');
+    }
+
+    if (listing.status !== ListingStatus.SOLD_LET && listing.status !== ListingStatus.PAUSED) {
+      throw new ConflictException('Only sold or archived listings can be marked as active');
+    }
+
+    const updated = await this.prisma.listing.update({
+      where: { id },
+      data: { status: ListingStatus.PUBLISHED },
+      include: { media: true }
+    });
+
+    return await this.enrichAndSanitizeListing(updated, { id: sellerId });
+  }
+
 
   async approveListing(adminId: string, listingId: string) {
     const listing = await this.prisma.listing.findUnique({ where: { id: listingId }, include: { seller: true } });
@@ -249,6 +339,14 @@ export class ListingsService {
       })
     ]);
 
+    await this.notificationsService.createNotification({
+      userId: listing.sellerId,
+      type: 'LISTING_APPROVED',
+      title: 'Listing Approved',
+      message: `Your listing "${listing.title}" has been approved and is now live.`,
+      link: `/seller/listings/${listing.id}`,
+    });
+
     return await this.enrichAndSanitizeListing(updated);
   }
 
@@ -280,15 +378,27 @@ export class ListingsService {
       }
     });
 
+    await this.notificationsService.createNotification({
+      userId: listing.sellerId,
+      type: 'LISTING_REJECTED',
+      title: 'Listing Rejected',
+      message: `Your listing "${listing.title}" was rejected. Reason: ${dto.rejectionReasonCode}`,
+      link: `/seller/listings/${listing.id}`,
+    });
+
     return await this.enrichAndSanitizeListing(updated);
   }
 
   async search(query: ListingQueryDto, options?: { isAdmin?: boolean }) {
     const {
       type,
+      listingType,
       category,
       locationArea,
       locationPostcode,
+      location,
+      search,
+      sort,
       minPrice,
       maxPrice,
       minTurnover,
@@ -300,6 +410,8 @@ export class ListingsService {
       limit = 20,
     } = query || {};
 
+    const activeType = listingType || type;
+
     // Base query: ONLY published listings for normal search unless explicitly filtered (which we'll restrict if not admin/seller)
     const where: any = {};
     if (options?.isAdmin) {
@@ -307,14 +419,47 @@ export class ListingsService {
         where.status = status;
       }
     } else {
-      where.status = { in: [ListingStatus.PUBLISHED, ListingStatus.CHANGES_PENDING_REVIEW, ListingStatus.REJECTED_CHANGES] };
+      where.status = { in: [ListingStatus.PUBLISHED, ListingStatus.CHANGES_PENDING_REVIEW, ListingStatus.REJECTED_CHANGES, ListingStatus.SOLD_LET] };
     }
 
-    if (type) where.type = type;
+    if (activeType) where.type = activeType;
     if (category) where.category = category;
-    if (locationArea) where.locationArea = { contains: locationArea, mode: 'insensitive' };
-    if (locationPostcode) where.locationPostcode = { contains: locationPostcode, mode: 'insensitive' };
     
+    if (location) {
+      where.OR = [
+        ...(where.OR || []),
+        { locationArea: { contains: location, mode: 'insensitive' } },
+        { locationPostcode: { contains: location, mode: 'insensitive' } },
+        { locationExact: { contains: location, mode: 'insensitive' } }
+      ];
+    } else {
+      if (locationArea) where.locationArea = { contains: locationArea, mode: 'insensitive' };
+      if (locationPostcode) where.locationPostcode = { contains: locationPostcode, mode: 'insensitive' };
+    }
+    
+    if (search) {
+      // Create search conditions
+      const searchConditions = [
+        { title: { contains: search, mode: 'insensitive' } },
+        { description: { contains: search, mode: 'insensitive' } },
+        { category: { contains: search, mode: 'insensitive' } },
+        { locationArea: { contains: search, mode: 'insensitive' } },
+        { locationPostcode: { contains: search, mode: 'insensitive' } },
+        { locationExact: { contains: search, mode: 'insensitive' } }
+      ];
+
+      if (where.OR) {
+        // If OR already exists (e.g. from location), we must wrap both in an AND
+        where.AND = [
+          { OR: where.OR },
+          { OR: searchConditions }
+        ];
+        delete where.OR;
+      } else {
+        where.OR = searchConditions;
+      }
+    }
+
     if (minPrice !== undefined || maxPrice !== undefined) {
       where.priceOrRent = {};
       if (minPrice !== undefined) where.priceOrRent.gte = minPrice;
@@ -333,6 +478,11 @@ export class ListingsService {
       if (maxNetProfit !== undefined) where.netProfit.lte = maxNetProfit;
     }
 
+    let orderBy: any = { createdAt: 'desc' };
+    if (sort === 'price_low') orderBy = { priceOrRent: 'asc' };
+    if (sort === 'price_high') orderBy = { priceOrRent: 'desc' };
+    if (sort === 'newest') orderBy = { createdAt: 'desc' };
+
     const skip = (page - 1) * limit;
 
     const [total, data] = await Promise.all([
@@ -342,7 +492,7 @@ export class ListingsService {
         skip,
         take: limit,
         select: publicListingSelect,
-        orderBy: { createdAt: 'desc' }
+        orderBy
       })
     ]);
 
@@ -357,59 +507,7 @@ export class ListingsService {
     };
   }
 
-  async acceptNda(buyerId: string, listingId: string) {
-    const listing = await this.prisma.listing.findUnique({ where: { id: listingId } });
-    if (!listing) {
-      throw new NotFoundException('Listing not found');
-    }
 
-    if (!listing.ndaRequired) {
-      throw new ConflictException('This listing does not require an NDA');
-    }
-
-    // Upsert to handle idempotency safely
-    const acceptance = await this.prisma.listingNdaAcceptance.upsert({
-      where: {
-        listingId_buyerId: {
-          listingId,
-          buyerId,
-        }
-      },
-      update: {}, // Do nothing if it exists
-      create: {
-        listingId,
-        buyerId,
-      }
-    });
-
-    return {
-      success: true,
-      message: 'NDA accepted successfully',
-      acceptedAt: acceptance.acceptedAt
-    };
-  }
-
-  async getNdaStatus(buyerId: string, listingId: string) {
-    const listing = await this.prisma.listing.findUnique({ where: { id: listingId } });
-    if (!listing) {
-      throw new NotFoundException('Listing not found');
-    }
-
-    if (!listing.ndaRequired) {
-      return { ndaRequired: false, accepted: false };
-    }
-
-    const nda = await this.prisma.listingNdaAcceptance.findUnique({
-      where: {
-        listingId_buyerId: {
-          listingId,
-          buyerId,
-        }
-      }
-    });
-
-    return { ndaRequired: true, accepted: !!nda };
-  }
 
   async addMedia(sellerId: string, listingId: string, file: Express.Multer.File, type: MediaType) {
     if (!file) {
@@ -451,7 +549,7 @@ export class ListingsService {
     const nextOrder = currentMaxOrder + 1;
 
     let targetRevisionId: string | null = null;
-    const publicStatuses: ListingStatus[] = [ListingStatus.PUBLISHED, ListingStatus.CHANGES_PENDING_REVIEW, ListingStatus.REJECTED_CHANGES];
+    const publicStatuses: ListingStatus[] = [ListingStatus.PUBLISHED, ListingStatus.CHANGES_PENDING_REVIEW, ListingStatus.REJECTED_CHANGES, ListingStatus.SOLD_LET];
     if (publicStatuses.includes(listing.status)) {
       let revision = await this.prisma.listingRevision.findFirst({
         where: { listingId, status: { in: ['PENDING', 'REJECTED'] } }
@@ -517,7 +615,7 @@ export class ListingsService {
       throw new NotFoundException('Media not found for this listing');
     }
 
-    const publicStatuses: ListingStatus[] = [ListingStatus.PUBLISHED, ListingStatus.CHANGES_PENDING_REVIEW, ListingStatus.REJECTED_CHANGES];
+    const publicStatuses: ListingStatus[] = [ListingStatus.PUBLISHED, ListingStatus.CHANGES_PENDING_REVIEW, ListingStatus.REJECTED_CHANGES, ListingStatus.SOLD_LET];
     if (publicStatuses.includes(listing.status)) {
       let revision = await this.prisma.listingRevision.findFirst({
         where: { listingId, status: { in: ['PENDING', 'REJECTED'] } }
@@ -738,7 +836,7 @@ export class ListingsService {
       include: { seller: true }
     });
 
-    const publicStatuses: ListingStatus[] = [ListingStatus.PUBLISHED, ListingStatus.CHANGES_PENDING_REVIEW, ListingStatus.REJECTED_CHANGES];
+    const publicStatuses: ListingStatus[] = [ListingStatus.PUBLISHED, ListingStatus.CHANGES_PENDING_REVIEW, ListingStatus.REJECTED_CHANGES, ListingStatus.SOLD_LET];
     if (!listing || !publicStatuses.includes(listing.status)) {
       throw new NotFoundException('Listing not found');
     }
@@ -746,7 +844,7 @@ export class ListingsService {
 
     // Only enforce NDA check if the requester is not the seller themselves
     if (listing.ndaRequired && listing.sellerId !== buyerId) {
-      const nda = await this.prisma.listingNdaAcceptance.findUnique({
+      const nda = await this.prisma.ndaAgreement.findUnique({
         where: {
           listingId_buyerId: {
             listingId,
@@ -754,7 +852,7 @@ export class ListingsService {
           }
         }
       });
-      if (!nda) {
+      if (!nda || nda.status !== 'SIGNED') {
         throw new ForbiddenException({
           code: 'NDA_REQUIRED',
           message: 'NDA acceptance is required before accessing seller contact details.'
@@ -776,7 +874,7 @@ export class ListingsService {
 
   // Ensure internal properties and seller objects are not blindly exposed
 
-  private async enrichAndSanitizeListing(listing: any, reqUser?: any) {
+  async enrichAndSanitizeListing(listing: any, reqUser?: any, options?: { hasAccess?: boolean }) {
     if (listing.seller) {
       // If we ever eager load the seller, strip sensitive fields!
       delete listing.seller.passwordHash;
@@ -789,6 +887,14 @@ export class ListingsService {
     const isOwner = reqUser && reqUser.id === listing.sellerId;
     const isAdmin = reqUser && reqUser.roles?.includes('ADMIN');
     
+    let hasAccess = isOwner || isAdmin || options?.hasAccess === true;
+    
+    if (!hasAccess && reqUser && reqUser.userSubscriptions && reqUser.userSubscriptions.length > 0) {
+       if (!listing.ndaRequired) {
+         hasAccess = true;
+       }
+    }
+
     if (!isOwner && !isAdmin) {
       delete listing.contactName;
       delete listing.contactEmail;
@@ -805,6 +911,12 @@ export class ListingsService {
       ) {
         listing.status = ListingStatus.PUBLISHED;
       }
+    }
+    
+    // Hide financials if no access
+    if (!hasAccess) {
+      delete listing.turnover;
+      delete listing.netProfit;
     }
 
     if (listing.media && Array.isArray(listing.media)) {
@@ -879,7 +991,7 @@ export class ListingsService {
 
     delete proposedData.proposedMediaDeletions;
 
-    const [updated] = await this.prisma.$transaction([
+    const [,, revisionUpdated, updatedListing, log] = await this.prisma.$transaction([
       this.prisma.listingMedia.deleteMany({
         where: { id: { in: mediaDeletions } }
       }),
@@ -909,7 +1021,15 @@ export class ListingsService {
       })
     ]);
 
-    return await this.enrichAndSanitizeListing(updated);
+    await this.notificationsService.createNotification({
+      userId: updatedListing.sellerId,
+      type: 'LISTING_APPROVED',
+      title: 'Revision Approved',
+      message: `Your requested changes for "${updatedListing.title}" have been approved.`,
+      link: `/seller/listings/${updatedListing.id}`,
+    });
+
+    return await this.enrichAndSanitizeListing(updatedListing);
   }
 
   async rejectRevision(adminId: string, listingId: string, dto: RejectListingDto) {
@@ -920,7 +1040,7 @@ export class ListingsService {
       throw new ConflictException('No pending revision to reject');
     }
 
-    const [updated] = await this.prisma.$transaction([
+    const [revisionUpdated, updatedListing, log] = await this.prisma.$transaction([
       this.prisma.listingRevision.update({
         where: { id: revision.id },
         data: { status: 'REJECTED', reviewedAt: new Date(), reviewedBy: adminId, rejectionReason: dto.rejectionReasonCode }
@@ -940,6 +1060,14 @@ export class ListingsService {
       })
     ]);
 
-    return await this.enrichAndSanitizeListing(updated);
+    await this.notificationsService.createNotification({
+      userId: updatedListing.sellerId,
+      type: 'LISTING_REJECTED',
+      title: 'Revision Rejected',
+      message: `Your requested changes for "${updatedListing.title}" were rejected. Reason: ${dto.rejectionReasonCode}`,
+      link: `/seller/listings/${updatedListing.id}`,
+    });
+
+    return await this.enrichAndSanitizeListing(updatedListing);
   }
 }

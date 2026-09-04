@@ -8,12 +8,29 @@ import { SocialLinksCard } from '@/components/buyer/profile/SocialLinksCard';
 import { EditProfileDialog } from '@/components/buyer/profile/EditProfileDialog';
 import { ProfilePreviewDialog } from '@/components/buyer/profile/ProfilePreviewDialog';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useBuyerStore } from '@/store/useBuyerStore';
+import { useBuyerProfile } from '@/hooks/useBuyerProfile';
+import { Loader2 } from 'lucide-react';
 
 export default function BuyerProfile() {
-  const { profile } = useBuyerStore();
+  const { data: profile, isLoading, error } = useBuyerProfile();
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isPreviewDialogOpen, setIsPreviewDialogOpen] = useState(false);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (error || !profile) {
+    return (
+      <div className="flex justify-center items-center h-64 text-destructive">
+        Failed to load profile. Please try again later.
+      </div>
+    );
+  }
 
   return (
     <>

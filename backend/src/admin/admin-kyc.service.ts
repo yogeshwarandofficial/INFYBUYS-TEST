@@ -1,19 +1,22 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, Inject, forwardRef } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { S3Service } from '../s3/s3.service.js';
 import { KycStatus } from '../../generated/prisma/client.js';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class AdminKycService {
   constructor(
     private prisma: PrismaService,
     private s3Service: S3Service,
+    @Inject(forwardRef(() => NotificationsService)) private notificationsService: NotificationsService
   ) {}
 
   async getKycApplications() {
     const applications = await this.prisma.sellerProfile.findMany({
       where: {
-        kycStatus: { in: [KycStatus.PENDING, KycStatus.APPROVED, KycStatus.REJECTED] }
+        kycStatus: { in: [KycStatus.PENDING, KycStatus.APPROVED, KycStatus.REJECTED] },
+        kycSubmittedAt: { not: null }
       },
       include: {
         user: { select: { name: true, email: true, phone: true } }
@@ -56,7 +59,8 @@ export class AdminKycService {
         kycStatus: KycStatus.APPROVED,
         kycReviewedAt: new Date(),
         kycReviewedBy: adminId,
-        kycRejectionReason: null
+        kycRejectionReason: null,
+        businessName: profile.legalName || profile.businessName
       }
     });
 
@@ -66,6 +70,14 @@ export class AdminKycService {
         actionType: 'KYC_APPROVED',
         targetEntity: `SellerProfile:${sellerProfileId}`,
       }
+    });
+
+    await this.notificationsService.createNotification({
+      userId: profile.userId,
+      type: 'KYC_APPROVED',
+      title: 'KYC Approved',
+      message: 'Your business verification has been successfully approved.',
+      link: '/seller/kyc',
     });
 
     return { success: true };
@@ -94,6 +106,14 @@ export class AdminKycService {
         targetEntity: `SellerProfile:${sellerProfileId}`,
         reason
       }
+    });
+
+    await this.notificationsService.createNotification({
+      userId: profile.userId,
+      type: 'KYC_REJECTED',
+      title: 'KYC Rejected',
+      message: `Your business verification was rejected. Reason: ${reason}`,
+      link: '/seller/kyc',
     });
 
     return { success: true };

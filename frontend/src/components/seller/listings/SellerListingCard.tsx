@@ -45,7 +45,7 @@ const formatPrice = (price: number) => {
 
 export function SellerListingCard({ listing, view = 'grid' }: SellerListingCardProps) {
   const navigate = useNavigate();
-  const { submitListing, markListingAsSold, restoreListing, duplicateListing } =
+  const { submitListing, markListingAsSold, markListingAsActive, restoreListing, duplicateListing } =
     useSellerStore();
   const [showDelete, setShowDelete] = useState(false);
   const [showArchive, setShowArchive] = useState(false);
@@ -112,7 +112,15 @@ export function SellerListingCard({ listing, view = 'grid' }: SellerListingCardP
       );
     }
 
-    if (status === 'sold' || status === 'archived') {
+    if (status === 'sold') {
+      items.push(
+        <DropdownMenuItem key="active" onClick={() => markListingAsActive(listing.id)}>
+          <CheckCircle className="w-4 h-4 mr-2 text-green-500" /> Mark as Active
+        </DropdownMenuItem>
+      );
+    }
+
+    if (status === 'archived') {
       items.push(
         <DropdownMenuItem key="restore" onClick={() => restoreListing(listing.id)}>
           <RotateCcw className="w-4 h-4 mr-2" /> Restore as Draft

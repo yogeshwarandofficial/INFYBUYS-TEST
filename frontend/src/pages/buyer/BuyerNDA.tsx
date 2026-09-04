@@ -11,14 +11,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useBuyerStore } from '@/store/useBuyerStore';
+import { useMyNdas } from '@/hooks/useNda';
 import { NDAStatusBadge } from '@/components/buyer/nda/NDAStatusBadge';
 import { NDAEmptyState } from '@/components/buyer/nda/NDAEmptyState';
 import { useNavigate } from 'react-router';
 import { Badge } from '@/components/ui/badge';
 
 export default function BuyerNDA() {
-  const { ndas } = useBuyerStore();
+  const { data: ndas = [], isLoading } = useMyNdas();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -26,25 +26,22 @@ export default function BuyerNDA() {
 
   // Derived stats
   const totalRequests = ndas.length;
-  const pendingCount = ndas.filter(n => n.status === 'pending' || n.status === 'under-review').length;
-  const approvedCount = ndas.filter(n => n.status === 'approved').length;
+  const pendingCount = ndas.filter(n => n.status === 'REQUESTED').length;
+  const approvedCount = ndas.filter(n => n.status === 'SIGNED').length;
 
-  const now = new Date();
-  const expiringSoonCount = ndas.filter(n => {
-    if (n.status !== 'approved' || !n.expiresAt) return false;
-    const expiresDate = new Date(n.expiresAt);
-    const diffTime = Math.abs(expiresDate.getTime() - now.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays <= 30; // Within 30 days
-  }).length;
+  const expiringSoonCount = 0; // Not supported by backend yet
 
   // Filter and sort
   const filteredNDAs = ndas
     .filter(nda => {
+      const businessName = nda.listing?.seller?.sellerProfile?.businessName || 'Business';
+      const listingTitle = nda.listing?.title || 'Unknown Listing';
+      const sellerName = (nda.listing?.seller as any)?.name || 'Unknown';
+      
       const matchesSearch =
-        nda.businessName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        nda.listingTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        nda.sellerName.toLowerCase().includes(searchTerm.toLowerCase());
+        businessName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        listingTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        sellerName.toLowerCase().includes(searchTerm.toLowerCase());
 
       const matchesStatus = statusFilter === 'all' || nda.status === statusFilter;
 
@@ -53,9 +50,12 @@ export default function BuyerNDA() {
     .sort((a, b) => {
       if (sortBy === 'newest') return new Date(b.requestedAt).getTime() - new Date(a.requestedAt).getTime();
       if (sortBy === 'oldest') return new Date(a.requestedAt).getTime() - new Date(b.requestedAt).getTime();
-      if (sortBy === 'updated') return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
       return 0;
     });
+
+  if (isLoading) {
+    return <div className="p-8 text-center text-slate-500">Loading NDAs...</div>;
+  }
 
   return (
     <>
@@ -131,11 +131,8 @@ export default function BuyerNDA() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="under-review">Under Review</SelectItem>
-                <SelectItem value="approved">Approved</SelectItem>
-                <SelectItem value="rejected">Rejected</SelectItem>
-                <SelectItem value="expired">Expired</SelectItem>
+                <SelectItem value="REQUESTED">Requested</SelectItem>
+                <SelectItem value="SIGNED">Signed</SelectItem>
               </SelectContent>
             </Select>
 
@@ -146,7 +143,6 @@ export default function BuyerNDA() {
               <SelectContent>
                 <SelectItem value="newest">Newest First</SelectItem>
                 <SelectItem value="oldest">Oldest First</SelectItem>
-                <SelectItem value="updated">Recently Updated</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -173,23 +169,23 @@ export default function BuyerNDA() {
                       <div className="flex flex-wrap items-center gap-2 mb-2">
                         <NDAStatusBadge status={nda.status} />
                         <Badge variant="outline" className="uppercase text-[10px] tracking-wider border-[#E2E8F0] text-[#64748B] bg-white/50">
-                          {nda.type}
+                          Standard
                         </Badge>
                       </div>
                       <h3 className="font-bold text-lg text-[#0F172A] group-hover:text-[#2563EB] transition-colors line-clamp-1">
-                        {nda.businessName}
+                        {nda.listing?.seller?.sellerProfile?.businessName || 'Business'}
                       </h3>
                       <p className="text-sm text-[#64748B] line-clamp-1">
-                        Listing: {nda.listingTitle}
+                        Listing: {nda.listing?.title || 'Unknown Listing'}
                       </p>
                     </div>
 
                     <div className="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-2 text-[13px] text-[#64748B] shrink-0 border-t border-[#E2E8F0]/50 md:border-t-0 pt-4 md:pt-0">
                       <div>
-                        Seller: <span className="font-medium text-[#0F172A]">{nda.sellerName}</span>
+                        Seller: <span className="font-medium text-[#0F172A]">{(nda.listing?.seller as any)?.name || 'Unknown'}</span>
                       </div>
                       <div>
-                        Updated {new Date(nda.updatedAt).toLocaleDateString()}
+                        Updated {new Date(nda.signedAt || nda.requestedAt).toLocaleDateString()}
                       </div>
                     </div>
                   </div>

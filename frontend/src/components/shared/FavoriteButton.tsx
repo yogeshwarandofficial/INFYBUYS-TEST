@@ -16,8 +16,7 @@ export const FavoriteButton: React.FC<FavoriteButtonProps> = ({ listingId, class
   const { user } = useUserStore();
 
   // If not logged in as a buyer, we could either hide it or show it but redirect to login.
-  // The PRD says it's for authenticated buyers. We'll show it if they are a buyer.
-  const isBuyer = user?.roles?.includes('BUYER');
+  const isBuyer = user?.roles?.some(r => r.toLowerCase() === 'buyer');
 
   if (!isBuyer) return null;
 

@@ -4,7 +4,6 @@ import {
   Users,
   UserCheck,
   ShoppingBag,
-  MessageSquare,
   Bell,
   BarChart3,
   Settings,
@@ -12,6 +11,7 @@ import {
   Package,
   FileText,
   ClipboardList,
+  ShieldCheck,
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
@@ -30,10 +30,10 @@ const adminLinks = [
   { title: 'Dashboard', href: '/admin', icon: LayoutDashboard },
   { title: 'Users', href: '/admin/users', icon: Users },
   { title: 'Sellers', href: '/admin/sellers', icon: UserCheck },
+  { title: 'KYC Verifications', href: '/admin/kyc', icon: ShieldCheck },
   { title: 'Buyers', href: '/admin/buyers', icon: ShoppingBag },
   { title: 'Listings', href: '/admin/listings', icon: Package },
   { title: 'Enquiries', href: '/admin/enquiries', icon: HelpCircle },
-  { title: 'Messages', href: '/admin/messages', icon: MessageSquare },
   { title: 'Notifications', href: '/admin/notifications', icon: Bell },
   { title: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
   { title: 'Reports', href: '/admin/reports', icon: FileText },

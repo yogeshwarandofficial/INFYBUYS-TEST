@@ -4,7 +4,7 @@ import { router } from './routes';
 
 import { ThemeProvider } from './providers/ThemeProvider';
 
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 
 function App() {
   return (

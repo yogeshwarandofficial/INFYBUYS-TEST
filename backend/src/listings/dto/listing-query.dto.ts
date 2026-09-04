@@ -62,4 +62,20 @@ export class ListingQueryDto {
   @Type(() => Number)
   @IsOptional()
   limit?: number;
+
+  @IsString()
+  @IsOptional()
+  search?: string;
+
+  @IsString()
+  @IsOptional()
+  sort?: string;
+
+  @IsEnum(ListingType)
+  @IsOptional()
+  listingType?: ListingType;
+
+  @IsString()
+  @IsOptional()
+  location?: string;
 }

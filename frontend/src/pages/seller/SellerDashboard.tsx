@@ -4,7 +4,7 @@ import { useUserStore } from '@/store/useUserStore';
 import { SellerStatCard } from '@/components/seller/dashboard/SellerStatCard';
 import { SellerRecentActivity } from '@/components/seller/dashboard/SellerRecentActivity';
 import { SellerQuickActions } from '@/components/seller/dashboard/SellerQuickActions';
-import { Building2, Activity, Clock, DollarSign, Mail, MessageSquare, BarChart3 } from 'lucide-react';
+import { Building2, Activity, Clock, DollarSign, BarChart3 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router';
@@ -84,20 +84,7 @@ export default function SellerDashboard() {
             icon={DollarSign}
             description="Successfully closed"
           />
-          <SellerStatCard
-            title="Total Enquiries"
-            value={totalEnquiries}
-            icon={Mail}
-            description="From potential buyers"
-            className="sm:col-span-2"
-          />
-          <SellerStatCard
-            title="Unread Messages"
-            value={unreadConversations}
-            icon={MessageSquare}
-            description="Requires your attention"
-            className="sm:col-span-2"
-          />
+
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8 h-full">

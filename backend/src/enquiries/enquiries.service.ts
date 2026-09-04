@@ -1,11 +1,15 @@
-import { Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException, BadRequestException, Inject, forwardRef } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateEnquiryDto } from './dto/create-enquiry.dto';
 import { SendMessageDto } from './dto/send-message.dto';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class EnquiriesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    @Inject(forwardRef(() => NotificationsService)) private notificationsService: NotificationsService
+  ) {}
 
   async createEnquiry(listingId: string, buyerId: string, dto: CreateEnquiryDto) {
     const listing = await this.prisma.listing.findUnique({
@@ -38,7 +42,7 @@ export class EnquiriesService {
 
     // Check NDA
     if (listing.ndaRequired) {
-      const nda = await this.prisma.listingNdaAcceptance.findUnique({
+      const nda = await this.prisma.ndaAgreement.findUnique({
         where: {
           listingId_buyerId: {
             listingId,
@@ -47,7 +51,7 @@ export class EnquiriesService {
         },
       });
 
-      if (!nda) {
+      if (!nda || nda.status !== 'SIGNED') {
         throw new ForbiddenException({ message: 'NDA acceptance required', code: 'NDA_REQUIRED' });
       }
     }
@@ -82,6 +86,24 @@ export class EnquiriesService {
           messages: true,
         }
       });
+
+      // Emit Notification for the seller
+      await this.notificationsService.createNotification({
+        userId: listing.sellerId,
+        type: 'NEW_ENQUIRY',
+        title: 'New enquiry',
+        message: 'A buyer has contacted you about your listing.',
+        link: `/seller/enquiries/${enquiry.id}`,
+      });
+    } else {
+      // Enquiry already exists, append the new message!
+      await this.sendMessage(enquiry.id, buyerId, { messageText: dto.messageText });
+      
+      // Refresh the enquiry object to return it
+      enquiry = await this.prisma.enquiry.findUnique({
+        where: { id: enquiry.id },
+        include: { messages: true }
+      }) as any;
     }
 
     return enquiry;
@@ -132,6 +154,9 @@ export class EnquiriesService {
       lastMessage: eq.messages[0],
       unreadCount: eq._count.messages,
       updatedAt: eq.updatedAt,
+      status: eq.status,
+      lastMessageAt: eq.lastMessageAt,
+      createdAt: eq.createdAt,
     }));
   }
 
@@ -180,6 +205,9 @@ export class EnquiriesService {
       lastMessage: eq.messages[0],
       unreadCount: eq._count.messages,
       updatedAt: eq.updatedAt,
+      status: eq.status,
+      lastMessageAt: eq.lastMessageAt,
+      createdAt: eq.createdAt,
     }));
   }
 
@@ -241,9 +269,31 @@ export class EnquiriesService {
       },
     });
 
+    let newStatus = enquiry.status;
+    if (userId === enquiry.sellerId && enquiry.status === 'PENDING') {
+      newStatus = 'SELLER_RESPONDED';
+    } else if (userId === enquiry.buyerId && enquiry.status === 'SELLER_RESPONDED') {
+      newStatus = 'IN_DISCUSSION';
+    }
+
     await this.prisma.enquiry.update({
       where: { id: enquiryId },
-      data: { updatedAt: new Date() },
+      data: { 
+        updatedAt: new Date(),
+        lastMessageAt: new Date(),
+        status: newStatus
+      },
+    });
+
+    const recipientId = userId === enquiry.sellerId ? enquiry.buyerId : enquiry.sellerId;
+    const link = userId === enquiry.sellerId ? `/buyer/enquiries/${enquiry.id}` : `/seller/enquiries/${enquiry.id}`;
+    
+    await this.notificationsService.createNotification({
+      userId: recipientId,
+      type: 'NEW_MESSAGE',
+      title: 'New message',
+      message: 'You have a new message regarding a listing enquiry.',
+      link,
     });
 
     return message;

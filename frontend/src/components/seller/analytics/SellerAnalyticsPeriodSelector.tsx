@@ -5,7 +5,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { type SellerAnalyticsPeriod } from '@/store/useSellerStore';
+import { type SellerAnalyticsPeriod } from '@/hooks/useSellerAnalytics';
 
 interface SellerAnalyticsPeriodSelectorProps {
   period: SellerAnalyticsPeriod;

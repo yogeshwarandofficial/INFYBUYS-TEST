@@ -38,7 +38,8 @@ export function NDARequestDialog({
     setIsSubmitting(true);
     setError(null);
     try {
-      await apiClient.post(`/listings/${listingId}/nda/accept`, {});
+      await apiClient.post(`/listings/${listingId}/nda/request`, {});
+      await apiClient.post(`/listings/${listingId}/nda/sign`, {});
       onOpenChange(false);
       if (onAccepted) {
         onAccepted();

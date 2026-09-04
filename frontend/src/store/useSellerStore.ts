@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { apiClient } from '@/services/apiClient';
+import { queryClient } from '@/App';
 
 // â”€â”€â”€ Activity â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
@@ -145,7 +146,7 @@ export interface SellerConversation {
 
 // â”€â”€â”€ Notifications â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-export type SellerNotificationType = 'listing' | 'enquiry' | 'message' | 'subscription' | 'system' | 'approval' | 'payment' | 'nda';
+export type SellerNotificationType = 'listing' | 'enquiry' | 'message' | 'subscription' | 'system' | 'approval' | 'payment' | 'nda' | 'NDA_REQUESTED' | 'NDA_SIGNED';
 export type SellerNotificationPriority = 'low' | 'medium' | 'high';
 
 export interface SellerNotification {
@@ -277,7 +278,8 @@ interface SellerState {
   submitListing: (id: string) => Promise<void>;
   setCoverMedia: (listingId: string, mediaId: string) => Promise<void>;
   removeCoverMedia: (listingId: string) => Promise<void>;
-  markListingAsSold: (id: string) => void;
+  markListingAsSold: (id: string) => Promise<void>;
+  markListingAsActive: (id: string) => Promise<void>;
   restoreListing: (id: string) => void;
   duplicateListing: (id: string) => string;
 
@@ -314,6 +316,7 @@ interface SellerState {
   // Profile & Settings actions
   updateSellerProfile: (profileData: Partial<SellerProfile>) => void;
   updateSellerSettings: (settingsData: Partial<SellerSettings>) => void;
+  initSellerSettings: () => Promise<void>;
   requestSellerAccountDeletion: () => void;
   cancelSellerAccountDeletion: () => void;
 }
@@ -637,19 +640,49 @@ export const useSellerStore = create<SellerState>()(
         }
       },
 
-      markListingAsSold: (id) => {
-        const listing = get().listings.find((l) => l.id === id);
-        set((state) => ({
-          listings: state.listings.map((l) =>
-            l.id === id ? { ...l, status: 'sold', updatedAt: now() } : l
-          ),
-        }));
-        if (listing) {
-          get().addActivity({
-            type: 'system',
-            title: 'Listing Marked as Sold',
-            description: `Congratulations! "${listing.title}" has been marked as sold.`,
-          });
+      markListingAsSold: async (id) => {
+        try {
+          await apiClient.post(`/listings/${id}/sold`, {});
+          const listing = get().listings.find((l) => l.id === id);
+          set((state) => ({
+            listings: state.listings.map((l) =>
+              l.id === id ? { ...l, status: 'sold', updatedAt: now() } : l
+            ),
+          }));
+          if (listing) {
+            get().addActivity({
+              type: 'system',
+              title: 'Listing Marked as Sold',
+              description: `Congratulations! "${listing.title}" has been marked as sold.`,
+            });
+          }
+          queryClient.invalidateQueries({ queryKey: ['listings'] });
+        } catch (error) {
+          console.error('Failed to mark listing as sold', error);
+          throw error;
+        }
+      },
+
+      markListingAsActive: async (id) => {
+        try {
+          await apiClient.post(`/listings/${id}/active`, {});
+          const listing = get().listings.find((l) => l.id === id);
+          set((state) => ({
+            listings: state.listings.map((l) =>
+              l.id === id ? { ...l, status: 'active', updatedAt: now() } : l
+            ),
+          }));
+          if (listing) {
+            get().addActivity({
+              type: 'system',
+              title: 'Listing Marked as Active',
+              description: `"${listing.title}" is now active again.`,
+            });
+          }
+          queryClient.invalidateQueries({ queryKey: ['listings'] });
+        } catch (error) {
+          console.error('Failed to mark listing as active', error);
+          throw error;
         }
       },
 
@@ -988,23 +1021,48 @@ export const useSellerStore = create<SellerState>()(
         });
       },
 
-      updateSellerSettings: (settingsData) => {
-        set((state) => {
-          // deep merge for settings
-          return {
-            settings: {
-              notifications: { ...state.settings.notifications, ...(settingsData.notifications || {}) },
-              preferences: { ...state.settings.preferences, ...(settingsData.preferences || {}) },
-              privacy: { ...state.settings.privacy, ...(settingsData.privacy || {}) },
-              account: { ...state.settings.account, ...(settingsData.account || {}) },
-            },
-          };
-        });
+      updateSellerSettings: async (settingsData) => {
+        const currentSettings = get().settings;
+        const newSettings = {
+          notifications: { ...currentSettings.notifications, ...(settingsData.notifications || {}) },
+          preferences: { ...currentSettings.preferences, ...(settingsData.preferences || {}) },
+          privacy: { ...currentSettings.privacy, ...(settingsData.privacy || {}) },
+          account: { ...currentSettings.account, ...(settingsData.account || {}) },
+        };
+        
+        try {
+          await apiClient.patch('/users/me/settings', { sellerSettings: newSettings });
+        } catch (e) {
+          console.error('Failed to update seller settings', e);
+        }
+
+        set(() => ({ settings: newSettings }));
+        
         get().addActivity({
           type: 'system',
           title: 'Settings Saved',
           description: 'Your account settings were updated.',
         });
+      },
+
+      initSellerSettings: async () => {
+        try {
+          const user = await apiClient.get<any>('/users/me');
+          if (user?.settings?.sellerSettings && typeof user.settings.sellerSettings === 'object') {
+            const settingsData = user.settings.sellerSettings;
+            const currentSettings = get().settings;
+            set(() => ({
+              settings: {
+                notifications: { ...currentSettings.notifications, ...(settingsData.notifications || {}) },
+                preferences: { ...currentSettings.preferences, ...(settingsData.preferences || {}) },
+                privacy: { ...currentSettings.privacy, ...(settingsData.privacy || {}) },
+                account: { ...currentSettings.account, ...(settingsData.account || {}) },
+              },
+            }));
+          }
+        } catch (e) {
+          console.error('Failed to fetch seller settings', e);
+        }
       },
 
       requestSellerAccountDeletion: () => {

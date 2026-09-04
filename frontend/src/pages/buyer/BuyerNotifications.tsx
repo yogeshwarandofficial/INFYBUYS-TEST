@@ -1,35 +1,48 @@
 import { useState, useMemo } from 'react';
-import { useBuyerStore } from '@/store/useBuyerStore';
-import type { NotificationType } from '@/store/useBuyerStore';
+import { useNotifications, useMarkAllNotificationsAsRead } from '@/hooks/useNotifications';
 import { NotificationCard } from '@/components/buyer/NotificationCard';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Bell, CheckCircle2 } from 'lucide-react';
 
 export default function BuyerNotifications() {
-  const { notifications, notificationCount, markAllNotificationsAsRead } = useBuyerStore();
-  const [filterType, setFilterType] = useState<NotificationType | 'all'>('all');
+  const { data: notificationsData, isLoading } = useNotifications();
+  const notifications = notificationsData?.data || [];
+  const markAllAsRead = useMarkAllNotificationsAsRead();
+
+  const notificationCount = notifications.filter(n => !n.isRead).length;
+  const [filterType, setFilterType] = useState<string>('all');
   const [filterRead, setFilterRead] = useState<'all' | 'unread' | 'read'>('all');
 
   const filteredNotifications = useMemo(() => {
     let result = [...notifications];
 
     if (filterType !== 'all') {
-      result = result.filter(n => n.type === filterType);
+      result = result.filter(n => {
+        if (filterType === 'enquiry') return n.type === 'NEW_ENQUIRY' || n.type === 'NEW_MESSAGE';
+        if (filterType === 'saved-search') return n.type === 'SAVED_SEARCH_MATCH';
+        if (filterType === 'listing') return n.type === 'LISTING_APPROVED' || n.type === 'LISTING_REJECTED';
+        if (filterType === 'account') return n.type === 'KYC_APPROVED' || n.type === 'KYC_REJECTED' || n.type === 'NDA_SIGNED';
+        return n.type === 'SYSTEM_ALERT';
+      });
     }
 
     if (filterRead === 'unread') {
-      result = result.filter(n => !n.read);
+      result = result.filter(n => !n.isRead);
     } else if (filterRead === 'read') {
-      result = result.filter(n => n.read);
+      result = result.filter(n => n.isRead);
     }
 
     return result;
   }, [notifications, filterType, filterRead]);
 
   const handleMarkAllRead = () => {
-    markAllNotificationsAsRead();
+    markAllAsRead.mutate();
   };
+
+  if (isLoading) {
+    return <div className="p-8 text-center text-slate-500">Loading Notifications...</div>;
+  }
 
   return (
     <div className="w-full space-y-8 max-w-7xl mx-auto px-4 xl:px-0 mt-6">

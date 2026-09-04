@@ -8,17 +8,14 @@ import {
   Search,
   Heart,
   Bookmark,
-  MessageSquare,
   Mail,
   Bell,
-  FileText,
   CreditCard,
   Settings,
   ChevronLeft,
-  ChevronRight,
-  Receipt,
-  Star
+  ChevronRight
 } from 'lucide-react';
+import { useUnreadNotificationCount } from '@/hooks/useNotifications';
 
 interface SidebarProps {
   collapsed: boolean;
@@ -32,17 +29,15 @@ const navItems = [
   { title: 'Saved Listings', path: '/buyer/favorites', icon: Heart },
   { title: 'Saved Searches', path: '/buyer/saved-searches', icon: Bookmark },
   { title: 'Enquiries', path: '/buyer/enquiries', icon: Mail },
-  { title: 'Messages', path: '/buyer/messages', icon: MessageSquare },
   { title: 'Notifications', path: '/buyer/notifications', icon: Bell },
-  { title: 'NDA', path: '/buyer/nda', icon: FileText },
-  { title: 'Reviews', path: '/buyer/reviews', icon: Star },
   { title: 'Subscription', path: '/buyer/subscription', icon: CreditCard },
-  { title: 'Billing', path: '/buyer/billing', icon: Receipt },
   { title: 'Settings', path: '/buyer/settings', icon: Settings },
 ];
 
 export function BuyerSidebar({ collapsed, setCollapsed, isMobile }: SidebarProps) {
   const location = useLocation();
+  const { data: unreadData } = useUnreadNotificationCount();
+  const unreadNotificationsCount = unreadData?.count || 0;
 
   return (
     <div className={cn(
@@ -92,7 +87,16 @@ export function BuyerSidebar({ collapsed, setCollapsed, isMobile }: SidebarProps
                       )}
                     >
                       <item.icon className={cn("h-5 w-5 shrink-0", isActive ? "text-white" : "")} />
-                      {(!collapsed || isMobile) && <span className="truncate">{item.title}</span>}
+                      {(!collapsed || isMobile) && (
+                        <div className="flex flex-1 items-center justify-between truncate">
+                          <span className="truncate">{item.title}</span>
+                          {item.title === 'Notifications' && unreadNotificationsCount > 0 && (
+                            <span className="ml-auto inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-[10px] font-medium bg-red-500 text-white rounded-full">
+                              {unreadNotificationsCount > 99 ? '99+' : unreadNotificationsCount}
+                            </span>
+                          )}
+                        </div>
+                      )}
                     </Link>
                   </TooltipTrigger>
                   {collapsed && !isMobile && (

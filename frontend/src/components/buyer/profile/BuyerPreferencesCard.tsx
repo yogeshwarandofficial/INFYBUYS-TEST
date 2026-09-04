@@ -1,14 +1,17 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { useBuyerStore, type BuyerSettings } from '@/store/useBuyerStore';
+import { useUserSettings, useUpdateUserSettings, type UserSettings } from '@/hooks/useUserSettings';
 
 export function BuyerPreferencesCard() {
-  const { settings, updateSettings } = useBuyerStore();
+  const { data: settings, isLoading } = useUserSettings();
+  const updateSettingsMutation = useUpdateUserSettings();
 
-  const handleToggle = (key: keyof BuyerSettings) => (checked: boolean) => {
-    updateSettings({ [key]: checked });
+  const handleToggle = (key: keyof UserSettings) => (checked: boolean) => {
+    updateSettingsMutation.mutate({ [key]: checked });
   };
+
+  if (isLoading || !settings) return <div>Loading preferences...</div>;
 
   return (
     <Card>
@@ -18,18 +21,6 @@ export function BuyerPreferencesCard() {
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label htmlFor="emailNotifications" className="text-base font-medium">Email Notifications</Label>
-              <p className="text-sm text-muted-foreground">Receive daily summaries and critical alerts via email.</p>
-            </div>
-            <Switch
-              id="emailNotifications"
-              checked={settings.emailNotifications}
-              onCheckedChange={handleToggle('emailNotifications')}
-            />
-          </div>
-
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label htmlFor="savedSearchAlerts" className="text-base font-medium">Saved Search Alerts</Label>
@@ -56,7 +47,7 @@ export function BuyerPreferencesCard() {
 
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
-              <Label htmlFor="messageNotifications" className="text-base font-medium">Direct Messages</Label>
+              <Label htmlFor="messageNotifications" className="text-base font-medium">Enquiry Messages</Label>
               <p className="text-sm text-muted-foreground">Get notified when you receive a new direct message.</p>
             </div>
             <Switch
@@ -66,29 +57,7 @@ export function BuyerPreferencesCard() {
             />
           </div>
 
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label htmlFor="marketingEmails" className="text-base font-medium">Marketing Emails</Label>
-              <p className="text-sm text-muted-foreground">Receive news, feature updates, and exclusive offers.</p>
-            </div>
-            <Switch
-              id="marketingEmails"
-              checked={settings.marketingEmails}
-              onCheckedChange={handleToggle('marketingEmails')}
-            />
-          </div>
 
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label htmlFor="pushNotifications" className="text-base font-medium">Push Notifications</Label>
-              <p className="text-sm text-muted-foreground">Receive notifications directly in your browser.</p>
-            </div>
-            <Switch
-              id="pushNotifications"
-              checked={settings.pushNotifications}
-              onCheckedChange={handleToggle('pushNotifications')}
-            />
-          </div>
         </div>
       </CardContent>
     </Card>

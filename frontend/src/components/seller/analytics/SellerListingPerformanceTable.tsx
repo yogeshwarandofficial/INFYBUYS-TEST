@@ -27,7 +27,6 @@ export function SellerListingPerformanceTable({ performance }: SellerListingPerf
                 <th className="px-4 py-3 font-medium text-center">Status</th>
                 <th className="px-4 py-3 font-medium text-right">Views</th>
                 <th className="px-4 py-3 font-medium text-right">Enquiries</th>
-                <th className="px-4 py-3 font-medium text-right">Conversion</th>
                 <th className="px-4 py-3 font-medium text-center rounded-tr-md rounded-br-md">Performance</th>
               </tr>
             </thead>
@@ -53,9 +52,6 @@ export function SellerListingPerformanceTable({ performance }: SellerListingPerf
                   </td>
                   <td className="px-4 py-3 text-right font-medium">
                     {listing.enquiries.toLocaleString()}
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    {listing.conversionRate.toFixed(1)}%
                   </td>
                   <td className="px-4 py-3 text-center">
                     <span

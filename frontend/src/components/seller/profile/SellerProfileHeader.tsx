@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { type SellerProfile } from '@/store/useSellerStore';
+import { type SellerProfileData as SellerProfile } from '@/hooks/useSellerProfile';
 import { SellerProfilePreviewDialog } from './SellerProfilePreviewDialog';
 import { SellerEditProfileDialog } from './SellerEditProfileDialog';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -25,8 +25,9 @@ export function SellerProfileHeader({ profile }: SellerProfileHeaderProps) {
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 sm:items-end -mt-12 sm:-mt-16 mb-4">
             <Avatar className="w-24 h-24 sm:w-32 sm:h-32 border-4 border-white shadow-sm shrink-0">
               <AvatarFallback className="text-2xl sm:text-4xl bg-[#EFF6FF] text-[#2563EB] font-medium">
-                {profile.fullName.charAt(0)}
+                {profile.fullName?.charAt(0) || 'S'}
               </AvatarFallback>
+              {profile.avatarUrl && <img src={profile.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />}
             </Avatar>
 
             <div className="flex-1 space-y-1 mb-1">

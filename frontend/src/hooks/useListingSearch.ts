@@ -1,8 +1,9 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router';
+import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient';
 import { useBuyerStore } from '@/store/useBuyerStore';
-import type { Listing } from '@/types/api';
+import type { Listing, ApiResponse } from '@/types/api';
 
 export interface SearchFilters {
   query: string;
@@ -12,6 +13,7 @@ export interface SearchFilters {
   minRevenue: number;
   status: string;
   location: string;
+  listingType?: string;
 }
 
 const defaultFilters: SearchFilters = {
@@ -22,29 +24,12 @@ const defaultFilters: SearchFilters = {
   minRevenue: 0,
   status: 'all',
   location: 'all',
+  listingType: 'all',
 };
 
 export function useListingSearch(itemsPerPage = 12) {
   const { addSearchHistory } = useBuyerStore();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [allListings, setAllListings] = useState<Listing[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchListings = async () => {
-      try {
-        setIsLoading(true);
-        const data = await apiClient.get<{ data: Listing[] }>('/listings');
-        setAllListings(data.data);
-      } catch (err: any) {
-        setError(err.message || 'Failed to fetch listings');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchListings();
-  }, []);
 
   // Initialize from URL params or default
   const [filters, setFilters] = useState<SearchFilters>(() => {
@@ -56,6 +41,7 @@ export function useListingSearch(itemsPerPage = 12) {
       minRevenue: Number(searchParams.get('minR')) || defaultFilters.minRevenue,
       status: searchParams.get('st') || defaultFilters.status,
       location: searchParams.get('loc') || defaultFilters.location,
+      listingType: searchParams.get('type') || defaultFilters.listingType,
     };
   });
 
@@ -72,6 +58,7 @@ export function useListingSearch(itemsPerPage = 12) {
     if (filters.minRevenue > 0) params.set('minR', filters.minRevenue.toString());
     if (filters.status !== 'all') params.set('st', filters.status);
     if (filters.location !== 'all') params.set('loc', filters.location);
+    if (filters.listingType && filters.listingType !== 'all') params.set('type', filters.listingType);
     if (sortBy !== 'newest') params.set('sort', sortBy);
     if (currentPage > 1) params.set('page', currentPage.toString());
 
@@ -84,7 +71,6 @@ export function useListingSearch(itemsPerPage = 12) {
 
     // If it's a search query, save to history
     if (key === 'query' && value && typeof value === 'string') {
-      // Debouncing could be added here, but for mock purposes we'll just add it
       const timeout = setTimeout(() => {
         addSearchHistory(value);
       }, 1000);
@@ -97,69 +83,39 @@ export function useListingSearch(itemsPerPage = 12) {
     setCurrentPage(1);
   };
 
-  const filteredListings = useMemo(() => {
-    let result = [...allListings];
+  // Build query string for the API call
+  const queryParams = new URLSearchParams();
+  if (filters.query) queryParams.set('search', filters.query);
+  if (filters.category !== 'all') queryParams.set('category', filters.category);
+  if (filters.minPrice > 0) queryParams.set('minPrice', filters.minPrice.toString());
+  if (filters.maxPrice > 0) queryParams.set('maxPrice', filters.maxPrice.toString());
+  if (filters.minRevenue > 0) queryParams.set('minTurnover', filters.minRevenue.toString());
+  // Normal search usually only returns PUBLISHED, but if status is passed we can include it
+  if (filters.status !== 'all') queryParams.set('status', filters.status.toUpperCase());
+  if (filters.location !== 'all') queryParams.set('location', filters.location);
+  if (filters.listingType && filters.listingType !== 'all') queryParams.set('listingType', filters.listingType.toUpperCase());
+  
+  if (sortBy) {
+    if (sortBy === 'price-asc') queryParams.set('sort', 'price_low');
+    else if (sortBy === 'price-desc') queryParams.set('sort', 'price_high');
+    else if (sortBy === 'newest') queryParams.set('sort', 'newest');
+  }
+  
+  queryParams.set('page', currentPage.toString());
+  queryParams.set('limit', itemsPerPage.toString());
 
-    // Query
-    if (filters.query) {
-      const q = filters.query.toLowerCase();
-      result = result.filter(
-        (l) =>
-          l.title.toLowerCase().includes(q) ||
-          l.description.toLowerCase().includes(q) ||
-          l.category.toLowerCase().includes(q) ||
-          l.tags?.some((t: string) => t.toLowerCase().includes(q))
-      );
-    }
+  const queryString = queryParams.toString();
 
-    // Category
-    if (filters.category && filters.category !== 'all') {
-      result = result.filter((l) => l.category.toLowerCase() === filters.category.toLowerCase());
-    }
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['listings', queryString],
+    queryFn: async () => {
+      return apiClient.get<ApiResponse<Listing[]>>(`/listings?${queryString}`);
+    },
+  });
 
-    // Price
-    if (filters.minPrice > 0) {
-      result = result.filter((l) => Number(l.priceOrRent) >= filters.minPrice);
-    }
-    if (filters.maxPrice > 0) {
-      result = result.filter((l) => Number(l.priceOrRent) <= filters.maxPrice);
-    }
-
-    // Revenue
-    if (filters.minRevenue > 0) {
-      result = result.filter((l) => (Number(l.turnover) || 0) >= filters.minRevenue);
-    }
-
-    // Location
-    if (filters.location && filters.location !== 'all') {
-      result = result.filter((l) => l.locationArea?.toLowerCase().includes(filters.location.toLowerCase()));
-    }
-
-    // Sort
-    switch (sortBy) {
-      case 'price-asc':
-        result.sort((a, b) => Number(a.priceOrRent) - Number(b.priceOrRent));
-        break;
-      case 'price-desc':
-        result.sort((a, b) => Number(b.priceOrRent) - Number(a.priceOrRent));
-        break;
-      case 'revenue-desc':
-        result.sort((a, b) => (Number(b.turnover) || 0) - (Number(a.turnover) || 0));
-        break;
-      case 'newest':
-      default:
-        // Mock data doesn't have reliable dates, we assume original array is "newest"
-        break;
-    }
-
-    return result;
-  }, [filters, sortBy, allListings]);
-
-  const totalPages = Math.ceil(filteredListings.length / itemsPerPage);
-  const paginatedListings = filteredListings.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  const listings = data?.data || [];
+  const totalResults = data?.meta?.totalItems || 0;
+  const totalPages = data?.meta?.totalPages || 0;
 
   return {
     filters,
@@ -170,9 +126,9 @@ export function useListingSearch(itemsPerPage = 12) {
     currentPage,
     setCurrentPage,
     totalPages,
-    totalResults: filteredListings.length,
-    listings: paginatedListings,
+    totalResults,
+    listings,
     isLoading,
-    error,
+    error: error instanceof Error ? error.message : error ? String(error) : null,
   };
 }

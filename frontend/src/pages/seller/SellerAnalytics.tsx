@@ -2,7 +2,6 @@ import { Seo } from '@/components/shared/Seo';
 import { useSellerAnalytics } from '@/hooks/useSellerAnalytics';
 import { SellerAnalyticsPeriodSelector } from '@/components/seller/analytics/SellerAnalyticsPeriodSelector';
 import { SellerPerformanceOverview } from '@/components/seller/analytics/SellerPerformanceOverview';
-import { SellerListingPerformanceTable } from '@/components/seller/analytics/SellerListingPerformanceTable';
 import { SellerTopListings } from '@/components/seller/analytics/SellerTopListings';
 import { SellerEnquiryAnalyticsCard } from '@/components/seller/analytics/SellerEnquiryAnalytics';
 import { SellerMessageAnalyticsCard } from '@/components/seller/analytics/SellerMessageAnalytics';
@@ -12,12 +11,36 @@ export default function SellerAnalytics() {
   const {
     period,
     setPeriod,
+    data,
+    isLoading,
+    error,
+  } = useSellerAnalytics();
+
+  if (isLoading) {
+    return (
+      <div className="p-8 text-center text-muted-foreground flex flex-col items-center justify-center min-h-[50vh]">
+        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4" />
+        Loading analytics...
+      </div>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <div className="p-8 text-center text-destructive flex flex-col items-center justify-center min-h-[50vh]">
+        <h2 className="text-xl font-semibold mb-2">Error loading analytics</h2>
+        <p className="text-muted-foreground">Please try refreshing the page.</p>
+      </div>
+    );
+  }
+
+  const {
     summary,
     listingPerformance,
     enquiryAnalytics,
     messageAnalytics,
     topListings,
-  } = useSellerAnalytics();
+  } = data;
 
   if (summary.totalListings === 0 && period === 'all') {
     return (
@@ -27,7 +50,7 @@ export default function SellerAnalytics() {
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Analytics & Performance</h1>
             <p className="text-muted-foreground mt-1">
-              Track your listing views, enquiries, and conversion rates.
+              Track your listing views and enquiries.
             </p>
           </div>
           <SellerAnalyticsEmptyState />
@@ -45,7 +68,7 @@ export default function SellerAnalytics() {
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Analytics & Performance</h1>
             <p className="text-muted-foreground mt-1">
-              Track your listing views, enquiries, and conversion rates.
+              Track your listing views and enquiries.
             </p>
           </div>
           <div className="flex items-center">
@@ -79,11 +102,6 @@ export default function SellerAnalytics() {
               </div>
             </section>
 
-            {/* Bottom Section: Full Table */}
-            <section aria-labelledby="detailed-performance-heading">
-              <h2 id="detailed-performance-heading" className="sr-only">Detailed Listing Performance</h2>
-              <SellerListingPerformanceTable performance={listingPerformance} />
-            </section>
           </>
         )}
       </div>

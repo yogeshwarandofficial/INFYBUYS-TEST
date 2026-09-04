@@ -1,9 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Mail, Phone, MapPin } from 'lucide-react';
-import { useBuyerStore } from '@/store/useBuyerStore';
+import { useBuyerProfile } from '@/hooks/useBuyerProfile';
 
 export function ContactInformationCard() {
-  const { profile } = useBuyerStore();
+  const { data: profile } = useBuyerProfile();
+
+  if (!profile) return null;
 
   return (
     <Card>

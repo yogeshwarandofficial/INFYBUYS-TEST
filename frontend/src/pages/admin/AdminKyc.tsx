@@ -49,7 +49,7 @@ export default function AdminKyc() {
                       <p className="text-gray-500 text-xs">No: {app.companyNumber || 'N/A'}</p>
                     </td>
                     <td className="px-6 py-4 text-gray-500">
-                      {new Date(app.kycSubmittedAt).toLocaleDateString()}
+                      {app.kycSubmittedAt ? new Date(app.kycSubmittedAt).toLocaleDateString() : 'N/A'}
                     </td>
                     <td className="px-6 py-4">
                       {app.kycStatus === 'PENDING' && <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800"><AlertCircle className="w-3 h-3"/> Pending</span>}

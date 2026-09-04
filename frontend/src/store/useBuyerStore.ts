@@ -338,6 +338,7 @@ interface BuyerState {
   // Phase 4.9 - Profile & Settings Actions
   updateProfile: (updates: Partial<BuyerProfile>) => void;
   updateSettings: (updates: Partial<BuyerSettings>) => void;
+  initSettings: () => Promise<void>;
   deleteAccountRequest: () => void;
 
   // Phase 6.14 - Reviews Actions
@@ -1022,23 +1023,43 @@ export const useBuyerStore = create<BuyerState>()(
         };
       }),
 
-      updateSettings: (updates) => set((state) => {
-        const newNotification: BuyerNotification = {
-          id: `notif-${Date.now()}`,
-          type: 'account',
-          title: 'Settings Updated',
-          message: 'Your account preferences have been saved.',
-          createdAt: new Date().toISOString(),
-          read: false,
-          relatedPath: '/buyer/settings',
-        };
+      updateSettings: async (updates) => {
+        try {
+          await apiClient.patch('/users/me/settings', updates);
+        } catch (e) {
+          console.error('Failed to update settings:', e);
+        }
+        set((state) => {
+          const newNotification: BuyerNotification = {
+            id: `notif-${Date.now()}`,
+            type: 'account',
+            title: 'Settings Updated',
+            message: 'Your account preferences have been saved.',
+            createdAt: new Date().toISOString(),
+            read: false,
+            relatedPath: '/buyer/settings',
+          };
 
-        return {
-          settings: { ...state.settings, ...updates },
-          notifications: [newNotification, ...state.notifications],
-          notificationCount: state.notificationCount + 1,
-        };
-      }),
+          return {
+            settings: { ...state.settings, ...updates },
+            notifications: [newNotification, ...state.notifications],
+            notificationCount: state.notificationCount + 1,
+          };
+        });
+      },
+
+      initSettings: async () => {
+        try {
+          const user = await apiClient.get<any>('/users/me');
+          if (user?.settings && typeof user.settings === 'object') {
+            set((state) => ({
+              settings: { ...state.settings, ...user.settings }
+            }));
+          }
+        } catch (e) {
+          console.error('Failed to fetch settings', e);
+        }
+      },
 
       deleteAccountRequest: () => {
         get().addNotification({

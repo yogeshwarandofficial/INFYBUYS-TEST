@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { useBuyerStore } from '@/store/useBuyerStore';
+import { useCreateSavedSearch } from '@/hooks/useSavedSearches';
+import { toast } from 'react-hot-toast';
 import type { SearchFilters } from '@/hooks/useListingSearch';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -13,27 +14,34 @@ interface SaveSearchDialogProps {
   trigger?: React.ReactNode;
 }
 
-export function SaveSearchDialog({ filters, resultCount, trigger }: SaveSearchDialogProps) {
+export function SaveSearchDialog({ filters, trigger }: SaveSearchDialogProps) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState('');
   const [alertEnabled, setAlertEnabled] = useState(false);
-  const { saveSearch } = useBuyerStore();
+  const { mutate: createSavedSearch, isPending: isSaving } = useCreateSavedSearch();
 
   const handleSave = () => {
     if (!name.trim()) return;
 
-    saveSearch(
-      {
-        name,
-        filters,
-        alertEnabled,
+    createSavedSearch({
+      name,
+      search: filters.query || undefined,
+      category: filters.category !== 'all' ? filters.category : undefined,
+      location: filters.location !== 'all' ? filters.location : undefined,
+      listingType: filters.listingType !== 'all' ? filters.listingType : undefined,
+      minPrice: filters.minPrice > 0 ? filters.minPrice : undefined,
+      maxPrice: filters.maxPrice > 0 ? filters.maxPrice : undefined,
+    }, {
+      onSuccess: () => {
+        toast.success('Search saved successfully');
+        setOpen(false);
+        setName('');
+        setAlertEnabled(false);
       },
-      resultCount
-    );
-
-    setOpen(false);
-    setName('');
-    setAlertEnabled(false);
+      onError: () => {
+        toast.error('Failed to save search');
+      }
+    });
   };
 
   return (
@@ -90,8 +98,10 @@ export function SaveSearchDialog({ filters, resultCount, trigger }: SaveSearchDi
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
-          <Button onClick={handleSave} disabled={!name.trim()}>Save Search</Button>
+          <Button variant="outline" onClick={() => setOpen(false)} disabled={isSaving}>Cancel</Button>
+          <Button onClick={handleSave} disabled={!name.trim() || isSaving}>
+            {isSaving ? 'Saving...' : 'Save Search'}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

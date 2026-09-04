@@ -1,3 +1,4 @@
+
 import { Seo } from '@/components/shared/Seo';
 import { BuyerPageHeader } from '@/components/buyer/BuyerPageHeader';
 import { BuyerPreferencesCard } from '@/components/buyer/profile/BuyerPreferencesCard';
@@ -8,22 +9,25 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { LogOut, Globe, Moon, Sun, Monitor } from 'lucide-react';
 import { useUserStore } from '@/store/useUserStore';
-import { useBuyerStore } from '@/store/useBuyerStore';
+import { useUserSettings, useUpdateUserSettings } from '@/hooks/useUserSettings';
 import { useTheme } from '@/providers/ThemeProvider';
 
 export default function BuyerSettings() {
   const { logout } = useUserStore();
-  const { settings, updateSettings } = useBuyerStore();
+  const { data: settings, isLoading } = useUserSettings();
+  const updateSettingsMutation = useUpdateUserSettings();
   const { setTheme } = useTheme();
 
   const handleThemeChange = (value: 'light' | 'dark' | 'system') => {
-    updateSettings({ themePreference: value });
+    updateSettingsMutation.mutate({ themePreference: value });
     setTheme(value);
   };
 
   const handleLanguageChange = (value: string) => {
-    updateSettings({ languagePreference: value });
+    updateSettingsMutation.mutate({ languagePreference: value });
   };
+
+  if (isLoading || !settings) return <div>Loading settings...</div>;
 
   return (
     <>

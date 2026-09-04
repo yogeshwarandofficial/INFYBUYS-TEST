@@ -1,6 +1,6 @@
 import { SellerAnalyticsStatCard } from './SellerAnalyticsStatCard';
 import { type SellerAnalyticsSummary } from '@/store/useSellerStore';
-import { Building2, Eye, Mail, MessageSquare, Percent } from 'lucide-react';
+import { Building2, Eye, Mail, MessageSquare } from 'lucide-react';
 
 interface SellerPerformanceOverviewProps {
   summary: SellerAnalyticsSummary;
@@ -8,7 +8,7 @@ interface SellerPerformanceOverviewProps {
 
 export function SellerPerformanceOverview({ summary }: SellerPerformanceOverviewProps) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       <SellerAnalyticsStatCard
         title="Active Listings"
         value={summary.activeListings}
@@ -32,13 +32,6 @@ export function SellerPerformanceOverview({ summary }: SellerPerformanceOverview
         value={summary.totalConversations.toLocaleString()}
         description={summary.unreadMessages > 0 ? `${summary.unreadMessages} unread messages` : 'All caught up'}
         icon={MessageSquare}
-      />
-      <SellerAnalyticsStatCard
-        title="Conversion Rate"
-        value={`${summary.overallConversionRate.toFixed(1)}%`}
-        description="Views to Enquiries"
-        icon={Percent}
-        className="sm:col-span-2 lg:col-span-1"
       />
     </div>
   );
