@@ -18,16 +18,16 @@ import { SellerProfileMenu } from '@/components/seller/SellerProfileMenu';
 import { AdminProfileMenu } from '@/components/admin/AdminProfileMenu';
 
 const REGIONS = [
-  { id: 'ALL', label: '🌍 All Regions', short: 'ALL' },
-  { id: 'IN', label: '🇮🇳 India — INR', short: 'INR' },
-  { id: 'AE', label: '🇦🇪 UAE — AED', short: 'AED' },
-  { id: 'US', label: '🇺🇸 United States — USD', short: 'USD' },
-  { id: 'GB', label: '🇬🇧 United Kingdom — GBP', short: 'GBP' },
-  { id: 'EU', label: '🇪🇺 European Union — EUR', short: 'EUR' },
-  { id: 'SG', label: '🇸🇬 Singapore — SGD', short: 'SGD' },
-  { id: 'AU', label: '🇦🇺 Australia — AUD', short: 'AUD' },
-  { id: 'CA', label: '🇨🇦 Canada — CAD', short: 'CAD' },
-  { id: 'INTL', label: '🌍 International', short: 'INTL' }
+  { id: 'ALL', label: 'All Regions', short: 'ALL' },
+  { id: 'IN', label: 'IN India — INR', short: 'INR' },
+  { id: 'AE', label: 'AE UAE — AED', short: 'AED' },
+  { id: 'US', label: 'US United States — USD', short: 'USD' },
+  { id: 'GB', label: 'GB United Kingdom — GBP', short: 'GBP' },
+  { id: 'EU', label: 'EU European Union — EUR', short: 'EUR' },
+  { id: 'SG', label: 'SG Singapore — SGD', short: 'SGD' },
+  { id: 'AU', label: 'AU Australia — AUD', short: 'AUD' },
+  { id: 'CA', label: 'CA Canada — CAD', short: 'CAD' },
+  { id: 'INTL', label: 'INTL International', short: 'INTL' }
 ];
 
 export function PublicHeader() {
@@ -79,7 +79,7 @@ export function PublicHeader() {
       <header
         className={`fixed top-0 w-full z-40 transition-all duration-300 ${
           isScrolled
-            ? 'bg-white/95 backdrop-blur-md shadow-sm'
+            ? 'is-scrolled bg-white/95 backdrop-blur-md shadow-sm'
             : 'bg-transparent'
         }`}
       >
@@ -106,8 +106,17 @@ export function PublicHeader() {
             <div className="flex items-center gap-6">
               <DropdownMenu modal={false}>
                 <DropdownMenuTrigger asChild>
-                  <div className="hidden md:flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-white opacity-90 hover:opacity-100 cursor-pointer transition-all focus:outline-none">
-                    <Globe className="w-4 h-4" />
+                  <div className={`hidden md:flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest ${isScrolled ? 'text-[#0B152A]' : 'text-white'} opacity-90 hover:opacity-100 cursor-pointer transition-all focus:outline-none`}>
+                    {selectedRegion.id === 'ALL' || selectedRegion.id === 'INTL' ? (
+                      <Globe className="w-4 h-4" />
+                    ) : (
+                      <img 
+                        src={`https://flagcdn.com/w20/${selectedRegion.id.toLowerCase()}.png`} 
+                        srcSet={`https://flagcdn.com/w40/${selectedRegion.id.toLowerCase()}.png 2x`}
+                        alt={selectedRegion.id} 
+                        className="w-[18px] object-contain rounded-[2px] shadow-[0_0_2px_rgba(0,0,0,0.2)]" 
+                      />
+                    )}
                     <span className="leading-none mt-[1px]">{selectedRegion.short}</span>
                     <ChevronDown className="w-3 h-3 ml-0.5 opacity-70" />
                   </div>
@@ -117,13 +126,14 @@ export function PublicHeader() {
                   <div className="p-2 border-b border-slate-100 bg-slate-50/50">
                     <DropdownMenuItem 
                       onClick={() => { setSelectedRegion(REGIONS[0]); setRegionSearch(''); }}
-                      className={`cursor-pointer text-sm font-semibold py-2.5 px-3 rounded-lg transition-colors ${
+                      className={`cursor-pointer text-sm font-semibold py-2.5 px-3 rounded-lg transition-colors flex items-center gap-2 ${
                         selectedRegion.id === 'ALL' 
                           ? 'bg-blue-50 text-[#0B4C8C]' 
                           : 'text-[#0B152A] hover:bg-slate-100 focus:bg-slate-100'
                       }`}
                     >
-                      {REGIONS[0].label}
+                      <span className="text-base leading-none">🌍</span>
+                      <span>{REGIONS[0].label}</span>
                     </DropdownMenuItem>
                   </div>
                   
@@ -149,13 +159,23 @@ export function PublicHeader() {
                       <DropdownMenuItem 
                         key={region.id}
                         onClick={() => { setSelectedRegion(region); setRegionSearch(''); }}
-                        className={`cursor-pointer text-sm font-medium py-2.5 px-3 rounded-lg mb-0.5 last:mb-0 transition-colors ${
+                        className={`cursor-pointer text-sm font-medium py-2.5 px-3 rounded-lg mb-0.5 last:mb-0 transition-colors flex items-center gap-2.5 ${
                           selectedRegion.id === region.id 
                             ? 'bg-blue-50 text-[#0B4C8C]' 
                             : 'text-[#0B152A] focus:bg-slate-50 focus:text-[#0B4C8C] hover:bg-slate-50 hover:text-[#0B4C8C]'
                         }`}
                       >
-                        {region.label}
+                        {region.id === 'INTL' ? (
+                          <span className="text-base leading-none w-5 text-center">🌍</span>
+                        ) : (
+                          <img 
+                            src={`https://flagcdn.com/w20/${region.id.toLowerCase()}.png`} 
+                            srcSet={`https://flagcdn.com/w40/${region.id.toLowerCase()}.png 2x`}
+                            alt={region.id} 
+                            className="w-5 object-contain rounded-[2px] shadow-[0_0_2px_rgba(0,0,0,0.2)]" 
+                          />
+                        )}
+                        <span>{region.label}</span>
                       </DropdownMenuItem>
                     ))}
                     {REGIONS.slice(1).filter(r => r.label.toLowerCase().includes(regionSearch.toLowerCase()) || r.short.toLowerCase().includes(regionSearch.toLowerCase())).length === 0 && (
@@ -176,8 +196,8 @@ export function PublicHeader() {
           <div className="container mx-auto px-4 flex items-center justify-between">
             {/* Left: Logo */}
             <div className="flex-shrink-0">
-              <Link to="/" className="text-3xl font-black tracking-tighter text-[#0B4C8C] flex flex-col leading-none">
-                InfyBuys<span className="text-[10px] tracking-[0.2em] font-semibold text-slate-900 mt-2 uppercase">Connecting Businesses</span>
+              <Link to="/" className="text-3xl font-black tracking-tighter text-blue-600 flex flex-col leading-none">
+                InfyBuys<span className={`text-[10px] tracking-[0.2em] font-semibold ${isScrolled ? 'text-[#0B152A]' : 'text-white'} mt-2 uppercase transition-colors`}>Connecting Businesses</span>
               </Link>
             </div>
 
@@ -192,7 +212,7 @@ export function PublicHeader() {
                 variant="ghost"
                 size="icon"
                 onClick={() => setSearchOpen(true)}
-                className="lg:hidden text-slate-600 hover:text-brand-blue"
+                className={`lg:hidden ${isScrolled ? 'text-[#0B152A] hover:bg-slate-100' : 'text-white hover:text-white/80'}`}
               >
                 <Search className="w-5 h-5" />
               </Button>
@@ -206,7 +226,7 @@ export function PublicHeader() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="lg:hidden text-slate-900"
+                className={`lg:hidden ${isScrolled ? 'text-[#0B152A] hover:bg-slate-100' : 'text-white hover:text-white/80'}`}
                 onClick={() => setMobileMenuOpen(true)}
               >
                 <Menu className="w-6 h-6" />

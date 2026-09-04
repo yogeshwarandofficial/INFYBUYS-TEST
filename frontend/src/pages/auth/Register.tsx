@@ -5,7 +5,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { registerSchema, type RegisterInput } from '@/lib/validations/auth';
 import { authService } from '@/services/auth.service';
 
-import { AuthHeader } from '@/components/auth/AuthHeader';
 import { PasswordInput } from '@/components/auth/PasswordInput';
 import { PasswordStrength } from '@/components/auth/PasswordStrength';
 import { SocialLoginButton } from '@/components/auth/SocialLoginButton';
@@ -15,7 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, ArrowRight } from 'lucide-react';
 import { Seo } from '@/components/shared/Seo';
 
 export default function Register() {
@@ -54,23 +53,24 @@ export default function Register() {
   };
 
   return (
-    <>
+    <div className="auth-form-single">
       <Seo title="Create Account | InfyBuys" description="Sign up for InfyBuys" />
 
-      <AuthHeader
-        title="Create an account"
-        description="Join thousands of founders on InfyBuys"
-      />
+      {/* Heading */}
+      <h1 className="auth-form-title">Create an account</h1>
+      <p className="auth-form-subtitle">Join thousands of founders on InfyBuys</p>
 
+      {/* Error alert */}
       {error && (
-        <Alert variant="destructive" className="mb-6">
+        <Alert variant="destructive" className="mb-5">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div className="space-y-2">
+        {/* Full Name */}
+        <div className="space-y-1.5">
           <Label htmlFor="name">Full Name</Label>
           <Input
             id="name"
@@ -81,7 +81,8 @@ export default function Register() {
           {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
         </div>
 
-        <div className="space-y-2">
+        {/* Email */}
+        <div className="space-y-1.5">
           <Label htmlFor="email">Email address</Label>
           <Input
             id="email"
@@ -93,7 +94,8 @@ export default function Register() {
           {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
         </div>
 
-        <div className="space-y-2">
+        {/* Phone */}
+        <div className="space-y-1.5">
           <Label htmlFor="phone">Phone number</Label>
           <Input
             id="phone"
@@ -105,7 +107,8 @@ export default function Register() {
           {errors.phone && <p className="text-sm text-destructive">{errors.phone.message}</p>}
         </div>
 
-        <div className="space-y-2">
+        {/* Password */}
+        <div className="space-y-1.5">
           <Label htmlFor="password">Password</Label>
           <PasswordInput
             id="password"
@@ -117,7 +120,8 @@ export default function Register() {
           {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
         </div>
 
-        <div className="space-y-2">
+        {/* Confirm Password */}
+        <div className="space-y-1.5">
           <Label htmlFor="confirmPassword">Confirm Password</Label>
           <PasswordInput
             id="confirmPassword"
@@ -125,10 +129,13 @@ export default function Register() {
             {...register('confirmPassword')}
             error={!!errors.confirmPassword}
           />
-          {errors.confirmPassword && <p className="text-sm text-destructive">{errors.confirmPassword.message}</p>}
+          {errors.confirmPassword && (
+            <p className="text-sm text-destructive">{errors.confirmPassword.message}</p>
+          )}
         </div>
 
-        <div className="flex items-start space-x-2 pt-2 pb-2">
+        {/* Terms & Privacy */}
+        <div className="flex items-start space-x-2 pt-1 pb-1">
           <Controller
             name="termsAccepted"
             control={control}
@@ -138,33 +145,69 @@ export default function Register() {
                 id="termsAccepted"
                 checked={field.value}
                 onCheckedChange={field.onChange}
-                className="mt-1"
+                className="mt-0.5"
               />
             )}
           />
-          <div className="grid gap-1.5 leading-none">
-            <Label htmlFor="termsAccepted" className="text-sm font-normal text-muted-foreground leading-snug">
-              I agree to the <Link to="/terms" className="text-primary hover:underline">Terms of Service</Link> and <Link to="/privacy" className="text-primary hover:underline">Privacy Policy</Link>.
+          <div className="grid gap-1 leading-none">
+            <Label
+              htmlFor="termsAccepted"
+              className="text-sm font-normal leading-snug cursor-pointer"
+              style={{ color: '#64748B' }}
+            >
+              I agree to the{' '}
+              <Link to="/terms" className="hover:underline" style={{ color: '#2563EB' }}>
+                Terms of Service
+              </Link>{' '}
+              and{' '}
+              <Link to="/privacy" className="hover:underline" style={{ color: '#2563EB' }}>
+                Privacy Policy
+              </Link>
+              .
             </Label>
-            {errors.termsAccepted && <p className="text-sm text-destructive">{errors.termsAccepted.message}</p>}
+            {errors.termsAccepted && (
+              <p className="text-sm text-destructive">{errors.termsAccepted.message}</p>
+            )}
           </div>
         </div>
 
-        <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
-          {isLoading ? 'Creating account...' : 'Create Account'}
+        {/* Create Account button */}
+        <Button
+          type="submit"
+          className="auth-sign-in-btn"
+          size="lg"
+          disabled={isLoading}
+        >
+          {isLoading ? 'Creating account...' : (
+            <>
+              Create Account
+              <ArrowRight className="w-4 h-4" aria-hidden="true" />
+            </>
+          )}
         </Button>
       </form>
 
+      {/* Divider */}
       <AuthDivider />
 
-      <SocialLoginButton provider="Google" disabled={isLoading} />
+      {/* Google */}
+      <SocialLoginButton
+        provider="Google"
+        disabled={isLoading}
+        className="auth-google-btn"
+      />
 
-      <p className="mt-8 text-center text-sm text-muted-foreground">
+      {/* Log in link */}
+      <p className="mt-6 text-center text-sm" style={{ color: '#040031ff' }}>
         Already have an account?{' '}
-        <Link to="/login" className="font-semibold text-primary hover:underline">
+        <Link
+          to="/login"
+          className="font-semibold hover:underline"
+          style={{ color: '#2563EB' }}
+        >
           Log in
         </Link>
       </p>
-    </>
+    </div>
   );
 }

@@ -16,13 +16,13 @@ export function PublicFooter() {
               The premier marketplace for buying and selling profitable online businesses, SaaS, and digital assets.
             </p>
             <div className="flex gap-4">
-              <Button variant="ghost" size="icon" className="rounded-full bg-white/5 text-slate-300 hover:text-white hover:bg-brand-blue transition-colors">
+              <Button variant="ghost" size="icon" className="rounded-full bg-white/5 text-slate-300 hover:text-white hover:bg-[#0B4C8C] transition-colors">
                 <Mail className="w-5 h-5" />
               </Button>
-              <Button variant="ghost" size="icon" className="rounded-full bg-white/5 text-slate-300 hover:text-white hover:bg-brand-blue transition-colors">
+              <Button variant="ghost" size="icon" className="rounded-full bg-white/5 text-slate-300 hover:text-white hover:bg-[#0B4C8C] transition-colors">
                 <Globe className="w-5 h-5" />
               </Button>
-              <Button variant="ghost" size="icon" className="rounded-full bg-white/5 text-slate-300 hover:text-white hover:bg-brand-blue transition-colors">
+              <Button variant="ghost" size="icon" className="rounded-full bg-white/5 text-slate-300 hover:text-white hover:bg-[#0B4C8C] transition-colors">
                 <MessageSquare className="w-5 h-5" />
               </Button>
             </div>
@@ -52,7 +52,7 @@ export function PublicFooter() {
             <h4 className="font-bold text-lg mb-6">Newsletter</h4>
             <p className="text-slate-400 text-sm mb-4">Get the latest premium listings delivered to your inbox.</p>
             <form className="space-y-3">
-              <Input type="email" placeholder="Your email address" className="bg-white/5 border-white/10 text-white placeholder:text-slate-500 h-10 border rounded-lg" />
+              <Input type="email" placeholder="Your email address" className="text-white placeholder:text-white-600 h-10 rounded-lg" />
               <Button className="w-full h-10 bg-brand-blue hover:bg-brand-blue/90 text-white font-bold rounded-lg tracking-wide">Subscribe</Button>
             </form>
           </div>

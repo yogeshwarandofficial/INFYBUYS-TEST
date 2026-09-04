@@ -80,13 +80,31 @@ export function useAdminAnalytics() {
 
     const userGrowthData = generateTimeSeries(daysToAggregate);
 
-    // Listings Distribution
-    const listingsDistribution = [
-      { name: 'Active', value: filteredListings.filter(l => l.status === 'active').length, color: 'var(--color-active)' },
-      { name: 'Pending', value: filteredListings.filter(l => l.status === 'pending').length, color: 'var(--color-pending)' },
-      { name: 'Sold', value: filteredListings.filter(l => l.status === 'sold').length, color: 'var(--color-sold)' },
-      { name: 'Closed', value: filteredListings.filter(l => l.status === 'closed').length, color: 'var(--color-archived)' },
-    ].filter(d => d.value > 0);
+    // Listings Distribution by Category
+    const categoryCounts: Record<string, number> = {};
+    filteredListings.forEach(l => {
+      const cat = l.category || 'Other';
+      categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+    });
+
+    const categoryColors: Record<string, string> = {
+      'SaaS': '#3b82f6', // blue
+      'E-commerce': '#8b5cf6', // purple
+      'Agency': '#10b981', // green
+      'Content': '#f59e0b', // orange
+      'Marketplace': '#06b6d4', // cyan
+      'Mobile App': '#ec4899', // pink
+      'Other': '#64748b' // slate
+    };
+    const fallbackColors = ['#3b82f6', '#8b5cf6', '#10b981', '#f59e0b', '#06b6d4', '#ec4899', '#64748b'];
+
+    const listingsDistribution = Object.entries(categoryCounts)
+      .map(([name, value], index) => ({
+        name,
+        value,
+        color: categoryColors[name] || fallbackColors[index % fallbackColors.length]
+      }))
+      .sort((a, b) => b.value - a.value);
 
     // Engagement Data (Enquiries vs Messages)
     const engagementData = generateTimeSeries(daysToAggregate).map((day, idx) => {

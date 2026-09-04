@@ -6,14 +6,15 @@ interface SocialLoginButtonProps {
   icon?: ReactNode;
   onClick?: () => void;
   disabled?: boolean;
+  className?: string;
 }
 
-export function SocialLoginButton({ provider, icon, onClick, disabled }: SocialLoginButtonProps) {
+export function SocialLoginButton({ provider, icon, onClick, disabled, className }: SocialLoginButtonProps) {
   return (
     <Button
       type="button"
       variant="outline"
-      className="w-full relative bg-background"
+      className={className ?? 'w-full relative bg-background'}
       onClick={onClick}
       disabled={disabled}
     >

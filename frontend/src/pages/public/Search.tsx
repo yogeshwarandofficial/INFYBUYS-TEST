@@ -80,52 +80,48 @@ export default function Search() {
       />
 
       {/* Search Page Hero Section */}
-      <section className="relative w-full min-h-[450px] lg:min-h-[600px] flex flex-col items-center justify-center pt-32 lg:pt-40 pb-16 overflow-hidden">
+      <section className="relative w-full min-h-[450px] lg:min-h-[600px] flex flex-col items-center justify-center pt-32 lg:pt-40 pb-20 overflow-hidden">
         {/* Background Image */}
-        <div className="absolute inset-0 z-0">
-          <img 
-            src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" 
-            alt="Digital business marketplace" 
-            className="w-full h-full object-cover"
-          />
-        </div>
-        
-        {/* Subtle Blue/White Gradient Overlay */}
-        <div className="absolute inset-0 z-10 bg-gradient-to-br from-white/95 via-white/85 to-[#0B4C8C]/20"></div>
-        
+        <div 
+        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-100"
+        style={{ backgroundImage: 'url("https://res.cloudinary.com/dhjupdyus/image/upload/v1788425504/82c86dbe-495d-45f7-9052-4fc08e5185f5_rsyl9e.png")' }}
+      >
+        <div className="absolute inset-0 bg-[#0B152A]/40 backdrop-blur-[2px]"></div>
+        {/* Dark navy gradient overlay for premium look */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0B152A]/90 via-[#0B152A]/70 to-[#0B4C8C]/60"></div>
+      </div>
+                
         {/* Hero Content */}
-        <div className="container relative z-20 mx-auto px-4 text-center max-w-4xl mb-12">
+        <div className="container relative z-20 mx-auto px-4 text-center max-w-5xl flex flex-col items-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="flex flex-col items-center"
+            className="flex flex-col items-center w-full"
           >
-            <span className="text-[#0B4C8C] font-extrabold tracking-widest text-xs md:text-sm uppercase mb-4 px-4 py-1.5 bg-[#0B4C8C]/10 rounded-full">
+            <span className="text-[#0757A0] font-extrabold tracking-widest text-xs md:text-sm uppercase mb-6 px-5 py-2 bg-[#F1F7FC]/90 shadow-sm rounded-full backdrop-blur-sm border border-[#0B4C8C]/10">
               EXPLORE OPPORTUNITIES
             </span>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#0B152A] tracking-tight leading-[1.15] mb-6">
-              Browse Businesses
+            <h1 className="text-4xl md:text-5xl lg:text-7xl font-black text-white tracking-tight leading-[1.1] mb-6">
+              Browse <span className="text-[#00B8E6]">Businesses</span>
             </h1>
-            <p className="text-lg md:text-xl text-slate-700 leading-relaxed max-w-2xl">
+            <p className="text-lg md:text-xl text-[#F1F5F9] max-w-2xl font-medium mb-12 drop-shadow-md">
               Discover verified online businesses, SaaS companies, digital assets, and profitable ventures available for acquisition.
             </p>
           </motion.div>
-        </div>
 
-        {/* Premium Search Bar integrated into Hero */}
-        <div className="container relative z-30 mx-auto px-4 w-full flex flex-col items-center justify-center">
+          {/* Premium Search Bar */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="w-full max-w-3xl"
+            className="w-full max-w-4xl"
           >
-            <div className="bg-[#0B152A]/90 backdrop-blur-xl p-2 pl-6 pr-2 rounded-full border border-white/20 flex items-center shadow-2xl w-full transition-all duration-300 ">
+            <div className="w-full bg-transparent backdrop-blur-xl rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white/60 relative flex items-center">
               <Input
                 type="text"
                 placeholder="Find Listings, Categories, Or Enter A Listing ID..."
-                className="flex-1 h-14 bg-transparent border-none shadow-none text-white text-base md:text-lg placeholder:text-white/70 focus-visible:ring-0 px-0"
+                className="w-full h-14 md:h-18 pl-6 pr-20 text-base md:text-lg bg-transparent border-transparent shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 text-[#ffffff] placeholder:text-white/60 font-medium rounded-full"
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && updateFilter('query', searchInput)}
@@ -133,17 +129,17 @@ export default function Search() {
               <button 
                 type="button"
                 onClick={() => updateFilter('query', searchInput)}
-                className="w-12 h-12 md:w-14 md:h-14 flex-shrink-0 bg-white rounded-full flex items-center justify-center hover:bg-slate-100 hover:scale-105 active:scale-95 transition-all ml-4 shadow-md"
+                className="absolute right-2 md:right-2.5 w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-full bg-white shadow-sm border border-slate-100 text-[#0B4C8C] hover:scale-105 active:scale-95 transition-all"
               >
-                <SearchIcon className="w-5 h-5 md:w-6 md:h-6 text-[#0B4C8C]" />
+                <SearchIcon className="w-5 h-5 md:w-6 md:h-6" />
               </button>
             </div>
             
-            {/* Mobile Filters Toggle (Only visible on mobile, outside the pill) */}
+            {/* Mobile Filters Toggle (Only visible on mobile) */}
             <div className="flex justify-center mt-6 md:hidden">
               <Button
                 variant="outline"
-                className="h-12 px-8 rounded-full bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/20 hover:text-white"
+                className="h-12 px-8 rounded-full bg-white/80 backdrop-blur-md border-slate-200 text-[#0B152A] font-semibold hover:bg-white"
                 onClick={() => setShowMobileFilters(!showMobileFilters)}
               >
                 <SlidersHorizontal className="w-5 h-5 mr-2" />
@@ -217,7 +213,7 @@ export default function Search() {
                   <SelectTrigger className="w-[200px] h-11 text-base font-medium bg-white text-[#0F172A] border border-slate-200 rounded-lg shadow-sm hover:bg-slate-50 transition-colors [&_svg]:!text-[#0B4C8C]">
                     <SelectValue placeholder="Sort by" />
                   </SelectTrigger>
-                  <SelectContent className="bg-white border-slate-200 shadow-md rounded-lg z-[100]">
+                  <SelectContent position="popper" className="bg-white border-slate-200 shadow-md rounded-lg z-[100] w-[200px]">
                     <SelectItem value="newest" className="text-[#0F172A] focus:bg-[#0B4C8C]/10 focus:text-[#0B4C8C] cursor-pointer [&_svg]:!text-[#0B4C8C] my-0.5">Newest First</SelectItem>
                     <SelectItem value="price-asc" className="text-[#0F172A] focus:bg-[#0B4C8C]/10 focus:text-[#0B4C8C] cursor-pointer [&_svg]:!text-[#0B4C8C] my-0.5">Price: Low to High</SelectItem>
                     <SelectItem value="price-desc" className="text-[#0F172A] focus:bg-[#0B4C8C]/10 focus:text-[#0B4C8C] cursor-pointer [&_svg]:!text-[#0B4C8C] my-0.5">Price: High to Low</SelectItem>

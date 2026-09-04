@@ -10,23 +10,24 @@ export default function TermsConditions() {
 
       {/* Hero Section */}
       <section className="relative w-full min-h-[400px] lg:min-h-[600px] flex items-center justify-center pt-32 pb-16 overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <img 
-            src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=2071" 
-            alt="Business agreements and contracts" 
-            className="w-full h-full object-cover"
-          />
-        </div>
-        <div className="absolute inset-0 z-10 bg-gradient-to-br from-white/95 via-white/85 to-[#0B4C8C]/10"></div>
+ <div 
+        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-100"
+        style={{ backgroundImage: 'url("https://res.cloudinary.com/dhjupdyus/image/upload/v1788434251/c99cc53a-29e9-4e6b-b48d-a2fe7bbcea0b_ppns45.png")' }}
+      >
+        <div className="absolute inset-0 bg-[#0B152A]/40 backdrop-blur-[2px]"></div>
+        {/* Dark navy gradient overlay for premium look */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0B152A]/90 via-[#0B152A]/70 to-[#0B4C8C]/60"></div>
+      </div>
+
         <div className="container relative z-20 mx-auto px-4 text-center max-w-4xl">
           <div className="flex flex-col items-center">
-            <span className="text-[#0B4C8C] font-extrabold tracking-widest text-xs md:text-sm uppercase mb-4 px-4 py-1.5 bg-[#0B4C8C]/10 rounded-full">
-              INFYBUYS TERMS
+            <span className="text-[#0757A0] font-extrabold tracking-widest text-xs md:text-sm uppercase mb-4 px-4 py-1.5 bg-[#F1F7FC]/90 shadow-sm rounded-full">
+              LEGAL
             </span>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#0B152A] tracking-tight leading-[1.15] mb-6">
-              Terms of Service
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#ffffff] tracking-tight leading-[1.15] mb-6">
+              Terms of <span className="text-[#00B8E6]">Service</span>
             </h1>
-            <p className="text-lg md:text-xl text-slate-700 leading-relaxed max-w-2xl">
+            <p className="text-lg md:text-xl text-[#F1F5F9] max-w-2xl font-medium drop-shadow-md mb-12">
               Understand the terms and conditions that govern your use of the InfyBuys digital business marketplace.
             </p>
           </div>

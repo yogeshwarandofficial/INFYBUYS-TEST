@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAdminAnalytics } from '../../hooks/useAdminAnalytics';
 import { AdminAnalyticsPeriodSelector } from '../../components/admin/analytics/AdminAnalyticsPeriodSelector';
-import { AdminAnalyticsOverview } from '../../components/admin/analytics/AdminAnalyticsOverview';
+
 import { AdminUserGrowthChart } from '../../components/admin/analytics/AdminUserGrowthChart';
 import { AdminListingsDistributionChart } from '../../components/admin/analytics/AdminListingsDistributionChart';
 import { AdminEngagementChart } from '../../components/admin/analytics/AdminEngagementChart';
@@ -54,41 +54,56 @@ export default function AdminAnalytics() {
         <div className="space-y-8">
           {activeTab === 'overview' && (
             <div className="space-y-8 animate-in fade-in duration-300">
-              {/* KPI Cards */}
-              <AdminAnalyticsOverview summary={summary} />
-
-              {/* Main Charts */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <AdminUserGrowthChart data={userGrowthData} />
-                <AdminListingsDistributionChart data={listingsDistribution} />
-                <AdminEngagementChart data={engagementData} />
+                <AdminUserGrowthChart 
+                  data={userGrowthData} 
+                  totalBuyers={summary.totalBuyers} 
+                  totalSellers={summary.totalSellers} 
+                />
+                <AdminListingsDistributionChart 
+                  data={listingsDistribution} 
+                  totalListings={summary.totalListings} 
+                />
+                <AdminEngagementChart 
+                  data={engagementData} 
+                  totalEnquiries={summary.totalEnquiries}
+                  totalConversations={summary.totalConversations}
+                />
               </div>
             </div>
           )}
 
           {activeTab === 'users' && (
             <div className="space-y-8 animate-in fade-in duration-300">
-              <AdminAnalyticsOverview summary={summary} />
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                 <AdminUserGrowthChart data={userGrowthData} />
+                 <AdminUserGrowthChart 
+                  data={userGrowthData} 
+                  totalBuyers={summary.totalBuyers} 
+                  totalSellers={summary.totalSellers} 
+                />
               </div>
             </div>
           )}
 
           {activeTab === 'listings' && (
             <div className="space-y-8 animate-in fade-in duration-300">
-              <AdminAnalyticsOverview summary={summary} />
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <AdminListingsDistributionChart data={listingsDistribution} />
+                <AdminListingsDistributionChart 
+                  data={listingsDistribution} 
+                  totalListings={summary.totalListings} 
+                />
               </div>
             </div>
           )}
 
           {activeTab === 'engagement' && (
             <div className="space-y-8 animate-in fade-in duration-300">
-              <AdminAnalyticsOverview summary={summary} />
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                 <AdminEngagementChart data={engagementData} />
+                 <AdminEngagementChart 
+                  data={engagementData} 
+                  totalEnquiries={summary.totalEnquiries}
+                  totalConversations={summary.totalConversations}
+                />
               </div>
             </div>
           )}

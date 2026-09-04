@@ -36,24 +36,25 @@ export default function AdvisoryBooking() {
 
       {/* Hero Section */}
       <section className="relative w-full min-h-[400px] lg:min-h-[600px] flex items-center justify-center pt-32 pb-16 overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <img 
-            src="https://images.unsplash.com/photo-1556761175-5973dc0f32b7?q=80&w=2070" 
-            alt="Business Advisory" 
-            className="w-full h-full object-cover"
-          />
-        </div>
-        <div className="absolute inset-0 z-10 bg-gradient-to-br from-white/95 via-white/85 to-[#0B4C8C]/10"></div>
+       <div 
+        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-100"
+        style={{ backgroundImage: 'url("https://res.cloudinary.com/dhjupdyus/image/upload/v1788445818/a4f51b1f-f460-4f06-9597-789efeead94e_yraizx.png")' }}
+      >
+        <div className="absolute inset-0 bg-[#0B152A]/40 backdrop-blur-[2px]"></div>
+        {/* Dark navy gradient overlay for premium look */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0B152A]/90 via-[#0B152A]/70 to-[#0B4C8C]/60"></div>
+      </div>
+
         <div className="container relative z-20 mx-auto px-4 text-center max-w-4xl">
           <div className="flex flex-col items-center">
-            <span className="text-[#0B4C8C] font-extrabold tracking-widest text-xs md:text-sm uppercase mb-4 px-4 py-1.5 bg-[#0B4C8C]/10 rounded-full">
-              EXPERT CONSULTATION
+            <span className="text-[#0757A0] font-extrabold tracking-widest text-xs md:text-sm uppercase mb-4 px-4 py-1.5 bg-[#F1F7FC]/90 shadow-sm rounded-full">
+              ADVISORY & BROKERAGE
             </span>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#0B152A] tracking-tight leading-[1.15] mb-6">
-              Talk to an InfyBuys Advisor
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.15] mb-6">
+              Get Expert Advice for Your<span className="text-[#00B8E6]"> Next Move</span> 
             </h1>
-            <p className="text-lg md:text-xl text-slate-700 leading-relaxed max-w-2xl">
-              Get personalized guidance for buying, selling, valuing, or exploring opportunities on the InfyBuys marketplace.
+            <p className="text-lg md:text-xl text-[#F1F5F9] max-w-2xl font-medium drop-shadow-md mb-12">
+              Book a free consultation with our experienced brokers to discuss buying, selling, or valuing an online business.
             </p>
           </div>
         </div>
@@ -72,28 +73,28 @@ export default function AdvisoryBooking() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
             {/* Card 1 */}
             <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-              <h3 className="text-lg font-bold text-[#0B152A] mb-4 uppercase tracking-wide">Buy a Business</h3>
+              <h3 className="text-lg font-bold text-[#0B4C8C] mb-4 uppercase tracking-wide">Buy a Business</h3>
               <p className="text-slate-600 leading-relaxed">
                 Explore online businesses and digital opportunities that match your goals, interests, and investment plans.
               </p>
             </div>
             {/* Card 2 */}
             <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-              <h3 className="text-lg font-bold text-[#0B152A] mb-4 uppercase tracking-wide">Sell Your Business</h3>
+              <h3 className="text-lg font-bold text-[#0B4C8C] mb-4 uppercase tracking-wide">Sell Your Business</h3>
               <p className="text-slate-600 leading-relaxed">
                 Get guidance on preparing your business listing, presenting key information, and connecting with potential buyers.
               </p>
             </div>
             {/* Card 3 */}
             <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-              <h3 className="text-lg font-bold text-[#0B152A] mb-4 uppercase tracking-wide">Business Valuation</h3>
+              <h3 className="text-lg font-bold text-[#0B4C8C] mb-4 uppercase tracking-wide">Business Valuation</h3>
               <p className="text-slate-600 leading-relaxed">
                 Understand the factors that influence business value, including revenue, profitability, growth potential, digital assets, and market position.
               </p>
             </div>
             {/* Card 4 */}
             <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-              <h3 className="text-lg font-bold text-[#0B152A] mb-4 uppercase tracking-wide">Due Diligence</h3>
+              <h3 className="text-lg font-bold text-[#0B4C8C] mb-4 uppercase tracking-wide">Due Diligence</h3>
               <p className="text-slate-600 leading-relaxed">
                 Make informed decisions by reviewing important business, financial, operational, and marketplace information before moving forward.
               </p>
