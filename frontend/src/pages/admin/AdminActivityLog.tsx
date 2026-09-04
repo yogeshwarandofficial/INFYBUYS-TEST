@@ -185,9 +185,11 @@ export default function AdminActivityLog() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <Card>
             <CardContent className="p-5 flex flex-col gap-2">
-              <div className="flex items-center justify-between text-muted-foreground">
-                <span className="text-xs font-medium uppercase tracking-wider">Total Logs</span>
-                <ClipboardList className="h-4 w-4" />
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Total Logs</span>
+                <div className="w-10 h-10 rounded-xl bg-blue-50/80 text-blue-600 border border-blue-100/50 flex items-center justify-center">
+                  <ClipboardList className="h-5 w-5" />
+                </div>
               </div>
               <span className="text-3xl font-bold">{totalLogs}</span>
               <span className="text-xs text-muted-foreground">All recorded actions</span>
@@ -195,9 +197,11 @@ export default function AdminActivityLog() {
           </Card>
           <Card>
             <CardContent className="p-5 flex flex-col gap-2">
-              <div className="flex items-center justify-between text-muted-foreground">
-                <span className="text-xs font-medium uppercase tracking-wider">Today</span>
-                <Clock className="h-4 w-4" />
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Today</span>
+                <div className="w-10 h-10 rounded-xl bg-sky-50/80 text-sky-600 border border-sky-100/50 flex items-center justify-center">
+                  <Clock className="h-5 w-5" />
+                </div>
               </div>
               <span className="text-3xl font-bold">{logsToday}</span>
               <span className="text-xs text-muted-foreground">Actions today</span>
@@ -205,9 +209,11 @@ export default function AdminActivityLog() {
           </Card>
           <Card>
             <CardContent className="p-5 flex flex-col gap-2">
-              <div className="flex items-center justify-between text-muted-foreground">
-                <span className="text-xs font-medium uppercase tracking-wider">Unique Actors</span>
-                <Users className="h-4 w-4" />
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Unique Actors</span>
+                <div className="w-10 h-10 rounded-xl bg-purple-50/80 text-purple-600 border border-purple-100/50 flex items-center justify-center">
+                  <Users className="h-5 w-5" />
+                </div>
               </div>
               <span className="text-3xl font-bold">{uniqueActors}</span>
               <span className="text-xs text-muted-foreground">Distinct admins</span>
@@ -215,9 +221,11 @@ export default function AdminActivityLog() {
           </Card>
           <Card>
             <CardContent className="p-5 flex flex-col gap-2">
-              <div className="flex items-center justify-between text-muted-foreground">
-                <span className="text-xs font-medium uppercase tracking-wider">Top Action</span>
-                <ShieldCheck className="h-4 w-4" />
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Top Action</span>
+                <div className="w-10 h-10 rounded-xl bg-teal-50/80 text-teal-600 border border-teal-100/50 flex items-center justify-center">
+                  <ShieldCheck className="h-5 w-5" />
+                </div>
               </div>
               <span className="text-3xl font-bold capitalize">
                 {topAction ? ACTION_STYLES[topAction]?.label : '—'}
@@ -228,6 +236,7 @@ export default function AdminActivityLog() {
             </CardContent>
           </Card>
         </div>
+
 
         {/* ── Filters ── */}
         <Card>

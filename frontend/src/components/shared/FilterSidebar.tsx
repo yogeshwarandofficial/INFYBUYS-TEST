@@ -14,7 +14,7 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
         <div className="space-y-4">
           {CATEGORIES.map(category => (
             <div key={category.id} className="flex items-center space-x-3">
-              <Checkbox id={`cat-${category.id}`} className="h-5 w-5 border-slate-300 data-[state=checked]:bg-[#0B4C8C] data-[state=checked]:border-[#0B4C8C]" />
+              <Checkbox id={`cat-${category.id}`} className="h-5 w-5 border-slate-300 data-[state=checked]:!bg-[#0757A0] data-[state=checked]:!border-[#0757A0] data-[state=checked]:text-white" />
               <Label htmlFor={`cat-${category.id}`} className="font-medium text-slate-700 text-base cursor-pointer flex-1 select-none">
                 {category.name}
               </Label>
@@ -28,7 +28,7 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
         <div className="space-y-4">
           {['Under $100k', '$100k - $500k', '$500k - $1M', 'Over $1M'].map((range, idx) => (
             <div key={idx} className="flex items-center space-x-3">
-              <Checkbox id={`price-${idx}`} className="h-5 w-5 border-slate-300 data-[state=checked]:bg-[#0B4C8C] data-[state=checked]:border-[#0B4C8C]" />
+              <Checkbox id={`price-${idx}`} className="h-5 w-5 border-slate-300 data-[state=checked]:!bg-[#0757A0] data-[state=checked]:!border-[#0757A0] data-[state=checked]:text-white" />
               <Label htmlFor={`price-${idx}`} className="font-medium text-slate-700 text-base cursor-pointer select-none">
                 {range}
               </Label>
@@ -42,7 +42,7 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
         <div className="space-y-4">
           {['Under $5k', '$5k - $20k', '$20k - $50k', 'Over $50k'].map((range, idx) => (
             <div key={idx} className="flex items-center space-x-3">
-              <Checkbox id={`rev-${idx}`} className="h-5 w-5 border-slate-300 data-[state=checked]:bg-[#0B4C8C] data-[state=checked]:border-[#0B4C8C]" />
+              <Checkbox id={`rev-${idx}`} className="h-5 w-5 border-slate-300 data-[state=checked]:!bg-[#0757A0] data-[state=checked]:!border-[#0757A0] data-[state=checked]:text-white" />
               <Label htmlFor={`rev-${idx}`} className="font-medium text-slate-700 text-base cursor-pointer select-none">
                 {range}
               </Label>
@@ -55,13 +55,13 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
         <h3 className="font-bold text-[#0B152A] text-lg mb-5 pb-2 border-b border-slate-100">Listing Type</h3>
         <div className="space-y-4">
           <div className="flex items-center space-x-3">
-            <Checkbox id="filter-verified" className="h-5 w-5 border-slate-300 data-[state=checked]:bg-[#0B4C8C] data-[state=checked]:border-[#0B4C8C]" />
+            <Checkbox id="filter-verified" className="h-5 w-5 border-slate-300 data-[state=checked]:!bg-[#0757A0] data-[state=checked]:!border-[#0757A0] data-[state=checked]:text-white" />
             <Label htmlFor="filter-verified" className="font-medium text-slate-700 text-base cursor-pointer select-none">
               Verified Seller Only
             </Label>
           </div>
           <div className="flex items-center space-x-3">
-            <Checkbox id="filter-premium" className="h-5 w-5 border-slate-300 data-[state=checked]:bg-[#0B4C8C] data-[state=checked]:border-[#0B4C8C]" />
+            <Checkbox id="filter-premium" className="h-5 w-5 border-slate-300 data-[state=checked]:!bg-[#0757A0] data-[state=checked]:!border-[#0757A0] data-[state=checked]:text-white" />
             <Label htmlFor="filter-premium" className="font-medium text-slate-700 text-base cursor-pointer select-none">
               Premium Listings
             </Label>

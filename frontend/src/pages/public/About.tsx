@@ -36,17 +36,15 @@ export default function About() {
       {/* About Page Hero Section */}
       <section className="relative w-full min-h-[450px] lg:min-h-[600px] flex items-center justify-center pt-32 lg:pt-40 pb-16 overflow-hidden">
         {/* Background Image */}
-        <div className="absolute inset-0 z-0">
-          <img 
-            src="https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" 
-            alt="Modern business office" 
-            className="w-full h-full object-cover"
-          />
-        </div>
-        
-        {/* Subtle Blue/White Gradient Overlay */}
-        <div className="absolute inset-0 z-10 bg-gradient-to-br from-white/95 via-white/85 to-[#0B4C8C]/20"></div>
-        
+         <div 
+        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-100"
+        style={{ backgroundImage: 'url("https://res.cloudinary.com/dhjupdyus/image/upload/v1788433243/ab395abb-1e12-47fc-a325-b92bd686c056_bplk8e.png")' }}
+      >
+        <div className="absolute inset-0 bg-[#0B152A]/40 backdrop-blur-[2px]"></div>
+        {/* Dark navy gradient overlay for premium look */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0B152A]/90 via-[#0B152A]/70 to-[#0B4C8C]/60"></div>
+      </div>
+               
         {/* Hero Content */}
         <div className="container relative z-20 mx-auto px-4 text-center max-w-4xl">
           <motion.div
@@ -55,13 +53,13 @@ export default function About() {
             transition={{ duration: 0.6 }}
             className="flex flex-col items-center"
           >
-            <span className="text-[#0B4C8C] font-extrabold tracking-widest text-xs md:text-sm uppercase mb-4 px-4 py-1.5 bg-[#0B4C8C]/10 rounded-full">
+            <span className="text-[#0757A0] font-extrabold tracking-widest text-xs md:text-sm uppercase mb-4 px-4 py-1.5 bg-[#F1F7FC]/90 shadow-sm rounded-full">
               About InfyBuys
             </span>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#0B152A] tracking-tight leading-[1.15] mb-6">
-              Building Trust in Digital <br className="hidden md:block"/>Business Acquisitions
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.15] mb-6">
+              Building Trust in <br className="hidden md:block"/><span className="text-[#00B8E6]">Digital Business Acquisitions</span>
             </h1>
-            <p className="text-lg md:text-xl text-slate-700 leading-relaxed max-w-2xl">
+            <p className="text-lg md:text-xl text-[#F1F5F9] max-w-2xl font-medium drop-shadow-md mb-12">
               InfyBuys is a trusted marketplace connecting buyers and sellers of verified online businesses, SaaS, digital assets, and profitable ventures.
             </p>
           </motion.div>

@@ -54,17 +54,15 @@ export default function Contact() {
       {/* Contact Page Hero Section */}
       <section className="relative w-full min-h-[450px] lg:min-h-[600px] flex items-center justify-center pt-32 lg:pt-40 pb-16 overflow-hidden">
         {/* Background Image */}
-        <div className="absolute inset-0 z-0">
-          <img 
-            src="https://images.unsplash.com/photo-1556761175-4b46a572b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" 
-            alt="Business professionals meeting" 
-            className="w-full h-full object-cover"
-          />
+        <div
+          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-100"
+          style={{ backgroundImage: 'url("https://res.cloudinary.com/dhjupdyus/image/upload/v1788432516/178f1e69-7410-43c8-9308-f1ad62fcfc15_s2d4oe.png")' }}
+        >
+          <div className="absolute inset-0 bg-[#0B152A]/40 backdrop-blur-[2px]"></div>
+          {/* Dark navy gradient overlay for premium look */}
+          <div className="absolute inset-0 bg-gradient-to-br from-[#0B152A]/90 via-[#0B152A]/70 to-[#0B4C8C]/60"></div>
         </div>
-        
-        {/* Subtle Blue/White Gradient Overlay */}
-        <div className="absolute inset-0 z-10 bg-gradient-to-br from-white/95 via-white/85 to-[#0B4C8C]/20"></div>
-        
+
         {/* Hero Content */}
         <div className="container relative z-20 mx-auto px-4 text-center max-w-4xl">
           <motion.div
@@ -73,13 +71,13 @@ export default function Contact() {
             transition={{ duration: 0.6 }}
             className="flex flex-col items-center"
           >
-            <span className="text-[#0B4C8C] font-extrabold tracking-widest text-xs md:text-sm uppercase mb-4 px-4 py-1.5 bg-[#0B4C8C]/10 rounded-full">
+            <span className="text-[#0757A0] font-extrabold tracking-widest text-xs md:text-sm uppercase mb-4 px-4 py-1.5 bg-[#F1F7FC]/90 shadow-sm rounded-full">
               GET IN TOUCH
             </span>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#0B152A] tracking-tight leading-[1.15] mb-6">
-              Let’s Connect and <br className="hidden md:block"/>Grow Together
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.15] mb-6">
+              Let’s Connect and <br className="hidden md:block" /><span className="text-[#00B8E6]">Grow Together</span>
             </h1>
-            <p className="text-lg md:text-xl text-slate-700 leading-relaxed max-w-2xl">
+            <p className="text-lg md:text-xl text-[#F1F5F9] max-w-2xl font-medium drop-shadow-md mb-12">
               Have a question, need assistance, or want to explore a business opportunity? Our team is here to help you connect with the right people and take the next step with confidence.
             </p>
           </motion.div>
@@ -89,7 +87,7 @@ export default function Contact() {
       <div className="bg-[#f8fafc]">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pb-24 pt-16 lg:pt-24">
           <div className="grid lg:grid-cols-12 gap-8 lg:gap-12">
-            
+
             {/* Contact Information */}
             <div className="lg:col-span-4 space-y-6">
               <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm h-full">
@@ -147,7 +145,7 @@ export default function Contact() {
               <div className="bg-white rounded-2xl border border-slate-200 shadow-md overflow-hidden h-full">
                 <div className="p-8 md:p-10">
                   <h3 className="text-2xl font-bold text-[#0B152A] mb-8">Send us a Message</h3>
-                  
+
                   {isSuccess ? (
                     <div className="py-16 text-center flex flex-col items-center">
                       <div className="w-20 h-20 bg-green-50 text-green-600 rounded-full flex items-center justify-center mb-6">
@@ -159,9 +157,9 @@ export default function Contact() {
                       <p className="text-slate-500 text-lg max-w-md mx-auto">
                         Thank you for reaching out. A member of our team will get back to you within 24 hours.
                       </p>
-                      <Button 
-                        className="mt-10 h-12 px-8 bg-white border-2 border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-[#0B152A] font-bold rounded-xl" 
-                        onClick={() => setIsSuccess(false)} 
+                      <Button
+                        className="mt-10 h-12 px-8 bg-white border-2 border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-[#0B152A] font-bold rounded-xl"
+                        onClick={() => setIsSuccess(false)}
                         variant="outline"
                       >
                         Send another message

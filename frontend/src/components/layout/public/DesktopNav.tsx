@@ -12,18 +12,18 @@ import { CATEGORIES } from '@/constants/marketing';
 import { cn } from '@/lib/utils';
 import React from 'react';
 
-const navLinkClasses = "relative text-[17px] font-bold text-slate-800 bg-transparent hover:bg-transparent hover:text-brand-blue data-[state=open]:!bg-transparent data-[state=open]:text-brand-blue px-4 focus:!bg-transparent focus:text-brand-blue after:absolute after:bottom-[8px] after:left-4 after:right-4 after:h-[2px] after:origin-center after:scale-x-0 hover:after:scale-x-100 data-[state=open]:after:scale-x-100 focus:after:scale-x-100 after:transition-transform after:duration-300 after:bg-brand-blue";
+const navLinkClasses = "relative text-[17px] font-bold text-white/80 bg-transparent hover:bg-transparent hover:text-[#ffffff] data-[state=open]:!bg-transparent data-[state=open]:text-[#ffffff] px-4 focus:!bg-transparent focus:text-[#ffffff] after:absolute after:bottom-[8px] after:left-4 after:right-4 after:h-[2px] after:origin-center after:scale-x-0 hover:after:scale-x-100 data-[state=open]:after:scale-x-100 focus:after:scale-x-100 after:transition-transform after:duration-300 after:bg-[#ffffff] [.is-scrolled_&]:text-[#0B152A] [.is-scrolled_&]:hover:text-[#0B4C8C] [.is-scrolled_&]:data-[state=open]:text-[#0B4C8C] [.is-scrolled_&]:focus:text-[#0B4C8C] [.is-scrolled_&]:after:bg-[#0B4C8C] transition-colors";
 
 export function DesktopNav() {
   return (
-    <NavigationMenu className="[&_[data-slot=navigation-menu-viewport]]:!bg-white">
+    <NavigationMenu className="[&_[data-slot=navigation-menu-viewport]]:!bg-white/95 [&_[data-slot=navigation-menu-viewport]]:backdrop-blur-[20px] [&_[data-slot=navigation-menu-viewport]]:border [&_[data-slot=navigation-menu-viewport]]:border-[#155B9E]/10 [&_[data-slot=navigation-menu-viewport]]:shadow-[0_10px_40px_-10px_rgba(11,27,53,0.12)] [&_[data-slot=navigation-menu-viewport]]:!rounded-2xl">
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuTrigger className={cn(navigationMenuTriggerStyle(), navLinkClasses)}>
             Browse Categories
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+            <ul className="grid w-[400px] gap-2 p-6 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
               {CATEGORIES.map((category) => (
                 <ListItem
                   key={category.id}
@@ -67,13 +67,13 @@ const ListItem = React.forwardRef<
           ref={ref}
           to={to}
           className={cn(
-            'block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-slate-100 hover:text-slate-900 focus:bg-slate-100 focus:text-slate-900',
+            'group block select-none rounded-xl p-4 leading-none no-underline outline-none transition-all duration-300 hover:bg-[#EAF3FB]/80 focus:bg-[#EAF3FB]/80',
             className
           )}
           {...props}
         >
-          <div className="text-sm font-medium leading-none text-slate-900">{title}</div>
-          <p className="line-clamp-2 text-sm leading-snug text-slate-600">
+          <div className="text-[15px] font-semibold leading-none text-[#0B1B35] group-hover:text-[#155B9E] transition-colors duration-300 mb-2">{title}</div>
+          <p className="line-clamp-2 text-sm leading-snug text-[#526784] group-hover:text-[#0B1B35] transition-colors duration-300">
             {children}
           </p>
         </Link>

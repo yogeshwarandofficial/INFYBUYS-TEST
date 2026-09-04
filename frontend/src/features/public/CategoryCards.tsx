@@ -51,7 +51,7 @@ export function CategoryCards() {
               >
                 {/* Timeline Node */}
                 <div className="flex flex-col items-center mr-6 md:mr-0">
-                  <div className="w-14 h-14 bg-white rounded-full border-[3px] border-slate-100 flex items-center justify-center mb-0 md:mb-8 group-hover:border-[#0B4C8C] group-hover:shadow-[0_0_15px_rgba(11,76,140,0.2)] transition-all duration-300 relative z-10">
+                  <div className="w-14 h-14 bg-white/50 rounded-full border-[3px] border-slate-100 flex items-center justify-center mb-0 md:mb-8 group-hover:border-[#0B4C8C] group-hover:shadow-[0_0_15px_rgba(11,76,140,0.2)] transition-all duration-300 relative z-10">
                     <span className="text-sm font-bold text-slate-400 group-hover:text-[#0B4C8C] transition-colors duration-300">
                       {number}
                     </span>
