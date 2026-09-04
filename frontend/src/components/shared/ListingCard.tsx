@@ -1,120 +1,169 @@
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Building2, TrendingUp, DollarSign } from 'lucide-react';
+import { MapPin, DollarSign, Eye, MessageSquare } from 'lucide-react';
 import { FavoriteButton } from './FavoriteButton';
+import type { ReactNode } from 'react';
+import { useNavigate } from 'react-router';
 
-export type ListingCardVariant = 'featured' | 'latest' | 'premium' | 'similar' | 'compact';
+export type ListingCardVariant = 'featured' | 'latest' | 'premium' | 'similar' | 'compact' | 'list';
 
 interface ListingCardProps {
   listing: any;
   variant?: ListingCardVariant;
   className?: string;
   showFavoriteButton?: boolean;
+  topRightAction?: ReactNode; // e.g. for Seller 3-dot menu
+  bottomAction?: ReactNode; // to override View Details
+  showPerformance?: boolean; // views / enquiries
+  isSeller?: boolean; // adjust routing or UI slightly if it's seller portal
 }
 
-export function ListingCard({ listing, variant = 'latest', className, showFavoriteButton = true }: ListingCardProps) {
-  const isCompact = variant === 'compact' || variant === 'similar';
+const formatPrice = (price: any) => {
+  if (price == null || price === '') return '-';
+  const num = Number(price);
+  if (isNaN(num)) return '-';
+  if (num >= 1_000_000) return `$${(num / 1_000_000).toFixed(2)}M`;
+  if (num >= 1_000) return `$${(num / 1_000).toFixed(0)}K`;
+  return `$${num}`;
+};
+
+export function ListingCard({
+  listing,
+  variant = 'latest',
+  className,
+  showFavoriteButton = true,
+  topRightAction,
+  bottomAction,
+  showPerformance = false,
+  isSeller = false
+}: ListingCardProps) {
+  const isList = variant === 'list';
+  const navigate = useNavigate();
+
+  const priceVal = listing.priceOrRent != null ? listing.priceOrRent : listing.askingPrice;
+  const revVal = listing.turnover != null ? listing.turnover : (listing.revenue != null ? listing.revenue : listing.netProfit);
+  const statusStr = listing.status;
+
+  const renderStatus = () => {
+    if (statusStr === 'SOLD_LET' || statusStr === 'sold') {
+      return (
+        <div className="bg-red-50 text-red-700 border border-red-200 px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider flex items-center shadow-sm">
+          <span className="w-1.5 h-1.5 rounded-full bg-red-600 mr-1.5"></span>
+          SOLD
+        </div>
+      );
+    }
+    if (statusStr === 'PENDING' || statusStr === 'pending' || statusStr === 'PENDING_REVIEW' || statusStr === 'CHANGES_PENDING_REVIEW') {
+      return (
+        <div className="bg-amber-50 text-amber-700 border border-amber-200 px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider flex items-center shadow-sm">
+          <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mr-1.5"></span>
+          PENDING
+        </div>
+      );
+    }
+    if (statusStr === 'DRAFT' || statusStr === 'draft') {
+      return (
+        <div className="bg-gray-100 text-gray-700 border border-gray-200 px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider flex items-center shadow-sm">
+          <span className="w-1.5 h-1.5 rounded-full bg-gray-500 mr-1.5"></span>
+          DRAFT
+        </div>
+      );
+    }
+    // Default Active
+    return (
+      <div className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider flex items-center shadow-sm">
+        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
+        ACTIVE
+      </div>
+    );
+  };
+
+  const renderImage = () => {
+    const coverMedia = listing.media?.find((m: any) => m.id === listing.coverMediaId);
+    const firstPhoto = listing.media?.find((m: any) => m.type === 'PHOTO');
+    const heroUrl = coverMedia?.url || firstPhoto?.url || listing.image;
+
+    if (heroUrl) {
+      return (
+        <img src={heroUrl} alt={listing.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+      );
+    }
+    return (
+      <div className="w-full h-full bg-[#F6F8FC] flex items-center justify-center">
+        <DollarSign className="w-8 h-8 text-[#94A3B8]" />
+      </div>
+    );
+  };
+
+  const handleNavigate = () => {
+    if (isSeller) {
+      navigate(`/seller/listings/${listing.id}`);
+    } else {
+      navigate(`/listing/${listing.id}`);
+    }
+  };
 
   return (
-    <Card className={cn('overflow-hidden transition-all hover:shadow-lg relative', className)}>
-      {showFavoriteButton && (
-        <div className="absolute top-3 right-3 z-10">
-          <FavoriteButton listingId={listing.id} />
-        </div>
-      )}
+    <Card className={cn('overflow-hidden transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] bg-white border border-slate-300 group flex flex-col h-full rounded-xl', className)}>
       <div className="aspect-[4/3] bg-muted relative overflow-hidden">
-        {(() => {
-          const coverMedia = listing.media?.find((m: any) => m.id === listing.coverMediaId);
-          const firstPhoto = listing.media?.find((m: any) => m.type === 'PHOTO');
-          const heroUrl = coverMedia?.url || firstPhoto?.url;
-
-          if (heroUrl) {
-            return (
-              <img src={heroUrl} alt={listing.title} className="w-full h-full object-cover transition-transform hover:scale-105" />
-            );
-          }
-          return (
-            <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
-              <DollarSign className="w-10 h-10 text-primary/30" />
-            </div>
-          );
-        })()}
-        {listing.status === 'SOLD_LET' && (
-          <div className="absolute inset-0 bg-black/40 flex items-center justify-center z-20 backdrop-blur-[2px]">
-            <div className="bg-red-600 text-white font-black text-2xl tracking-widest px-6 py-2 rounded shadow-lg border-2 border-white/20 rotate-[-12deg]">
-              SOLD
-            </div>
-          </div>
-        )}
-      </div>
-      <CardHeader className={cn(isCompact ? 'p-4' : 'p-6', 'pb-4')}>
-        <div className="flex justify-between items-start mb-2">
-          <Badge variant={listing.isPremium ? 'default' : 'secondary'}>
-            {listing.category}
-          </Badge>
-          {listing.isFeatured && variant !== 'compact' && (
-            <Badge variant="destructive" className="bg-amber-500 hover:bg-amber-600">Featured</Badge>
-          )}
+        {renderImage()}
+        
+        {/* Top Left: Status */}
+        <div className="absolute top-3 left-3 z-10">
+          {renderStatus()}
         </div>
-        <CardTitle className={cn('font-bold leading-tight', isCompact ? 'text-lg' : 'text-xl')}>
-          {listing.title}
-        </CardTitle>
-      </CardHeader>
 
-      <CardContent className={cn(isCompact ? 'p-4 pt-0' : 'p-6 pt-0')}>
-        {!isCompact && (
-          <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
+        {/* Top Right: Actions */}
+        <div className="absolute top-3 right-3 z-10 flex gap-2">
+          {showFavoriteButton && !isSeller && (
+            <FavoriteButton listingId={listing.id} />
+          )}
+          {topRightAction}
+        </div>
+      </div>
+
+      <CardContent className="p-5 flex-1 flex flex-col">
+        <h3 className="font-bold text-[18px] leading-tight truncate text-[#111827] group-hover:text-[#0B4C8C] transition-colors mb-1.5" title={listing.title}>
+          {listing.title}
+        </h3>
+        <p className="text-[14px] text-[#64748B] flex items-center gap-1.5 mb-5 truncate">
+          <MapPin className="w-4 h-4 text-[#94A3B8] shrink-0" /> {listing.location || 'Location upon request'}
+        </p>
+
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="space-y-1">
+            <p className="text-[13px] font-medium text-[#64748B]">Asking Price</p>
+            <p className="font-semibold text-base text-[#111827]">{formatPrice(priceVal)}</p>
+          </div>
+          <div className="space-y-1">
+            <p className="text-[13px] font-medium text-[#64748B]">Revenue</p>
+            <p className="font-semibold text-base text-[#111827]">{formatPrice(revVal)}</p>
+          </div>
+        </div>
+
+        {!isList && listing.description && (
+          <p className="text-[13px] text-[#64748B] line-clamp-2 leading-relaxed mb-4">
             {listing.description}
           </p>
         )}
 
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          {listing.priceOrRent != null && (
-            <div className="flex items-center text-muted-foreground">
-              <DollarSign className="w-4 h-4 mr-1 text-primary" />
-              <span className="font-semibold text-foreground">
-                ${((Number(listing.priceOrRent) || 0) / 1000).toFixed(0)}k
-              </span>
-              <span className="ml-1 text-xs">Asking</span>
-            </div>
-          )}
-          {listing.netProfit != null && (
-            <div className="flex items-center text-muted-foreground">
-              <TrendingUp className="w-4 h-4 mr-1 text-success" />
-              <span className="font-semibold text-foreground">
-                ${((Number(listing.netProfit) || 0) / 1000).toFixed(1)}k
-              </span>
-              <span className="ml-1 text-xs">Profit</span>
-            </div>
+        <div className="mt-auto pt-4 flex items-center justify-end border-t border-slate-200">
+          {bottomAction ? bottomAction : (
+            <Button
+              size="sm"
+              variant="ghost"
+              className="text-[14px] font-medium text-[#0B4C8C] hover:text-[#0B152A] hover:bg-transparent h-auto p-0 flex items-center gap-1.5"
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavigate();
+              }}
+            >
+              View <span className="text-lg leading-none">&rarr;</span>
+            </Button>
           )}
         </div>
-
-        {!isCompact && listing.tags && (
-          <div className="flex flex-wrap gap-2 mt-4">
-            {listing.tags.map((tag: string) => (
-              <Badge key={tag} variant="outline" className="text-xs font-normal">
-                {tag}
-              </Badge>
-            ))}
-          </div>
-        )}
       </CardContent>
-
-      <CardFooter className={cn(isCompact ? 'p-4 pt-0' : 'p-6 pt-0', 'flex justify-between items-center')}>
-        {listing.type ? (
-          <span className="text-xs text-muted-foreground flex items-center">
-            <Building2 className="w-3 h-3 mr-1" />
-            {listing.type}
-          </span>
-        ) : (
-          <span />
-        )}
-        <Button variant={variant === 'premium' ? 'default' : 'secondary'} size="sm" onClick={() => window.location.href = `/listing/${listing.id}`}>
-          View Details
-        </Button>
-      </CardFooter>
     </Card>
   );
 }

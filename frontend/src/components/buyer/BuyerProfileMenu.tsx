@@ -17,16 +17,7 @@ import { useState } from 'react';
 export function BuyerProfileMenu() {
   const { user, logout } = useUserStore();
   const navigate = useNavigate();
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-  });
 
-  const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-    document.documentElement.classList.toggle('dark', newTheme === 'dark');
-    localStorage.setItem('infybuys-theme', newTheme);
-  };
 
   const handleLogout = () => {
     logout();
@@ -72,19 +63,7 @@ export function BuyerProfileMenu() {
               <span>Settings</span>
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={toggleTheme}>
-            {theme === 'light' ? (
-              <>
-                <Moon className="mr-2 h-4 w-4" />
-                <span>Dark Mode</span>
-              </>
-            ) : (
-              <>
-                <Sun className="mr-2 h-4 w-4" />
-                <span>Light Mode</span>
-              </>
-            )}
-          </DropdownMenuItem>
+
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>

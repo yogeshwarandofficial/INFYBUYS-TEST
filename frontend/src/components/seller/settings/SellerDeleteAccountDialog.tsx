@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useSellerStore } from '@/store/useSellerStore';
 import {
   Dialog,
   DialogContent,
@@ -20,7 +19,6 @@ interface SellerDeleteAccountDialogProps {
 
 export function SellerDeleteAccountDialog({ open, onOpenChange }: SellerDeleteAccountDialogProps) {
   const [confirmText, setConfirmText] = useState('');
-  const { requestSellerAccountDeletion } = useSellerStore();
 
   const [isDeleting, setIsDeleting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);

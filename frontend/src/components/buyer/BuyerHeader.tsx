@@ -31,15 +31,6 @@ export function BuyerHeader() {
       </div>
 
       <div className="flex items-center gap-2 sm:gap-4">
-        <div className="relative hidden sm:block w-72">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#64748B]" />
-          <Input type="search" placeholder="Search businesses..." className="pl-9 bg-white/80 backdrop-blur-md border border-gray-200 shadow-sm rounded-lg h-10 w-full focus-visible:ring-[#2563EB]" />
-        </div>
-
-        <Button variant="ghost" size="icon" className="sm:hidden" aria-label="Search">
-          <Search className="h-5 w-5 text-muted-foreground" />
-        </Button>
-
         <Link to="/buyer/messages" aria-label="Messages" className="relative">
           <Button variant="ghost" size="icon">
             <MessageSquare className="h-5 w-5 text-muted-foreground" />

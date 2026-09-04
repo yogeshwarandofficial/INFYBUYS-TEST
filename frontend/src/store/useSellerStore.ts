@@ -532,9 +532,18 @@ export const useSellerStore = create<SellerState>()(
           }
 
           set((state) => ({
-            listings: state.listings.map((l) =>
-              l.id === id ? { ...l, ...updates, updatedAt: now() } : l
-            ),
+            listings: state.listings.map((l) => {
+              if (l.id === id) {
+                const isPublic = ['PUBLISHED', 'active', 'CHANGES_PENDING_REVIEW', 'SOLD_LET', 'sold'].includes(l.status);
+                return {
+                  ...l,
+                  ...updates,
+                  status: isPublic ? 'CHANGES_PENDING_REVIEW' : l.status,
+                  updatedAt: now()
+                };
+              }
+              return l;
+            }),
           }));
         } catch (error) {
           console.error('Failed to update listing', error);

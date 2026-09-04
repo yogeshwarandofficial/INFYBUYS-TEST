@@ -1,5 +1,5 @@
-import { IsOptional, IsEnum, IsString, IsNumber } from 'class-validator';
-import { Type } from 'class-transformer';
+import { IsOptional, IsEnum, IsString, IsNumber, IsBoolean } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
 import { ListingType, ListingStatus } from '../../../generated/prisma/client.js';
 
 export class ListingQueryDto {
@@ -78,4 +78,9 @@ export class ListingQueryDto {
   @IsString()
   @IsOptional()
   location?: string;
+
+  @IsBoolean()
+  @Transform(({ value }) => value === 'true' || value === true)
+  @IsOptional()
+  isFeatured?: boolean;
 }

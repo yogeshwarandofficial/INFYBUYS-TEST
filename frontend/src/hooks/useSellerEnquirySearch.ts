@@ -47,8 +47,10 @@ export function useSellerEnquirySearch(enquiries: Enquiry[] = []) {
       const q = filters.search.toLowerCase();
       result = result.filter(
         (e) =>
-          e.buyer?.name.toLowerCase().includes(q) ||
-          e.listing?.title.toLowerCase().includes(q)
+          (e.buyer?.name?.toLowerCase().includes(q)) ||
+          (e.listing?.title?.toLowerCase().includes(q)) ||
+          (e.lastMessage?.messageText?.toLowerCase().includes(q)) ||
+          (e.buyer?.companyName?.toLowerCase().includes(q))
       );
     }
 

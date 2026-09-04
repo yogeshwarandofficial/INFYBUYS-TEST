@@ -36,7 +36,6 @@ export default function SellerAnalytics() {
 
   const {
     summary,
-    listingPerformance,
     enquiryAnalytics,
     messageAnalytics,
     topListings,

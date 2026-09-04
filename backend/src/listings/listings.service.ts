@@ -98,11 +98,11 @@ export class ListingsService {
       throw new NotFoundException('Listing not found');
     }
 
+    const isOwner = user && user.id === listing.sellerId;
+    const isAdmin = user && user.roles?.includes(Role.ADMIN);
+
     const publicStatuses: ListingStatus[] = [ListingStatus.PUBLISHED, ListingStatus.CHANGES_PENDING_REVIEW, ListingStatus.REJECTED_CHANGES, ListingStatus.SOLD_LET];
     if (!publicStatuses.includes(listing.status)) {
-      const isOwner = user && user.id === listing.sellerId;
-      const isAdmin = user && user.roles?.includes(Role.ADMIN);
-      
       if (!isOwner && !isAdmin) {
         throw new NotFoundException('Listing not found');
       }
@@ -497,7 +497,7 @@ export class ListingsService {
     ]);
 
     return {
-      data: await Promise.all(data.map(l => this.enrichAndSanitizeListing(l))),
+      data: await Promise.all(data.map(l => this.enrichAndSanitizeListing(l, null, options))),
       meta: {
         total,
         page,
@@ -874,7 +874,7 @@ export class ListingsService {
 
   // Ensure internal properties and seller objects are not blindly exposed
 
-  async enrichAndSanitizeListing(listing: any, reqUser?: any, options?: { hasAccess?: boolean }) {
+  async enrichAndSanitizeListing(listing: any, reqUser?: any, options?: { hasAccess?: boolean, isAdmin?: boolean }) {
     if (listing.seller) {
       // If we ever eager load the seller, strip sensitive fields!
       delete listing.seller.passwordHash;
@@ -885,7 +885,7 @@ export class ListingsService {
     // listing-specific contact info is excluded via Prisma `select` whitelisting,
     // but we can ensure it's removed here as a final fallback if it somehow sneaks in.
     const isOwner = reqUser && reqUser.id === listing.sellerId;
-    const isAdmin = reqUser && reqUser.roles?.includes('ADMIN');
+    const isAdmin = (reqUser && reqUser.roles?.includes('ADMIN')) || options?.isAdmin === true;
     
     let hasAccess = isOwner || isAdmin || options?.hasAccess === true;
     
@@ -913,11 +913,7 @@ export class ListingsService {
       }
     }
     
-    // Hide financials if no access
-    if (!hasAccess) {
-      delete listing.turnover;
-      delete listing.netProfit;
-    }
+    // Financials (turnover, netProfit) are now public so they can be shown on the Listing Cards
 
     if (listing.media && Array.isArray(listing.media)) {
       await Promise.all(

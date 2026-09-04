@@ -78,7 +78,7 @@ export default function Pricing() {
                       }`} 
                       asChild
                     >
-                      <Link to="/register">{plan.ctaText}</Link>
+                      <Link to={(plan as any).link || "/register"}>{plan.ctaText}</Link>
                     </Button>
                     <ul className="space-y-4">
                       {plan.features.map((feature, fIdx) => (

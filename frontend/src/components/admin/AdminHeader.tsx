@@ -29,16 +29,7 @@ export function AdminHeader() {
         <span className="font-bold text-lg hidden sm:inline-block">Admin Portal</span>
       </div>
 
-      <div className="flex-1 md:flex-none max-w-xl px-4 md:px-0 ml-auto md:ml-0">
-        <div className="relative">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            type="search"
-            placeholder="Search users, listings, or enquiries..."
-            className="w-full bg-muted/50 pl-9 border-none focus-visible:ring-1"
-          />
-        </div>
-      </div>
+      <div className="flex-1" />
 
       <div className="flex items-center gap-3 md:gap-4 ml-4">
         <Button variant="ghost" size="icon" className="relative hidden sm:flex" onClick={() => window.location.href = '/admin/notifications'}>

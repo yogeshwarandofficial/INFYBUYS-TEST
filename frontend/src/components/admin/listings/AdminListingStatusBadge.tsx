@@ -58,6 +58,12 @@ export function AdminListingStatusBadge({ status, className }: AdminListingStatu
       className: 'bg-[#EFF6FF] text-[#3B82F6] border border-[#3B82F6]/20 rounded-full',
       variant: 'secondary'
     },
+    CHANGES_PENDING_REVIEW: {
+      label: 'Edits Pending',
+      icon: Clock,
+      className: 'bg-[#FFFBEB] text-[#F59E0B] border border-[#F59E0B]/20 rounded-full',
+      variant: 'outline'
+    },
     draft: {
       label: 'Draft',
       icon: Edit,

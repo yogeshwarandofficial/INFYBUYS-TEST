@@ -43,7 +43,7 @@ export default function AdminListings() {
   // KPI Calculations
   const totalListings = listings.length;
   const activeListings = listings.filter(l => l.status === 'PUBLISHED' || l.status === 'active').length;
-  const pendingListings = listings.filter(l => l.status === 'SUBMITTED_FOR_REVIEW' || l.status === 'pending').length;
+  const pendingListings = listings.filter(l => l.status === 'SUBMITTED_FOR_REVIEW' || l.status === 'pending' || l.status === 'CHANGES_PENDING_REVIEW').length;
   const soldListings = listings.filter(l => l.status === 'SOLD_LET' || l.status === 'sold').length;
 
   return (

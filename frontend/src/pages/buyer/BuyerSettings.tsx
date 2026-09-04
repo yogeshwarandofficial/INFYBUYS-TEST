@@ -7,21 +7,13 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { LogOut, Globe, Moon, Sun, Monitor } from 'lucide-react';
+import { LogOut, Globe } from 'lucide-react';
 import { useUserStore } from '@/store/useUserStore';
 import { useUserSettings, useUpdateUserSettings } from '@/hooks/useUserSettings';
-import { useTheme } from '@/providers/ThemeProvider';
-
 export default function BuyerSettings() {
   const { logout } = useUserStore();
   const { data: settings, isLoading } = useUserSettings();
   const updateSettingsMutation = useUpdateUserSettings();
-  const { setTheme } = useTheme();
-
-  const handleThemeChange = (value: 'light' | 'dark' | 'system') => {
-    updateSettingsMutation.mutate({ themePreference: value });
-    setTheme(value);
-  };
 
   const handleLanguageChange = (value: string) => {
     updateSettingsMutation.mutate({ languagePreference: value });
@@ -50,32 +42,6 @@ export default function BuyerSettings() {
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid sm:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label>Theme Preference</Label>
-                  <Select value={settings.themePreference} onValueChange={handleThemeChange}>
-                    <SelectTrigger aria-label="Select theme">
-                      <SelectValue placeholder="Select theme" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="light">
-                        <div className="flex items-center gap-2">
-                          <Sun className="w-4 h-4" /> Light
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="dark">
-                        <div className="flex items-center gap-2">
-                          <Moon className="w-4 h-4" /> Dark
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="system">
-                        <div className="flex items-center gap-2">
-                          <Monitor className="w-4 h-4" /> System
-                        </div>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
                 <div className="space-y-2">
                   <Label>Language</Label>
                   <Select value={settings.languagePreference} onValueChange={handleLanguageChange}>

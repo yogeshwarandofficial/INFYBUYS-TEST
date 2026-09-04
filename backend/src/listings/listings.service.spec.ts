@@ -49,7 +49,7 @@ describe('ListingsService KYC Validation', () => {
 
     it('should throw KYC_REQUIRED if KYC NOT_STARTED (no seller profile)', async () => {
       prisma.sellerProfile.findUnique.mockResolvedValue(null);
-      await expect(service.submitForReview(sellerId, listingId)).rejects.toThrowError(
+      await expect(service.submitForReview(sellerId, listingId)).rejects.toThrow(
         new ForbiddenException({
           code: 'KYC_REQUIRED',
           message: 'Seller KYC approval is required before submitting a listing.',
@@ -61,7 +61,7 @@ describe('ListingsService KYC Validation', () => {
       prisma.sellerProfile.findUnique.mockResolvedValue({
         kycStatus: KycStatus.PENDING,
       });
-      await expect(service.submitForReview(sellerId, listingId)).rejects.toThrowError(
+      await expect(service.submitForReview(sellerId, listingId)).rejects.toThrow(
         new ForbiddenException({
           code: 'KYC_REQUIRED',
           message: 'Seller KYC approval is required before submitting a listing.',
@@ -74,7 +74,7 @@ describe('ListingsService KYC Validation', () => {
         kycStatus: KycStatus.REJECTED,
         kycRejectionReason: 'Invalid document',
       });
-      await expect(service.submitForReview(sellerId, listingId)).rejects.toThrowError(
+      await expect(service.submitForReview(sellerId, listingId)).rejects.toThrow(
         new ForbiddenException({
           code: 'KYC_REJECTED',
           message: 'Your KYC application was rejected. Reason: Invalid document',

@@ -46,7 +46,7 @@ export function AdminSidebar({ collapsed, setCollapsed, isMobile }: SidebarProps
 
   return (
     <div className={cn(
-      "flex flex-col h-full bg-[#0B152A] text-slate-300 transition-all duration-300",
+      "flex flex-col h-full bg-[var(--sidebar-bg)] text-slate-300 transition-all duration-300",
       collapsed && !isMobile ? "w-20" : "w-64"
     )}>
       <div className="h-16 flex items-center justify-between px-4 border-b border-white/10 shrink-0">

@@ -36,15 +36,6 @@ export function SellerHeader() {
       </div>
 
       <div className="flex items-center gap-2 sm:gap-4">
-        <div className="relative hidden sm:block w-64">
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-[#94A3B8]" />
-          <Input type="search" placeholder="Search..." className="pl-10 bg-white/50 border border-[#E5E9F2] rounded-xl focus-visible:ring-1 focus-visible:ring-blue-500 w-full shadow-sm text-sm" />
-        </div>
-
-        <Button variant="ghost" size="icon" className="sm:hidden" aria-label="Search">
-          <Search className="h-5 w-5 text-muted-foreground" />
-        </Button>
-
         {/* Messages */}
         <Link
           to="/seller/enquiries"

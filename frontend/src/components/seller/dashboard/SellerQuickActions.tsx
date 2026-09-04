@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { PlusCircle, List, Mail, MessageSquare } from 'lucide-react';
+import { PlusCircle, List, Mail, BarChart3 } from 'lucide-react';
 import { Link } from 'react-router';
 
 export function SellerQuickActions() {
@@ -41,12 +41,12 @@ export function SellerQuickActions() {
             </Button>
           </Link>
 
-          <Link to="/seller/messages">
+          <Link to="/seller/analytics">
             <Button variant="outline" className="w-full h-auto py-5 flex flex-col gap-3 items-center justify-center bg-white/60 border-[#E5E9F2] hover:bg-white hover:border-[#DCE5F2] hover:shadow-md hover:-translate-y-0.5 rounded-xl transition-all group">
               <div className="w-12 h-12 bg-orange-50 text-orange-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                <MessageSquare className="w-6 h-6" />
+                <BarChart3 className="w-6 h-6" />
               </div>
-              <span className="text-[13px] font-semibold text-[#111827]">View Messages</span>
+              <span className="text-[13px] font-semibold text-[#111827]">View Analytics</span>
             </Button>
           </Link>
         </div>

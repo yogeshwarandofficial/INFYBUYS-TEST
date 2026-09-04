@@ -3,8 +3,7 @@ import {
   Pie,
   PieChart,
   ResponsiveContainer,
-  Tooltip,
-  Legend
+  Tooltip
 } from 'recharts';
 
 interface AdminListingsDistributionChartProps {
@@ -44,7 +43,8 @@ export function AdminListingsDistributionChart({ data, totalListings }: AdminLis
                 labelLine={false}
                 style={{ outline: 'none' }}
                 className="focus:outline-none"
-                label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
+                label={(props: any) => {
+                  const { cx, cy, midAngle, innerRadius, outerRadius, percent } = props;
                   if (data.length === 0) return null;
                   const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
                   const x = cx + radius * Math.cos(-midAngle * Math.PI / 180);

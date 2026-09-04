@@ -1,6 +1,5 @@
 import {
   Bar,
-  BarChart,
   CartesianGrid,
   ResponsiveContainer,
   Tooltip,

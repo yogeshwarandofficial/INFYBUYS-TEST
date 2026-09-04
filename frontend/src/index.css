@@ -73,6 +73,9 @@
 
     /* Deep navy and electric blue matching new InfyBuys aesthetic */
     --brand-blue: 217 91% 60%;
+    
+    /* Global dashboard sidebar background color (change this to test different colors) */
+    --sidebar-bg: #000000;
   }
 
   .dark {

@@ -1,5 +1,5 @@
 import { Outlet, Link } from 'react-router';
-import { Zap, ShieldCheck, Star, Lock } from 'lucide-react';
+import { ShieldCheck, Star, Lock } from 'lucide-react';
 
 export function AuthLayout() {
   return (

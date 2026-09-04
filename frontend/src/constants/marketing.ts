@@ -16,6 +16,7 @@ export const PRICING = {
       description: 'Essential tools for discovering your next acquisition.',
       isPopular: false,
       ctaText: 'Get Started',
+      link: '/register',
       features: [
         'Browse Verified Businesses',
         'Access Business Listings',
@@ -31,6 +32,7 @@ export const PRICING = {
       description: 'Advanced features and priority access for serious acquirers.',
       isPopular: true,
       ctaText: 'Upgrade to Pro',
+      link: '/buyer/subscription',
       features: [
         'Everything in Buyer',
         'Advanced Business Insights',
@@ -47,6 +49,7 @@ export const PRICING = {
       description: 'Complete marketplace access with premium visibility and support.',
       isPopular: false,
       ctaText: 'Contact Sales',
+      link: '/contact',
       features: [
         'Everything in Professional',
         'Premium Business Visibility',

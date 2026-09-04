@@ -11,7 +11,7 @@ import { Link } from 'react-router';
 
 export default function SellerDashboard() {
   const { user } = useUserStore();
-  const { stats, listings, enquiries, conversations } = useSellerStore();
+  const { stats, listings } = useSellerStore();
 
   // Compute live stats from actual listings
   const totalListings = listings.length;
@@ -20,10 +20,10 @@ export default function SellerDashboard() {
   const soldListings = listings.filter((l) => l.status === 'sold').length;
 
   // Live enquiry KPIs derived from enquiries array
-  const totalEnquiries = enquiries.length;
+  
 
   // Live messaging KPIs derived from conversations array
-  const unreadConversations = conversations.filter((c) => c.unreadCount > 0).length;
+  
 
   return (
     <>

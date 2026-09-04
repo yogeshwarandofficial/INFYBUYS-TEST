@@ -8,7 +8,7 @@ export function SellerLayout() {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-background">
+    <div className="flex h-screen overflow-hidden bg-[var(--sidebar-bg)]">
       <Seo title="Seller Dashboard" noIndex={true} />
 
       {/* Desktop Sidebar */}
@@ -16,9 +16,9 @@ export function SellerLayout() {
         <SellerSidebar collapsed={collapsed} setCollapsed={setCollapsed} />
       </div>
 
-      <div className="flex-1 flex flex-col min-w-0 h-full">
+      <div className="flex-1 flex flex-col min-w-0 h-full bg-[#F6F8FC] rounded-tl-[2rem] overflow-hidden shadow-2xl">
         <SellerHeader />
-        <main className="flex-1 overflow-auto bg-[#F6F8FC] dark:bg-transparent p-6 md:p-8">
+        <main className="flex-1 overflow-auto p-6 md:p-8">
           <Outlet />
         </main>
       </div>
