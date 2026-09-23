@@ -8,7 +8,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
-import { CATEGORIES } from '@/constants/marketing';
+import { CATEGORIES } from '@/components/seller/listings/SellerListingForm';
 import { cn } from '@/lib/utils';
 import React from 'react';
 
@@ -23,14 +23,14 @@ export function DesktopNav() {
             Browse Categories
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid w-[400px] gap-2 p-6 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+            <ul className="grid w-[400px] gap-2 p-6 md:w-[500px] md:grid-cols-2 lg:w-[600px] max-h-[400px] overflow-y-auto">
               {CATEGORIES.map((category) => (
                 <ListItem
-                  key={category.id}
-                  title={category.name}
-                  to={`/search?category=${category.name}`}
+                  key={category}
+                  title={category}
+                  to={`/search?category=${encodeURIComponent(category)}`}
                 >
-                  Explore {category.name} businesses
+                  Explore {category} businesses
                 </ListItem>
               ))}
             </ul>

@@ -61,11 +61,18 @@ export interface Listing {
   isPremium?: boolean; // Keep for frontend UI
   tags?: string[]; // Keep for frontend UI
   seller?: {
+    id: string;
     name: string;
     verified: boolean;
     memberSince?: string;
     rating?: number;
     completedDeals?: number;
+    sellerProfile?: {
+      businessName?: string;
+      avatarKey?: string;
+      sellerType?: string;
+      location?: string;
+    };
   };
   images?: string[];
   media?: ListingMedia[];

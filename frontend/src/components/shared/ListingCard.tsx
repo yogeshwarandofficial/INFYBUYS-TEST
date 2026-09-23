@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 import { MapPin, DollarSign, Eye, MessageSquare } from 'lucide-react';
 import { FavoriteButton } from './FavoriteButton';
 import type { ReactNode } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 
 export type ListingCardVariant = 'featured' | 'latest' | 'premium' | 'similar' | 'compact' | 'list';
 
@@ -40,6 +40,7 @@ export function ListingCard({
 }: ListingCardProps) {
   const isList = variant === 'list';
   const navigate = useNavigate();
+  const location = useLocation();
 
   const priceVal = listing.priceOrRent != null ? listing.priceOrRent : listing.askingPrice;
   const revVal = listing.turnover != null ? listing.turnover : (listing.revenue != null ? listing.revenue : listing.netProfit);
@@ -99,6 +100,8 @@ export function ListingCard({
   const handleNavigate = () => {
     if (isSeller) {
       navigate(`/seller/listings/${listing.id}`);
+    } else if (location.pathname.startsWith('/buyer')) {
+      navigate(`/buyer/listing/${listing.id}`);
     } else {
       navigate(`/listing/${listing.id}`);
     }
@@ -128,7 +131,7 @@ export function ListingCard({
           {listing.title}
         </h3>
         <p className="text-[14px] text-[#64748B] flex items-center gap-1.5 mb-5 truncate">
-          <MapPin className="w-4 h-4 text-[#94A3B8] shrink-0" /> {listing.location || 'Location upon request'}
+          <MapPin className="w-4 h-4 text-[#94A3B8] shrink-0" /> {listing.locationArea || listing.location || 'Location upon request'}
         </p>
 
         <div className="grid grid-cols-2 gap-4 mb-4">

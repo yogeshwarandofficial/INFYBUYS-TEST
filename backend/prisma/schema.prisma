@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../generated/prisma"
 }
 
@@ -29,6 +29,7 @@ model User {
   ndaAcceptances    NdaAgreement[]
   payments          Payment[]
   refreshTokens     RefreshToken[]
+  otpVerifications  OtpVerification[]
   givenReviews      Review[]           @relation("GivenReviews")
   receivedReviews   Review[]           @relation("ReceivedReviews")
   savedSearches     SavedSearch[]      @relation("BuyerSavedSearches")
@@ -279,6 +280,21 @@ model RefreshToken {
 
   @@index([userId])
   @@index([tokenHash])
+}
+
+model OtpVerification {
+  id        String    @id @default(uuid())
+  userId    String
+  email     String
+  otpHash   String
+  expiresAt DateTime
+  attempts  Int       @default(0)
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([email])
+  @@index([userId])
 }
 
 model ListingRevision {

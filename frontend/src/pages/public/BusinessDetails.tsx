@@ -11,7 +11,8 @@ import { Badge } from '@/components/ui/badge';
 import { apiClient } from '@/services/apiClient';
 import type { Listing } from '@/types/api';
 import { useParams, Link, useNavigate } from 'react-router';
-import { MapPin, Building2, FileText, CheckCircle2, ShieldCheck, Share2, Lock, Calendar, Briefcase, Flag, ArrowRight, User } from 'lucide-react';
+import { MapPin, Building2, FileText, CheckCircle2, ShieldCheck, Lock, Calendar, Briefcase, Flag, ArrowRight, User, Star } from 'lucide-react';
+import { ShareButton } from '@/components/shared/ShareButton';
 import { useUserStore } from '@/store/useUserStore';
 import { useBuyerStore } from '@/store/useBuyerStore';
 import { NDARequestDialog } from '@/components/buyer/nda/NDARequestDialog';
@@ -25,12 +26,13 @@ export default function BusinessDetails() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [hasActiveSub, setHasActiveSub] = useState(false);
+  const [reviews, setReviews] = useState<any[]>([]);
 
   const { user } = useUserStore();
   const { conversations, createConversation } = useBuyerStore();
   const [ndaDialogOpen, setNdaDialogOpen] = useState(false);
-  const [ndaStatus, setNdaStatus] = useState<{ndaRequired: boolean, accepted: boolean} | null>(null);
-  const [sellerContact, setSellerContact] = useState<{contactName: string | null, contactEmail: string | null, contactPhone: string | null} | null>(null);
+  const [ndaStatus, setNdaStatus] = useState<{ ndaRequired: boolean, accepted: boolean } | null>(null);
+  const [sellerContact, setSellerContact] = useState<{ contactName: string | null, contactEmail: string | null, contactPhone: string | null } | null>(null);
   const [fetchingContact, setFetchingContact] = useState(false);
   const [hasTriedFetchingContact, setHasTriedFetchingContact] = useState(false);
   const navigate = useNavigate();
@@ -61,6 +63,14 @@ export default function BusinessDetails() {
         if (similarData.data) {
           setSimilarListings(similarData.data.filter(l => l.id !== data.id).slice(0, 3));
         }
+
+        // Fetch reviews
+        try {
+          const reviewsData = await apiClient.get<any[]>(`/reviews/listing/${id}`);
+          setReviews(reviewsData || []);
+        } catch (e) {
+          console.error("Failed to fetch reviews", e);
+        }
       } catch (err: any) {
         setError(err.message || 'Failed to load listing details');
       } finally {
@@ -78,7 +88,7 @@ export default function BusinessDetails() {
 
         if (id) {
           try {
-            const ndaRes = await apiClient.get<{ndaRequired: boolean, agreement: any}>(`/listings/${id}/nda/status`);
+            const ndaRes = await apiClient.get<{ ndaRequired: boolean, agreement: any }>(`/listings/${id}/nda/status`);
             setNdaStatus({
               ndaRequired: ndaRes.ndaRequired,
               accepted: ndaRes.agreement?.status === 'SIGNED'
@@ -121,7 +131,7 @@ export default function BusinessDetails() {
         navigate('/login');
       } else if (status === 403 || message?.toLowerCase().includes('forbidden')) {
         if (message.toLowerCase().includes('subscription')) {
-          navigate(`/buyer/subscription?returnTo=/listing/${id}`);
+          navigate(`/buyer/subscription?returnTo=${encodeURIComponent(location.pathname)}`);
         } else {
           // If we are auto-fetching for the seller, don't alert to avoid spam
           if (listing && user.id === listing.sellerId) return;
@@ -210,11 +220,11 @@ export default function BusinessDetails() {
                 listingTitle={listing.title}
                 sellerName={listing.seller?.name || 'Seller'}
               />
-              <FavoriteButton 
-                listingId={listing.id} 
+              <FavoriteButton
+                listingId={listing.id}
                 className="w-10 h-10 border border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex items-center justify-center whitespace-nowrap"
               />
-              <Button variant="outline" size="icon" aria-label="Share this listing"><Share2 className="w-5 h-5" /></Button>
+              <ShareButton title={listing.title} />
             </div>
           </div>
         </div>
@@ -226,11 +236,11 @@ export default function BusinessDetails() {
           ) : (
             <div className="bg-muted flex items-center justify-center rounded-xl overflow-hidden aspect-[2/1] border relative">
               {!hasAccess ? (
-                 <div className="absolute inset-0 backdrop-blur-md bg-background/30 flex flex-col items-center justify-center text-center p-6">
-                    <Lock className="w-12 h-12 text-muted-foreground mb-4" />
-                    <h3 className="font-bold text-lg">Photos Locked</h3>
-                    <p className="text-muted-foreground text-sm max-w-sm">Complete NDA requirements or subscribe to view listing photos.</p>
-                 </div>
+                <div className="absolute inset-0 backdrop-blur-md bg-background/30 flex flex-col items-center justify-center text-center p-6">
+                  <Lock className="w-12 h-12 text-muted-foreground mb-4" />
+                  <h3 className="font-bold text-lg">Photos Locked</h3>
+                  <p className="text-muted-foreground text-sm max-w-sm">Complete NDA requirements or subscribe to view listing photos.</p>
+                </div>
               ) : (
                 <div className="text-muted-foreground flex flex-col items-center">
                   <span className="mb-2 text-lg">No Images Available</span>
@@ -279,7 +289,7 @@ export default function BusinessDetails() {
                       </Button>
                     ) : !user.hasActiveSubscription ? (
                       <Button size="lg" asChild>
-                        <Link to={`/buyer/subscription?returnTo=/listing/${id}`}>Subscribe to Unlock <ArrowRight className="ml-2 w-4 h-4" /></Link>
+                        <Link to={`/buyer/subscription?returnTo=${encodeURIComponent(location.pathname)}`}>Subscribe to Unlock <ArrowRight className="ml-2 w-4 h-4" /></Link>
                       </Button>
                     ) : listing.ndaRequired && ndaStatus?.accepted ? (
                       <Button size="lg" variant="secondary" className="group" onClick={fetchContactDetails}>
@@ -299,7 +309,7 @@ export default function BusinessDetails() {
                     <div>
                       <div className="text-sm text-muted-foreground mb-1">TTM Revenue (Turnover)</div>
                       <div className="text-3xl font-bold">
-                        {hasAccess 
+                        {hasAccess
                           ? (listing.turnover != null ? `$${Number(listing.turnover).toLocaleString()}` : 'Not Disclosed')
                           : '$XXX,XXX'}
                       </div>
@@ -307,7 +317,7 @@ export default function BusinessDetails() {
                     <div>
                       <div className="text-sm text-muted-foreground mb-1">TTM Profit</div>
                       <div className="text-3xl font-bold text-success">
-                        {hasAccess 
+                        {hasAccess
                           ? (listing.netProfit != null ? `$${Number(listing.netProfit).toLocaleString()}` : 'Not Disclosed')
                           : '$XXX,XXX'}
                       </div>
@@ -321,20 +331,24 @@ export default function BusinessDetails() {
               <h2 className="text-2xl font-bold mb-6">Key Information</h2>
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="flex items-center justify-between p-4 bg-muted/20 rounded-lg border">
-                  <span className="text-muted-foreground">Business Model</span>
+                  <span className="text-muted-foreground">Listing Type</span>
+                  <span className="font-semibold capitalize">{listing.type?.replace(/_/g, ' ').toLowerCase()}</span>
+                </div>
+                <div className="flex items-center justify-between p-4 bg-muted/20 rounded-lg border">
+                  <span className="text-muted-foreground">Category</span>
                   <span className="font-semibold">{listing.category}</span>
                 </div>
                 <div className="flex items-center justify-between p-4 bg-muted/20 rounded-lg border">
-                  <span className="text-muted-foreground">Pricing Model</span>
-                  <span className="font-semibold">Subscription</span>
+                  <span className="text-muted-foreground">Established</span>
+                  <span className="font-semibold">{listing.establishedYear || 'Not Disclosed'}</span>
                 </div>
                 <div className="flex items-center justify-between p-4 bg-muted/20 rounded-lg border">
-                  <span className="text-muted-foreground">Operations</span>
-                  <span className="font-semibold">{'Not available'}</span>
+                  <span className="text-muted-foreground">Location</span>
+                  <span className="font-semibold">{listing.locationArea}</span>
                 </div>
                 <div className="flex items-center justify-between p-4 bg-muted/20 rounded-lg border">
-                  <span className="text-muted-foreground">Support Required</span>
-                  <span className="font-semibold">{'Not available'}</span>
+                  <span className="text-muted-foreground">NDA Required</span>
+                  <span className="font-semibold">{listing.ndaRequired ? 'Yes' : 'No'}</span>
                 </div>
               </div>
             </section>
@@ -346,15 +360,30 @@ export default function BusinessDetails() {
               <CardContent className="p-6">
                 <h3 className="font-semibold mb-4">Seller Information</h3>
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary">
-                    <Building2 className="w-6 h-6" />
-                  </div>
+                  {listing.seller?.sellerProfile?.avatarKey && hasActiveSub ? (
+                    <img
+                      src={listing.seller.sellerProfile.avatarKey.startsWith('http') ? listing.seller.sellerProfile.avatarKey : `https://ui-avatars.com/api/?name=${encodeURIComponent(listing.seller?.name || 'Seller')}`}
+                      alt="Seller Logo"
+                      className="w-12 h-12 rounded-full object-cover border"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+                      <Building2 className="w-6 h-6" />
+                    </div>
+                  )}
                   <div>
                     <div className="font-semibold flex items-center gap-2">
-                      {listing.seller?.name || 'Seller'}
+                      {hasActiveSub && listing.seller?.sellerProfile ? (
+                        <Link to={location.pathname.startsWith('/buyer') ? `/buyer/seller/${listing.seller.id}` : `/seller/${listing.seller.id}`} className="hover:underline">
+                          {listing.seller?.sellerProfile?.businessName && listing.seller.sellerProfile.businessName !== 'Pending KYC' 
+                            ? listing.seller.sellerProfile.businessName 
+                            : listing.seller?.name || 'Seller'}
+                        </Link>
+                      ) : (
+                        <span>{listing.seller?.name || 'Seller'}</span>
+                      )}
                       {listing.seller?.verified && <CheckCircle2 className="w-4 h-4 text-info" />}
                     </div>
-
                   </div>
                 </div>
 
@@ -389,7 +418,7 @@ export default function BusinessDetails() {
                     <div className="flex justify-center"><Lock className="w-6 h-6 text-muted-foreground" /></div>
                     <div className="text-sm font-medium text-muted-foreground">Contact details are hidden</div>
                     <div className="text-xs text-muted-foreground mb-3">Subscribe to unlock seller contact details</div>
-                    <Button className="w-full" onClick={() => navigate(`/buyer/subscription?returnTo=/listing/${id}`)}>
+                    <Button className="w-full" onClick={() => navigate(`/buyer/subscription?returnTo=${encodeURIComponent(location.pathname)}`)}>
                       Subscribe to Unlock
                     </Button>
                   </div>
@@ -410,56 +439,25 @@ export default function BusinessDetails() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Verification</span>
-                    {listing.seller?.verified ? (
-                      <span className="font-medium flex items-center text-success">
-                        <ShieldCheck className="w-4 h-4 mr-1" /> Verified
-                      </span>
-                    ) : (
-                      <span className="font-medium">Unverified</span>
-                    )}
+                    <span className="font-medium flex items-center text-success">
+                      <ShieldCheck className="w-4 h-4 mr-1" /> Verified
+                    </span>
                   </div>
                 </div>
 
                 {user?.id !== listing.sellerId && (
                   <>
-                    <Button
-                      className="w-full mb-3"
-                      onClick={() => {
-                        if (!user) {
-                          navigate('/login');
-                          return;
-                        }
-                        if (!user.roles?.some(r => r.toLowerCase() === 'buyer')) {
-                          navigate('/unauthorized');
-                          return;
-                        }
-
-                        const existingConversation = conversations.find(c => c.listingId === listing.id);
-
-                        if (existingConversation) {
-                          navigate(`/buyer/messages/${existingConversation.id}`);
-                        } else {
-                          const newId = createConversation({
-                            listingId: listing.id,
-                            listingTitle: listing.title,
-                            businessName: listing.title,
-                            businessImage: listing.images?.[0] || '',
-                            sellerName: listing.seller?.name || 'Seller',
-                            sellerAvatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(listing.seller?.name || 'Seller')}`,
-                          });
-                          navigate(`/buyer/messages/${newId}`);
-                        }
-                      }}
-                    >
-                      Message Seller
-                    </Button>
                     {user?.roles?.some(r => r.toLowerCase() === 'buyer') && (
                       <SubmitReviewDialog
                         listingId={listing.id}
                         listingTitle={listing.title}
-                        sellerId={listing.seller?.name?.toLowerCase().replace(/\s+/g, '-') || 'seller'}
+                        sellerId={listing.sellerId || listing.seller?.id}
                         sellerName={listing.seller?.name || 'Seller'}
-                        trigger={<Button variant="outline" className="w-full mb-3">Leave a Review</Button>}
+                        trigger={
+                          <Button className="w-full bg-[#0F172A] hover:bg-slate-800 text-white mb-3">
+                            <Star className="w-4 h-4 mr-2" /> Leave a Review
+                          </Button>
+                        }
                       />
                     )}
                   </>
@@ -476,8 +474,43 @@ export default function BusinessDetails() {
           </div>
         </div>
 
+        {/* Reviews Section */}
+        {reviews.length > 0 && (
+          <div className="mt-24 border-t pt-16">
+            <h2 className="text-2xl font-bold mb-8">Seller Reviews for this Listing</h2>
+            <div className="grid gap-6">
+              {reviews.map(review => (
+                <Card key={review.id}>
+                  <CardContent className="p-6 flex gap-4">
+                    <img 
+                      src={review.buyer?.buyerProfile?.avatarKey || `https://ui-avatars.com/api/?name=${encodeURIComponent(review.buyer?.name || 'Buyer')}`} 
+                      alt="Buyer Avatar" 
+                      className="w-12 h-12 rounded-full object-cover bg-muted"
+                    />
+                    <div>
+                      <div className="font-semibold mb-1">{review.buyer?.name || 'Anonymous Buyer'}</div>
+                      <div className="flex gap-1 mb-2">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <Star
+                            key={star}
+                            className={`w-4 h-4 ${star <= review.rating ? 'fill-orange-400 text-orange-400' : 'text-muted-foreground/30'}`}
+                          />
+                        ))}
+                      </div>
+                      <p className="text-muted-foreground text-sm">{review.comment}</p>
+                      <div className="text-xs text-muted-foreground mt-2">
+                        {new Date(review.createdAt).toLocaleDateString()}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Similar Listings */}
-        <div className="mt-24 border-t pt-16">
+        <div className="mt-16 border-t pt-16">
           <h2 className="text-2xl font-bold mb-8">Similar Businesses</h2>
           <div className="grid md:grid-cols-3 gap-6">
             {similarListings.map(l => (

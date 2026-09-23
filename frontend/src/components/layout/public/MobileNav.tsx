@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { CATEGORIES } from '@/constants/marketing';
+import { CATEGORIES } from '@/components/seller/listings/SellerListingForm';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/providers/ThemeProvider';
 import { Moon, Sun } from 'lucide-react';
@@ -24,12 +24,12 @@ export function MobileNav({ open, onOpenChange }: MobileNavProps) {
             <h4 className="font-semibold text-sm uppercase tracking-wider text-muted-foreground mb-2">Categories</h4>
             {CATEGORIES.map((category) => (
               <Link
-                key={category.id}
-                to={`/search?category=${category.name}`}
+                key={category}
+                to={`/search?category=${encodeURIComponent(category)}`}
                 onClick={() => onOpenChange(false)}
                 className="text-lg font-medium hover:text-primary transition-colors py-1"
               >
-                {category.name}
+                {category}
               </Link>
             ))}
           </div>

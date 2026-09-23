@@ -31,9 +31,9 @@ export function PublicFooter() {
           <div>
             <h4 className="font-bold text-lg mb-6">Marketplace</h4>
             <ul className="space-y-4">
-              <li><Link to="/search?category=SaaS" className="text-slate-400 hover:text-brand-blue transition-colors text-sm">Browse SaaS</Link></li>
-              <li><Link to="/search?category=E-Commerce" className="text-slate-400 hover:text-brand-blue transition-colors text-sm">Browse E-Commerce</Link></li>
-              <li><Link to="/search?category=Agencies" className="text-slate-400 hover:text-brand-blue transition-colors text-sm">Browse Agencies</Link></li>
+              <li><Link to="/search?category=Technology" className="text-slate-400 hover:text-brand-blue transition-colors text-sm">Browse Technology</Link></li>
+              <li><Link to="/search?category=E-commerce" className="text-slate-400 hover:text-brand-blue transition-colors text-sm">Browse E-Commerce</Link></li>
+              <li><Link to="/search?category=Professional Services" className="text-slate-400 hover:text-brand-blue transition-colors text-sm">Browse Services</Link></li>
               <li><Link to="/sell" className="text-slate-400 hover:text-brand-blue transition-colors text-sm">Sell your business</Link></li>
             </ul>
           </div>

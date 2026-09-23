@@ -9,6 +9,10 @@ export class ListingQueryDto {
 
   @IsString()
   @IsOptional()
+  sellerId?: string;
+
+  @IsString()
+  @IsOptional()
   category?: string;
 
   @IsString()

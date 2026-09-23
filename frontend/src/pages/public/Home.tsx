@@ -1,5 +1,8 @@
+import { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router';
 import { Seo } from '@/components/shared/Seo';
 import { CookieConsentBanner } from '@/components/shared/CookieConsentBanner';
+import { DashboardSelectModal } from '@/components/shared/DashboardSelectModal';
 import { HeroSection } from '@/features/public/HeroSection';
 import { ExploreOpportunities } from '@/features/public/ExploreOpportunities';
 import { CategoryCards } from '@/features/public/CategoryCards';
@@ -11,6 +14,25 @@ import { TestimonialSection } from '@/features/public/TestimonialSection';
 import { CTASection } from '@/features/public/CTASection';
 
 export default function Home() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [showDashboardModal, setShowDashboardModal] = useState(false);
+
+  useEffect(() => {
+    if (location.state?.justLoggedIn) {
+      // Show modal after 2.5 seconds
+      const timer = setTimeout(() => {
+        setShowDashboardModal(true);
+      }, 2500);
+
+      // Clear the state so it doesn't trigger again on page refresh
+      // using history API to avoid triggering a React Router navigation & re-render
+      window.history.replaceState(null, '');
+
+      return () => clearTimeout(timer);
+    }
+  }, [location.state?.justLoggedIn]);
+
   return (
     <>
       <Seo
@@ -27,6 +49,10 @@ export default function Home() {
       <TestimonialSection />
       <CTASection />
       <CookieConsentBanner />
+      <DashboardSelectModal 
+        isOpen={showDashboardModal} 
+        onClose={() => setShowDashboardModal(false)} 
+      />
     </>
   );
 }

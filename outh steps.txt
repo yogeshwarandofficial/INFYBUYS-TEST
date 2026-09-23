@@ -1,0 +1,14 @@
+As expected, the button is now fully functional!
+
+The popup you are seeing is the official Google authentication window. The reason it says "Error 401: invalid_client" is because we are currently using the dummy placeholder 'missing-client-id-placeholder' that I put in the code to stop the app from crashing.
+
+To fix this and allow users to actually log in, you must now:
+
+Go to the Google Cloud Console.
+Create a new Project (or select an existing one).
+Navigate to APIs & Services > Credentials.
+Click Create Credentials > OAuth client ID.
+Select Web application. Add http://localhost:5173 to your Authorized JavaScript origins.
+Copy the generated Client ID.
+Open frontend/.env and add: VITE_GOOGLE_CLIENT_ID="your_real_client_id_here"
+Open backend/.env and add: GOOGLE_CLIENT_ID="your_real_client_id_here"

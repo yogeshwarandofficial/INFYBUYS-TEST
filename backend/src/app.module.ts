@@ -17,9 +17,10 @@ import { NdaModule } from './nda/nda.module.js';
 import { BuyerProfileModule } from './buyer-profile/buyer-profile.module.js';
 import { SellerProfileModule } from './seller-profile/seller-profile.module.js';
 import { SellerAnalyticsModule } from './seller-analytics/seller-analytics.module';
+import { ReviewsModule } from './reviews/reviews.module';
 
 @Module({
-  imports: [PrismaModule, UsersModule, AuthModule, SubscriptionsModule, S3Module, ListingsModule, AdminModule, EnquiriesModule, SellerKycModule, FavoritesModule, SavedSearchesModule, NotificationsModule, NdaModule, BuyerProfileModule, SellerProfileModule, SellerAnalyticsModule],
+  imports: [PrismaModule, UsersModule, AuthModule, SubscriptionsModule, S3Module, ListingsModule, AdminModule, EnquiriesModule, SellerKycModule, FavoritesModule, SavedSearchesModule, NotificationsModule, NdaModule, BuyerProfileModule, SellerProfileModule, SellerAnalyticsModule, ReviewsModule],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -9,6 +9,9 @@ import { AuthService } from './auth.service.js';
 import { RegisterDto } from './dto/register.dto.js';
 import { LoginDto } from './dto/login.dto.js';
 import { RefreshTokenDto } from './dto/refresh-token.dto.js';
+import { GoogleLoginDto } from './dto/google-login.dto.js';
+import { SendOtpDto } from './dto/send-otp.dto.js';
+import { VerifyOtpDto } from './dto/verify-otp.dto.js';
 
 @Controller('auth')
 export class AuthController {
@@ -22,6 +25,11 @@ export class AuthController {
   @Post('login')
   async login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto);
+  }
+
+  @Post('google')
+  async googleLogin(@Body() googleLoginDto: GoogleLoginDto) {
+    return this.authService.googleLogin(googleLoginDto.token);
   }
 
   @Post('refresh')
@@ -46,6 +54,21 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async resendVerificationEmail(@Body('email') email: string) {
     return this.authService.resendVerificationEmail(email);
+  }
+
+  // ─── OTP endpoints ───────────────────────────────────────────────────────
+
+  @Post('send-otp')
+  @HttpCode(HttpStatus.OK)
+  async sendOtp(@Body() dto: SendOtpDto) {
+    await this.authService.resendOtp(dto.email);
+    return { message: 'Verification code sent' };
+  }
+
+  @Post('verify-otp')
+  @HttpCode(HttpStatus.OK)
+  async verifyOtp(@Body() dto: VerifyOtpDto) {
+    return this.authService.verifyOtp(dto.email, dto.otp);
   }
 
   @Get('test/buyer')

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router';
 import { Seo } from '@/components/shared/Seo';
-import { SellerListingForm, type ListingFormValues } from '@/components/seller/listings/SellerListingForm';
+import { SellerListingForm, type ListingFormValues, CATEGORIES } from '@/components/seller/listings/SellerListingForm';
 import { useSellerStore } from '@/store/useSellerStore';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft } from 'lucide-react';
@@ -35,7 +35,7 @@ export default function SellerEditListing() {
     try {
       await updateListing(listing.id, {
         title: values.title,
-        category: values.category,
+        category: values.category === 'Other' && values.customCategory ? values.customCategory : values.category,
         subCategory: values.subCategory || undefined,
         location: values.location,
         description: values.description,
@@ -52,7 +52,14 @@ export default function SellerEditListing() {
         status: listing.status === 'active' ? 'active' : 'draft',
       });
 
-      if (values.image instanceof File) {
+      if (Array.isArray(values.image)) {
+        for (const file of values.image) {
+          if (file instanceof File) {
+            const type = file.type.startsWith('video') ? 'VIDEO' : 'PHOTO';
+            await useSellerStore.getState().uploadListingMedia(listing.id, file, type);
+          }
+        }
+      } else if (values.image instanceof File) {
         const type = values.image.type.startsWith('video') ? 'VIDEO' : 'PHOTO';
         await useSellerStore.getState().uploadListingMedia(listing.id, values.image, type);
       }
@@ -72,7 +79,7 @@ export default function SellerEditListing() {
     try {
       await updateListing(listing.id, {
         title: values.title,
-        category: values.category,
+        category: values.category === 'Other' && values.customCategory ? values.customCategory : values.category,
         subCategory: values.subCategory || undefined,
         location: values.location,
         description: values.description,
@@ -88,7 +95,14 @@ export default function SellerEditListing() {
         image: typeof values.image === 'string' ? values.image : undefined,
       });
 
-      if (values.image instanceof File) {
+      if (Array.isArray(values.image)) {
+        for (const file of values.image) {
+          if (file instanceof File) {
+            const type = file.type.startsWith('video') ? 'VIDEO' : 'PHOTO';
+            await useSellerStore.getState().uploadListingMedia(listing.id, file, type);
+          }
+        }
+      } else if (values.image instanceof File) {
         const type = values.image.type.startsWith('video') ? 'VIDEO' : 'PHOTO';
         await useSellerStore.getState().uploadListingMedia(listing.id, values.image, type);
       }
@@ -125,7 +139,8 @@ export default function SellerEditListing() {
         <SellerListingForm
           defaultValues={{
             title: listing.title,
-            category: listing.category,
+            category: CATEGORIES.includes(listing.category) ? listing.category : 'Other',
+            customCategory: !CATEGORIES.includes(listing.category) ? listing.category : '',
             subCategory: listing.subCategory,
             location: listing.location,
             description: listing.description,

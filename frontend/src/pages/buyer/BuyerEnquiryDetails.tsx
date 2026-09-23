@@ -171,7 +171,7 @@ export default function BuyerEnquiryDetails() {
                 </div>
 
                 <Button className="w-full" variant="outline" asChild>
-                  <Link to={`/listing/${enquiry.listing?.id}`}>View Listing</Link>
+                  <Link to={`/buyer/listing/${enquiry.listing?.id}`}>View Listing</Link>
                 </Button>
               </CardContent>
             </Card>

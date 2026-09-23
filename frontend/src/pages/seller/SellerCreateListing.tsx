@@ -26,7 +26,7 @@ export default function SellerCreateListing() {
       if (!id) {
         id = await createListing({
         title: values.title,
-        category: values.category,
+        category: values.category === 'Other' && values.customCategory ? values.customCategory : values.category,
         subCategory: values.subCategory || undefined,
         location: values.location,
         description: values.description,
@@ -45,7 +45,14 @@ export default function SellerCreateListing() {
       setCreatedId(id);
     }
 
-    if (values.image instanceof File) {
+      if (Array.isArray(values.image)) {
+        for (const file of values.image) {
+          if (file instanceof File) {
+            const type = file.type.startsWith('video') ? 'VIDEO' : 'PHOTO';
+            await uploadListingMedia(id, file, type);
+          }
+        }
+      } else if (values.image instanceof File) {
         const type = values.image.type.startsWith('video') ? 'VIDEO' : 'PHOTO';
         await uploadListingMedia(id, values.image, type);
       }
@@ -67,7 +74,7 @@ export default function SellerCreateListing() {
       if (!id) {
         id = await createListing({
         title: values.title,
-        category: values.category,
+        category: values.category === 'Other' && values.customCategory ? values.customCategory : values.category,
         subCategory: values.subCategory || undefined,
         location: values.location,
         description: values.description,
@@ -86,7 +93,14 @@ export default function SellerCreateListing() {
       setCreatedId(id);
     }
 
-    if (values.image instanceof File) {
+      if (Array.isArray(values.image)) {
+        for (const file of values.image) {
+          if (file instanceof File) {
+            const type = file.type.startsWith('video') ? 'VIDEO' : 'PHOTO';
+            await uploadListingMedia(id, file, type);
+          }
+        }
+      } else if (values.image instanceof File) {
         const type = values.image.type.startsWith('video') ? 'VIDEO' : 'PHOTO';
         await uploadListingMedia(id, values.image, type);
       }

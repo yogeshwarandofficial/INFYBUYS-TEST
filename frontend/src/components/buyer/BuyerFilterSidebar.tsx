@@ -33,10 +33,20 @@ export function BuyerFilterSidebar({ filters, updateFilter, clearFilters }: Buye
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Categories</SelectItem>
-                <SelectItem value="saas">SaaS</SelectItem>
-                <SelectItem value="e-commerce">E-Commerce</SelectItem>
-                <SelectItem value="marketplace">Marketplace</SelectItem>
-                <SelectItem value="agency">Agency</SelectItem>
+                <SelectItem value="Technology">Technology</SelectItem>
+                <SelectItem value="E-commerce">E-commerce</SelectItem>
+                <SelectItem value="Food & Beverage">Food & Beverage</SelectItem>
+                <SelectItem value="Professional Services">Professional Services</SelectItem>
+                <SelectItem value="Manufacturing">Manufacturing</SelectItem>
+                <SelectItem value="Education">Education</SelectItem>
+                <SelectItem value="Healthcare">Healthcare</SelectItem>
+                <SelectItem value="Real Estate">Real Estate</SelectItem>
+                <SelectItem value="Retail">Retail</SelectItem>
+                <SelectItem value="Transportation">Transportation</SelectItem>
+                <SelectItem value="Media & Entertainment">Media & Entertainment</SelectItem>
+                <SelectItem value="Finance">Finance</SelectItem>
+                <SelectItem value="Agriculture">Agriculture</SelectItem>
+                <SelectItem value="Other">Other</SelectItem>
               </SelectContent>
             </Select>
           </div>

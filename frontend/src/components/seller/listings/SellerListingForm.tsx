@@ -14,11 +14,11 @@ import {
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { Save, Send, Check } from 'lucide-react';
+import { Save, Send, Check, Trash2 } from 'lucide-react';
 import { type ListingMedia } from '@/types/api';
 import { useSellerStore } from '@/store/useSellerStore';
 
-const CATEGORIES = [
+export const CATEGORIES = [
   'Technology', 'E-commerce', 'Food & Beverage', 'Professional Services',
   'Manufacturing', 'Education', 'Healthcare', 'Real Estate', 'Retail',
   'Transportation', 'Media & Entertainment', 'Finance', 'Agriculture', 'Other',
@@ -41,6 +41,7 @@ export const listingFormSchema = z.object({
   contactEmail: z.string().email('Invalid email address').optional().or(z.literal('')),
   contactPhone: z.string().optional(),
   image: z.any().optional(), // Can be a File or URL string
+  customCategory: z.string().optional(),
 });
 
 export type ListingFormValues = z.infer<typeof listingFormSchema>;
@@ -66,7 +67,7 @@ export function SellerListingForm({
   media = [],
   coverMediaId,
 }: SellerListingFormProps) {
-  const { setCoverMedia } = useSellerStore();
+  const { setCoverMedia, deleteMedia } = useSellerStore();
   const {
     register,
     handleSubmit,
@@ -91,6 +92,7 @@ export function SellerListingForm({
       contactEmail: '',
       contactPhone: '',
       image: '',
+      customCategory: '',
       ...defaultValues,
     },
   });
@@ -146,11 +148,25 @@ export function SellerListingForm({
               )}
             </div>
 
-            <div className="space-y-1.5">
+            {category === 'Other' && (
+              <div className="space-y-1.5 sm:col-span-2">
+                <Label htmlFor="customCategory">Please specify category <span className="text-destructive">*</span></Label>
+                <Input
+                  id="customCategory"
+                  placeholder="e.g. Cryptocurrency"
+                  {...register('customCategory')}
+                />
+                {errors.customCategory && (
+                  <p className="text-xs text-destructive" role="alert">{errors.customCategory.message}</p>
+                )}
+              </div>
+            )}
+
+            <div className="space-y-1.5 sm:col-span-2">
               <Label htmlFor="subCategory">Sub-Category</Label>
               <Input
                 id="subCategory"
-                placeholder="e.g. SaaS, E-commerce, Cafe"
+                placeholder="e.g. B2B, Specialized Retail"
                 {...register('subCategory')}
               />
             </div>
@@ -261,11 +277,24 @@ export function SellerListingForm({
               <Input
                 id="image"
                 type="file"
+                multiple
                 accept="image/jpeg,image/png,image/webp,video/mp4,video/webm,video/quicktime"
                 aria-invalid={!!errors.image}
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  setValue('image', file, { shouldValidate: true });
+                onChange={async (e) => {
+                  const files = Array.from(e.target.files || []);
+                  if (!files.length) return;
+                  
+                  if (listingId) {
+                    // Upload instantly if editing
+                    for (const file of files) {
+                      const type = file.type.startsWith('video') ? 'VIDEO' : 'PHOTO';
+                      await useSellerStore.getState().uploadListingMedia(listingId, file, type);
+                    }
+                  } else {
+                    // Save in form state for create mode
+                    setValue('image', files, { shouldValidate: true });
+                  }
+                  e.target.value = ''; // Reset input to allow selecting the same files again
                 }}
               />
               {errors.image && (
@@ -285,7 +314,13 @@ export function SellerListingForm({
                     let isVideo = false;
                     let mediaUrl = '';
 
-                    if (mediaVal instanceof File) {
+                    if (Array.isArray(mediaVal) && mediaVal.length > 0) {
+                      const firstFile = mediaVal[0];
+                      if (firstFile instanceof File) {
+                        isVideo = firstFile.type.startsWith('video/');
+                        mediaUrl = URL.createObjectURL(firstFile);
+                      }
+                    } else if (mediaVal instanceof File) {
                       isVideo = mediaVal.type.startsWith('video/');
                       mediaUrl = URL.createObjectURL(mediaVal);
                     } else if (typeof mediaVal === 'string' && mediaVal) {
@@ -323,11 +358,11 @@ export function SellerListingForm({
                           <img src={m.url || ''} alt={`Media ${idx + 1}`} className="w-full h-full object-cover" />
                         )}
                       </div>
-                      <div className="p-3 bg-background border-t">
+                      <div className="p-3 bg-background border-t space-y-2">
                         {m.type === 'VIDEO' ? (
                           <div className="text-center font-medium text-sm text-muted-foreground py-1">VIDEO</div>
                         ) : coverMediaId === m.id ? (
-                          <div className="flex items-center justify-center font-medium text-sm text-green-600 bg-green-50 py-1 rounded">
+                          <div className="flex items-center justify-center font-medium text-sm text-green-600 bg-green-50 py-1 rounded h-9">
                             <Check className="w-4 h-4 mr-1.5" />
                             Cover Image
                           </div>
@@ -345,6 +380,22 @@ export function SellerListingForm({
                             Set as Cover
                           </Button>
                         )}
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="sm"
+                          className="w-full"
+                          onClick={async () => {
+                            if (listingId) {
+                              if (confirm('Are you sure you want to delete this media?\\n\\nNote: Media changes are saved instantly! You do not need to press "Save Changes" afterwards unless you are editing other text fields.')) {
+                                await deleteMedia(listingId, m.id);
+                              }
+                            }
+                          }}
+                        >
+                          <Trash2 className="w-4 h-4 mr-2" />
+                          Delete
+                        </Button>
                       </div>
                     </div>
                   ))}

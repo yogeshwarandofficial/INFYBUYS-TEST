@@ -35,7 +35,7 @@ export function useListingSearch(itemsPerPage = 12) {
   const [filters, setFilters] = useState<SearchFilters>(() => {
     return {
       query: searchParams.get('q') || defaultFilters.query,
-      category: searchParams.get('cat') || defaultFilters.category,
+      category: searchParams.get('category') || searchParams.get('cat') || defaultFilters.category,
       minPrice: Number(searchParams.get('minP')) || defaultFilters.minPrice,
       maxPrice: Number(searchParams.get('maxP')) || defaultFilters.maxPrice,
       minRevenue: Number(searchParams.get('minR')) || defaultFilters.minRevenue,
@@ -52,7 +52,7 @@ export function useListingSearch(itemsPerPage = 12) {
   useEffect(() => {
     const params = new URLSearchParams();
     if (filters.query) params.set('q', filters.query);
-    if (filters.category !== 'all') params.set('cat', filters.category);
+    if (filters.category !== 'all') params.set('category', filters.category);
     if (filters.minPrice > 0) params.set('minP', filters.minPrice.toString());
     if (filters.maxPrice > 0) params.set('maxP', filters.maxPrice.toString());
     if (filters.minRevenue > 0) params.set('minR', filters.minRevenue.toString());

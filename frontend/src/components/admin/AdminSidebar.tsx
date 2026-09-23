@@ -29,16 +29,11 @@ interface SidebarProps {
 const adminLinks = [
   { title: 'Dashboard', href: '/admin', icon: LayoutDashboard },
   { title: 'Users', href: '/admin/users', icon: Users },
-  { title: 'Sellers', href: '/admin/sellers', icon: UserCheck },
   { title: 'KYC Verifications', href: '/admin/kyc', icon: ShieldCheck },
-  { title: 'Buyers', href: '/admin/buyers', icon: ShoppingBag },
   { title: 'Listings', href: '/admin/listings', icon: Package },
-  { title: 'Enquiries', href: '/admin/enquiries', icon: HelpCircle },
   { title: 'Notifications', href: '/admin/notifications', icon: Bell },
   { title: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
   { title: 'Reports', href: '/admin/reports', icon: FileText },
-  { title: 'Activity Log', href: '/admin/activity', icon: ClipboardList },
-  { title: 'Settings', href: '/admin/settings', icon: Settings },
 ];
 
 export function AdminSidebar({ collapsed, setCollapsed, isMobile }: SidebarProps) {

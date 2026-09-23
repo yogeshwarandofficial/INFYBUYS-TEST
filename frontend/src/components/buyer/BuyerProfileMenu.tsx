@@ -67,7 +67,7 @@ export function BuyerProfileMenu() {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link to="/seller">
+          <Link to="/seller/listings">
             <Store className="mr-2 h-4 w-4" />
             <span>Switch to Sell</span>
           </Link>

@@ -64,7 +64,7 @@ export default function BuyerNDADetails() {
                   </div>
                   <div className="flex items-center justify-between pt-4 border-t">
                     <Button variant="link" size="sm" asChild className="p-0 h-auto">
-                      <Link to={`/listing/${nda.listingId}`}>
+                      <Link to={`/buyer/listing/${nda.listingId}`}>
                         View Listing <ExternalLink className="w-3 h-3 ml-1" />
                       </Link>
                     </Button>

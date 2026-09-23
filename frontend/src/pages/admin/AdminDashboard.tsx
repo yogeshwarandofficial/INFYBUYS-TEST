@@ -16,18 +16,18 @@ export default function AdminDashboard() {
     fetchPlatformData();
   }, [fetchPlatformData]);
 
-  const totalUsers = users.length;
+  const totalUsers = stats.totalUsers;
 
-  const activeSellers = sellers.filter(s => s.status === 'active').length;
-  const pendingSellers = sellers.filter(s => s.status === 'pending').length;
-  const totalSellersCount = sellers.length;
+  const activeSellers = sellers.filter(s => s.status === 'active').length || stats.activeSellers || 0;
+  const pendingSellers = stats.pendingApprovals;
+  const totalSellersCount = stats.totalSellers;
 
-  const totalBuyersCount = buyers.length;
+  const totalBuyersCount = stats.totalBuyers;
 
-  const activeListingsCount = listings.filter(l => l.status === 'active' || l.status === 'PUBLISHED').length;
-  const totalListingsCount = listings.length;
+  const activeListingsCount = stats.activeListings;
+  const totalListingsCount = stats.totalListings;
 
-  const totalEnquiriesCount = enquiries.length;
+  const totalEnquiriesCount = stats.totalEnquiries;
 
   return (
     <>

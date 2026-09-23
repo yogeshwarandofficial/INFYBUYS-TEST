@@ -461,16 +461,16 @@ export const useAdminStore = create<AdminState>()(
   persist(
     (set) => ({
       stats: {
-        totalUsers: 14520,
-        totalBuyers: 12100,
-        totalSellers: 2420,
-        totalListings: 8540,
-        activeListings: 7120,
-        pendingListings: 430,
-        totalEnquiries: 12500,
-        totalRevenue: 245000,
-        unreadMessages: 15,
-        pendingApprovals: 430,
+        totalUsers: 0,
+        totalBuyers: 0,
+        totalSellers: 0,
+        totalListings: 0,
+        activeListings: 0,
+        pendingListings: 0,
+        totalEnquiries: 0,
+        totalRevenue: 0,
+        unreadMessages: 0,
+        pendingApprovals: 0,
       },
       recentActivity: [
         {
@@ -979,12 +979,25 @@ export const useAdminStore = create<AdminState>()(
         set(() => ({ auditLogs: [] })),
       fetchPlatformData: async () => {
         try {
-          // const users = await apiClient.get<any[]>('/users');
-          // For now just fetch listings correctly
+          // Fetch stats
+          const statsRes = await apiClient.get<any>('/admin/dashboard/stats');
+          
+          // Fetch listings
           const res = await apiClient.get<{data: any[], total: number}>('/listings/admin/search');
-          // const enquiries = await apiClient.get<any[]>('/enquiries');
-          // const conversations = await apiClient.get<any[]>('/conversations');
+          
           set((state: any) => ({
+            stats: {
+              ...state.stats,
+              totalUsers: statsRes.totalUsers || 0,
+              totalBuyers: statsRes.totalBuyers || 0,
+              totalSellers: statsRes.totalSellers || 0,
+              totalListings: statsRes.totalListings || 0,
+              activeListings: statsRes.activeListings || 0,
+              pendingListings: statsRes.pendingListings || 0,
+              totalEnquiries: statsRes.totalEnquiries || 0,
+              totalRevenue: statsRes.totalRevenue || 0,
+              pendingApprovals: statsRes.pendingSellers || 0,
+            },
             listings: res.data ? res.data.map((l: any) => ({
               ...l,
               price: l.priceOrRent || 0,

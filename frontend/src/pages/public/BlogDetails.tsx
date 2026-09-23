@@ -58,11 +58,9 @@ export default function BlogDetails() {
               
               <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-8 mb-10">
                 <div className="flex items-center gap-4 text-sm text-slate-500">
-                  <img
-                    src={`https://i.pravatar.cc/150?u=${post.author}`}
-                    alt={post.author}
-                    className="w-12 h-12 rounded-full border border-slate-200"
-                  />
+                  <div className="w-12 h-12 rounded-full border border-slate-200 bg-slate-100 flex items-center justify-center text-slate-700 font-bold text-xl shrink-0">
+                    {post.author.charAt(0)}
+                  </div>
                   <div>
                     <div className="font-bold text-[#0B152A] text-base">{post.author}</div>
                     <div className="flex items-center gap-2 mt-0.5 text-xs">
@@ -73,12 +71,7 @@ export default function BlogDetails() {
                   </div>
                 </div>
                 
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-semibold text-slate-400 mr-2 hidden sm:inline-block">Share:</span>
-                  <button type="button" aria-label="Share via SMS" className="inline-flex items-center justify-center rounded-full w-9 h-9 border border-slate-200 bg-white text-slate-500 hover:bg-[#0B4C8C] hover:text-white hover:border-[#0B4C8C] transition-colors duration-300 outline-none"><MessageSquare className="w-4 h-4" /></button>
-                  <button type="button" aria-label="Share via Email" className="inline-flex items-center justify-center rounded-full w-9 h-9 border border-slate-200 bg-white text-slate-500 hover:bg-[#0B4C8C] hover:text-white hover:border-[#0B4C8C] transition-colors duration-300 outline-none"><Mail className="w-4 h-4" /></button>
-                  <button type="button" aria-label="Copy link" className="inline-flex items-center justify-center rounded-full w-9 h-9 border border-slate-200 bg-white text-slate-500 hover:bg-[#0B4C8C] hover:text-white hover:border-[#0B4C8C] transition-colors duration-300 outline-none"><LinkIcon className="w-4 h-4" /></button>
-                </div>
+
               </div>
 
               <div className="prose prose-lg max-w-none text-slate-700 mb-16">
@@ -123,11 +116,9 @@ export default function BlogDetails() {
             <aside className="lg:w-80 shrink-0 space-y-8">
               <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
                 <div className="flex items-center gap-4 mb-4">
-                  <img
-                    src={`https://i.pravatar.cc/150?u=${post.author}`}
-                    alt={post.author}
-                    className="w-16 h-16 rounded-full border border-slate-200"
-                  />
+                  <div className="w-16 h-16 rounded-full border border-slate-200 bg-slate-100 flex items-center justify-center text-slate-700 font-bold text-2xl shrink-0">
+                    {post.author.charAt(0)}
+                  </div>
                   <div>
                     <h4 className="font-bold text-[#0B152A] text-lg leading-tight">{post.author}</h4>
                     <p className="text-sm font-medium text-[#0B4C8C]">M&A Advisor</p>
@@ -136,9 +127,7 @@ export default function BlogDetails() {
                 <p className="text-sm text-slate-500 mb-6 leading-relaxed">
                   Expert in SaaS valuations and digital asset acquisitions with over $50M in completed transactions.
                 </p>
-                <Button variant="outline" className="w-full border-slate-200 hover:bg-slate-50 text-[#0B152A]">
-                  View all by {post.author}
-                </Button>
+
               </div>
 
               <div className="bg-gradient-to-br from-[#0B4C8C] to-[#0A3D70] rounded-2xl p-8 shadow-md text-center text-white relative overflow-hidden">

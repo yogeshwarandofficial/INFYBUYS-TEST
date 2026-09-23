@@ -38,7 +38,7 @@ export default function BuyerBrowse() {
   return (
     <div className="flex flex-col h-full bg-transparent">
       {/* Top Search Bar Area */}
-      <div className="bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm p-4 sticky top-0 z-20">
+      <div className="bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm p-4">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row gap-4 items-center">
           <BuyerSearchBar
             value={searchInput}
@@ -84,7 +84,7 @@ export default function BuyerBrowse() {
       <div className="flex-1 w-full flex gap-6 mt-6 max-w-7xl mx-auto px-4 xl:px-0">
         {/* Desktop Sidebar */}
         <aside className="hidden lg:block w-[280px] shrink-0">
-          <div className="sticky top-28 bg-white/80 backdrop-blur-md border border-gray-100 shadow-sm rounded-xl p-5">
+          <div className="bg-white/80 backdrop-blur-md border border-gray-100 shadow-sm rounded-xl p-5">
             <BuyerFilterSidebar
               filters={filters}
               updateFilter={updateFilter}
@@ -183,7 +183,7 @@ export default function BuyerBrowse() {
                   : "flex flex-col gap-5"
               }>
                 {listings.map(listing => (
-                  <Link key={listing.id} to={`/listing/${listing.id}`} className="block h-full group">
+                  <Link key={listing.id} to={`/buyer/listing/${listing.id}`} className="block h-full group">
                     <ListingCard
                       listing={listing}
                       variant={viewMode === 'list' ? 'featured' : 'latest'}

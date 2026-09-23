@@ -5,12 +5,44 @@ import { RolesGuard } from '../auth/guards/roles.guard.js';
 import { Roles } from '../auth/decorators/roles.decorator.js';
 import { Role } from '../../generated/prisma/client.js';
 import { RejectListingDto } from './dto/reject-listing.dto.js';
+import { AdminService } from './admin.service.js';
 
 @Controller('admin')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(Role.ADMIN)
 export class AdminController {
-  constructor(private readonly listingsService: ListingsService) {}
+  constructor(
+    private readonly listingsService: ListingsService,
+    private readonly adminService: AdminService
+  ) {}
+
+  @Get('dashboard/stats')
+  getDashboardStats() {
+    return this.adminService.getDashboardStats();
+  }
+
+  @Get('users/stats')
+  getUserStats() {
+    return this.adminService.getUserStats();
+  }
+
+  @Get('analytics')
+  getAnalytics(@Request() req: any) {
+    const period = req.query.period || '30d';
+    return this.adminService.getAnalytics(period);
+  }
+
+  @Get('reports')
+  getReports(@Request() req: any) {
+    const type = req.query.type || 'users';
+    const range = req.query.range || '30d';
+    return this.adminService.getReportData(type, range);
+  }
+
+  @Get('users')
+  getUsers(@Request() req: any) {
+    return this.adminService.getUsers(req.query);
+  }
 
   @Post('listings/:id/approve')
   approveListing(@Request() req: any, @Param('id') id: string) {

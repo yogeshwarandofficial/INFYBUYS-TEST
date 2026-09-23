@@ -28,6 +28,14 @@ class AuthService {
     return { user, token: res.accessToken };
   }
 
+  async googleLogin(token: string): Promise<{ user: User, token: string }> {
+    const res = await apiClient.post<AuthResponse>('/auth/google', { token });
+    localStorage.setItem('accessToken', res.accessToken);
+    localStorage.setItem('refreshToken', res.refreshToken);
+    const user = await this.getCurrentUser();
+    return { user, token: res.accessToken };
+  }
+
   async register(data: any): Promise<void> {
     const payload = {
       name: data.name,
@@ -57,9 +65,12 @@ class AuthService {
     localStorage.removeItem('refreshToken');
   }
 
-  async verifyOTP(_code: string): Promise<boolean> {
-    // Implement when backend supports
-    return true;
+  async verifyOTP(email: string, otp: string): Promise<{ message: string }> {
+    return apiClient.post<{ message: string }>('/auth/verify-otp', { email, otp });
+  }
+
+  async resendOTP(email: string): Promise<void> {
+    await apiClient.post('/auth/send-otp', { email });
   }
 
   async forgotPassword(_email: string): Promise<boolean> {

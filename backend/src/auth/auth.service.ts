@@ -1,4 +1,4 @@
-import { Injectable, ConflictException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, ConflictException, UnauthorizedException, BadRequestException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service.js';
 import { RegisterDto } from './dto/register.dto.js';
@@ -8,6 +8,8 @@ import { PrismaService } from '../prisma/prisma.service.js';
 import * as bcrypt from 'bcryptjs';
 import * as crypto from 'crypto';
 import { Role } from '../../generated/prisma/client.js';
+import { OAuth2Client } from 'google-auth-library';
+import { Resend } from 'resend';
 
 @Injectable()
 export class AuthService {
@@ -16,6 +18,8 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly prisma: PrismaService,
   ) {}
+
+  private googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
   private async generateRefreshToken(userId: string): Promise<string> {
     const rawToken = crypto.randomBytes(32).toString('hex');
@@ -54,12 +58,11 @@ export class AuthService {
       roles: [Role.BUYER],
     });
 
-    if (process.env.EMAIL_VERIFICATION_ENABLED === 'true') {
-      try {
-        await this.sendVerificationEmail(user.id, user.email);
-      } catch (error) {
-        console.error('Failed to send verification email:', error);
-      }
+    // Always send OTP after registration for email verification
+    try {
+      await this.sendOtpEmail(user.id, user.email);
+    } catch (error) {
+      console.error('Failed to send OTP email:', error);
     }
 
     const { passwordHash: _, ...result } = user;
@@ -96,6 +99,73 @@ export class AuthService {
       refreshToken,
       user: userWithoutPassword,
     };
+  }
+
+  async googleLogin(token: string) {
+    if (!process.env.GOOGLE_CLIENT_ID) {
+      throw new UnauthorizedException('Google Login is not configured on this server');
+    }
+
+    try {
+      // With @react-oauth/google useGoogleLogin, we get an access_token.
+      // We use it to fetch the user's profile from Google.
+      const response = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (!response.ok) {
+        throw new UnauthorizedException('Invalid Google token');
+      }
+
+      const payload = await response.json();
+      if (!payload || !payload.email) {
+        throw new UnauthorizedException('Invalid Google token payload');
+      }
+
+      const email = payload.email.trim().toLowerCase();
+      let user = await this.usersService.findByEmail(email);
+
+      if (!user) {
+        // Create a new user account if they don't exist
+        user = await this.usersService.create({
+          name: payload.name || 'Google User',
+          email: email,
+          passwordHash: null, // No password for OAuth users
+          roles: [Role.BUYER], // Default role
+        });
+        
+        // Auto verify email since Google verified it
+        await this.prisma.user.update({
+          where: { id: user.id },
+          data: { verifiedAt: new Date() }
+        });
+      }
+
+      // Check if they are verified if process.env.EMAIL_VERIFICATION_ENABLED
+      const verificationEnabled = process.env.EMAIL_VERIFICATION_ENABLED === 'true';
+      if (verificationEnabled && !user.verifiedAt) {
+        // Just in case, update it since they logged in via Google
+        await this.prisma.user.update({
+          where: { id: user.id },
+          data: { verifiedAt: new Date() }
+        });
+      }
+
+      const jwtPayload = { sub: user.id, roles: user.roles };
+      const accessToken = await this.jwtService.signAsync(jwtPayload);
+      const refreshToken = await this.generateRefreshToken(user.id);
+
+      const { passwordHash: _, ...userWithoutPassword } = user;
+
+      return {
+        accessToken,
+        refreshToken,
+        user: userWithoutPassword,
+      };
+    } catch (error) {
+      console.error('Google login error:', error);
+      throw new UnauthorizedException('Invalid Google token');
+    }
   }
 
   async refresh(refreshTokenDto: RefreshTokenDto) {
@@ -149,12 +219,121 @@ export class AuthService {
     return { message: 'Logged out successfully' };
   }
 
+  // ─── OTP Email Verification ───────────────────────────────────────────────
+
+  /**
+   * Generates a 6-digit OTP, hashes it, and stores it in the DB.
+   * Deletes any previous unused OTPs for this email first.
+   * Sends the plain OTP to the user's email via Resend.
+   */
+  async sendOtpEmail(userId: string, email: string): Promise<void> {
+    // Delete any existing unused OTPs for this user to prevent accumulation
+    await this.prisma.otpVerification.deleteMany({
+      where: { userId, usedAt: null },
+    });
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit
+    const otpHash = crypto.createHash('sha256').update(otp).digest('hex');
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
+    await this.prisma.otpVerification.create({
+      data: { userId, email: email.trim().toLowerCase(), otpHash, expiresAt },
+    });
+
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    const { error } = await resend.emails.send({
+      from: process.env.EMAIL_FROM ?? 'INFYBUYS <onboarding@resend.dev>',
+      to: email,
+      subject: 'Your INFYBUYS verification code',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px; background: #f9f9f9; border-radius: 8px;">
+          <h2 style="color: #1a1a1a; margin-bottom: 8px;">Verify your email</h2>
+          <p style="color: #555; margin-bottom: 24px;">Use the code below to verify your INFYBUYS account. It expires in <strong>10 minutes</strong>.</p>
+          <div style="background: #fff; border: 2px solid #e5e7eb; border-radius: 8px; padding: 24px; text-align: center; margin-bottom: 24px;">
+            <span style="font-size: 36px; font-weight: 700; letter-spacing: 12px; color: #111;">${otp}</span>
+          </div>
+          <p style="color: #888; font-size: 13px;">If you didn't request this, you can safely ignore this email.</p>
+        </div>
+      `,
+    });
+
+    if (error) {
+      console.error('Resend email error:', error);
+      throw new BadRequestException('Failed to send verification email. Please try again.');
+    }
+  }
+
+  /**
+   * Re-sends a fresh OTP to the given email.
+   * Finds the user first — if not found or already verified, returns early.
+   */
+  async resendOtp(email: string): Promise<void> {
+    const normalizedEmail = email.trim().toLowerCase();
+    const user = await this.usersService.findByEmail(normalizedEmail);
+    if (!user) {
+      // Don't leak whether user exists
+      throw new BadRequestException('No account found with that email.');
+    }
+    if (user.verifiedAt) {
+      throw new BadRequestException('Email is already verified.');
+    }
+    await this.sendOtpEmail(user.id, normalizedEmail);
+  }
+
+  /**
+   * Verifies the OTP submitted by the user against the hashed value in DB.
+   * Tracks attempts (max 3). Enforces single-use and expiry.
+   */
+  async verifyOtp(email: string, otp: string): Promise<{ message: string }> {
+    const normalizedEmail = email.trim().toLowerCase();
+
+    const record = await this.prisma.otpVerification.findFirst({
+      where: {
+        email: normalizedEmail,
+        usedAt: null,
+        expiresAt: { gt: new Date() },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    if (!record) {
+      throw new BadRequestException('Verification code has expired or was not found. Please request a new one.');
+    }
+
+    if (record.attempts >= 3) {
+      throw new BadRequestException('Too many failed attempts. Please request a new verification code.');
+    }
+
+    const submittedHash = crypto.createHash('sha256').update(otp).digest('hex');
+    if (submittedHash !== record.otpHash) {
+      await this.prisma.otpVerification.update({
+        where: { id: record.id },
+        data: { attempts: { increment: 1 } },
+      });
+      const attemptsLeft = 2 - record.attempts;
+      throw new UnauthorizedException(
+        `Invalid verification code. ${attemptsLeft > 0 ? `${attemptsLeft} attempt(s) remaining.` : 'Please request a new code.'}`
+      );
+    }
+
+    // Mark OTP as used
+    await this.prisma.otpVerification.update({
+      where: { id: record.id },
+      data: { usedAt: new Date() },
+    });
+
+    // Mark user as verified
+    await this.prisma.user.update({
+      where: { id: record.userId },
+      data: { verifiedAt: new Date() },
+    });
+
+    return { message: 'Email successfully verified' };
+  }
+
+  /** @deprecated Use sendOtpEmail instead */
   async sendVerificationEmail(userId: string, email: string) {
-    const payload = { sub: userId, type: 'email-verification' };
-    const token = await this.jwtService.signAsync(payload, { expiresIn: '1d' });
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-    const verificationLink = `${frontendUrl}/verify-email/confirm?token=${token}`;
-    console.log(`\n\n=== MOCK EMAIL SERVICE ===\nTo: ${email}\nSubject: Verify your email\nLink: ${verificationLink}\n==========================\n\n`);
+    await this.sendOtpEmail(userId, email);
   }
 
   async verifyEmail(token: string) {

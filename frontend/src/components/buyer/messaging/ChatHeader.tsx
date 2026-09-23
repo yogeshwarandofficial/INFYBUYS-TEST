@@ -106,7 +106,7 @@ export function ChatHeader({ conversation, onBack, onArchive, onClose, onDelete 
             </Button>
           )}
           <Button variant="outline" size="sm" className="h-8 text-xs" asChild>
-            <Link to={`/listing/${conversation.listingId}`}>
+            <Link to={`/buyer/listing/${conversation.listingId}`}>
               View Listing
               <ExternalLink className="h-3 w-3 ml-1.5" />
             </Link>

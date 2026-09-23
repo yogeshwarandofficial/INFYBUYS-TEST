@@ -9,8 +9,10 @@ import { Users, UserCheck, Store, ShieldAlert } from 'lucide-react';
 import { Pagination } from '../../components/shared/Pagination';
 import { EmptyState } from '../../components/shared/EmptyState';
 
+import { useEffect, useState } from 'react';
+import { apiClient } from '../../services/apiClient';
+
 export default function AdminUsers() {
-  const users = useAdminStore((state) => state.users);
 
   const {
     paginatedUsers,
@@ -26,11 +28,30 @@ export default function AdminUsers() {
     resetFilters
   } = useAdminUserSearch();
 
-  // Calculate KPIs
-  const totalUsers = users.length;
-  const activeUsers = users.filter((u) => u.status === 'active').length;
-  const sellers = users.filter((u) => u.role === 'seller').length;
-  const suspendedUsers = users.filter((u) => u.status === 'suspended' || u.status === 'blocked').length;
+  const [stats, setStats] = useState({
+    totalUsers: 0,
+    activeUsers: 0,
+    sellers: 0,
+    suspendedUsers: 0
+  });
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const data = await apiClient.get<any>('/admin/users/stats');
+        setStats(data);
+      } catch (err) {
+        console.error('Failed to fetch user stats', err);
+      }
+    };
+    fetchStats();
+  }, []);
+
+  // Use fetched KPIs
+  const totalUsers = stats.totalUsers;
+  const activeUsers = stats.activeUsers;
+  const sellers = stats.sellers;
+  const suspendedUsers = stats.suspendedUsers;
 
   return (
     <div className="p-4 sm:p-6 space-y-8 max-w-7xl mx-auto pb-12">

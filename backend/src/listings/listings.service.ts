@@ -89,6 +89,22 @@ export class ListingsService {
           select: {
             id: true,
             name: true,
+            sellerProfile: {
+              select: {
+                businessName: true,
+                avatarKey: true,
+                sellerType: true,
+                location: true,
+                verifiedBadge: true
+              }
+            },
+            receivedReviews: {
+              select: { rating: true }
+            },
+            listings: {
+              where: { status: 'SOLD_LET' },
+              select: { id: true }
+            }
           }
         }
       }
@@ -406,6 +422,7 @@ export class ListingsService {
       minNetProfit,
       maxNetProfit,
       status,
+      sellerId,
       page = 1,
       limit = 20,
     } = query || {};
@@ -424,6 +441,7 @@ export class ListingsService {
 
     if (activeType) where.type = activeType;
     if (category) where.category = category;
+    if (sellerId) where.sellerId = sellerId;
     
     if (location) {
       where.OR = [
@@ -491,7 +509,26 @@ export class ListingsService {
         where,
         skip,
         take: limit,
-        select: publicListingSelect,
+        select: {
+          ...publicListingSelect,
+          seller: {
+            select: {
+              id: true,
+              name: true,
+              sellerProfile: {
+                select: {
+                  businessName: true,
+                  avatarKey: true,
+                  sellerType: true,
+                  location: true,
+                  verifiedBadge: true
+                }
+              },
+              receivedReviews: { select: { rating: true } },
+              listings: { where: { status: 'SOLD_LET' }, select: { id: true } }
+            }
+          }
+        },
         orderBy
       })
     ]);
@@ -548,34 +585,6 @@ export class ListingsService {
       : -1;
     const nextOrder = currentMaxOrder + 1;
 
-    let targetRevisionId: string | null = null;
-    const publicStatuses: ListingStatus[] = [ListingStatus.PUBLISHED, ListingStatus.CHANGES_PENDING_REVIEW, ListingStatus.REJECTED_CHANGES, ListingStatus.SOLD_LET];
-    if (publicStatuses.includes(listing.status)) {
-      let revision = await this.prisma.listingRevision.findFirst({
-        where: { listingId, status: { in: ['PENDING', 'REJECTED'] } }
-      });
-      if (!revision) {
-        revision = await this.prisma.listingRevision.create({
-          data: {
-            listingId,
-            createdBy: sellerId,
-            status: 'PENDING',
-            proposedData: {},
-          }
-        });
-        await this.prisma.listing.update({
-          where: { id: listingId },
-          data: { status: ListingStatus.CHANGES_PENDING_REVIEW }
-        });
-      } else if (revision.status === 'REJECTED') {
-        revision = await this.prisma.listingRevision.update({
-          where: { id: revision.id },
-          data: { status: 'PENDING' }
-        });
-      }
-      targetRevisionId = revision.id;
-    }
-
     try {
       const media = await this.prisma.listingMedia.create({
         data: {
@@ -583,7 +592,6 @@ export class ListingsService {
           s3Key,
           type: normalizedType,
           order: nextOrder,
-          listingRevisionId: targetRevisionId,
         },
       });
       const url = await this.s3Service.generateDownloadUrl(s3Key);
@@ -613,45 +621,6 @@ export class ListingsService {
     });
     if (!media) {
       throw new NotFoundException('Media not found for this listing');
-    }
-
-    const publicStatuses: ListingStatus[] = [ListingStatus.PUBLISHED, ListingStatus.CHANGES_PENDING_REVIEW, ListingStatus.REJECTED_CHANGES, ListingStatus.SOLD_LET];
-    if (publicStatuses.includes(listing.status)) {
-      let revision = await this.prisma.listingRevision.findFirst({
-        where: { listingId, status: { in: ['PENDING', 'REJECTED'] } }
-      });
-      if (!revision) {
-        revision = await this.prisma.listingRevision.create({
-          data: { listingId, createdBy: sellerId, status: 'PENDING', proposedData: {} }
-        });
-        await this.prisma.listing.update({
-          where: { id: listingId },
-          data: { status: ListingStatus.CHANGES_PENDING_REVIEW }
-        });
-      } else if (revision.status === 'REJECTED') {
-        revision = await this.prisma.listingRevision.update({
-          where: { id: revision.id },
-          data: { status: 'PENDING' }
-        });
-      }
-
-      if (media.listingRevisionId === revision.id) {
-        if (media.s3Key) await this.s3Service.deleteFile(media.s3Key);
-        await this.prisma.listingMedia.delete({ where: { id: mediaId } });
-        return { success: true, message: 'Media removed successfully' };
-      } else {
-        let proposedData = revision.proposedData && typeof revision.proposedData === 'object' ? revision.proposedData : {};
-        const deletions = Array.isArray((proposedData as any).proposedMediaDeletions) ? (proposedData as any).proposedMediaDeletions : [];
-        if (!deletions.includes(mediaId)) {
-          deletions.push(mediaId);
-        }
-        proposedData = { ...(proposedData as any), proposedMediaDeletions: deletions };
-        await this.prisma.listingRevision.update({
-          where: { id: revision.id },
-          data: { status: 'PENDING', proposedData }
-        });
-        return { success: true, message: 'Media marked for removal pending admin approval' };
-      }
     }
 
     if (media.s3Key) {
@@ -876,6 +845,27 @@ export class ListingsService {
 
   async enrichAndSanitizeListing(listing: any, reqUser?: any, options?: { hasAccess?: boolean, isAdmin?: boolean }) {
     if (listing.seller) {
+      if (listing.seller.receivedReviews) {
+        if (listing.seller.receivedReviews.length > 0) {
+          const sum = listing.seller.receivedReviews.reduce((a: number, b: any) => a + b.rating, 0);
+          listing.seller.rating = Math.round((sum / listing.seller.receivedReviews.length) * 10) / 10;
+        } else {
+          listing.seller.rating = 0;
+        }
+        delete listing.seller.receivedReviews;
+      }
+      
+      if (listing.seller.listings) {
+        listing.seller.completedDeals = listing.seller.listings.length;
+        delete listing.seller.listings;
+      }
+
+      if (listing.seller.sellerProfile) {
+        listing.seller.verified = !!listing.seller.sellerProfile.verifiedBadge;
+      } else {
+        listing.seller.verified = false;
+      }
+
       // If we ever eager load the seller, strip sensitive fields!
       delete listing.seller.passwordHash;
       delete listing.seller.email;

@@ -4,6 +4,8 @@ import { useForm as useHookForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { registerSchema, type RegisterInput } from '@/lib/validations/auth';
 import { authService } from '@/services/auth.service';
+import { useUserStore } from '@/store/useUserStore';
+import { useGoogleLogin } from '@react-oauth/google';
 
 import { PasswordInput } from '@/components/auth/PasswordInput';
 import { PasswordStrength } from '@/components/auth/PasswordStrength';
@@ -21,6 +23,7 @@ export default function Register() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { setUser } = useUserStore();
 
   const {
     register,
@@ -39,18 +42,42 @@ export default function Register() {
       setIsLoading(true);
       setError(null);
       await authService.register(data);
-      if (import.meta.env.VITE_EMAIL_VERIFICATION_ENABLED === 'true') {
-        localStorage.setItem('verificationEmail', data.email);
-        navigate('/verify-email', { state: { email: data.email } });
-      } else {
-        navigate('/login', { state: { email: data.email } });
-      }
+      navigate('/verify-otp', { state: { email: data.email } });
     } catch (err: any) {
       setError(err.message || 'An error occurred during registration');
     } finally {
       setIsLoading(false);
     }
   };
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        // Send access token to backend via authService
+        const res = await authService.googleLogin(tokenResponse.access_token);
+        setUser(res.user, res.token);
+        
+        if (!res.user.verified && import.meta.env.VITE_EMAIL_VERIFICATION_ENABLED === 'true') {
+          navigate('/verify-email');
+        } else {
+          if (res.user.roles?.some((r: string) => ['admin', 'super-admin'].includes(r.toLowerCase()))) {
+            navigate('/admin', { replace: true });
+          } else {
+            navigate('/', { replace: true, state: { justLoggedIn: true } });
+          }
+        }
+      } catch (err: any) {
+        setError(err.response?.data?.message || err.message || 'Google signup failed');
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    onError: () => {
+      setError('Google signup was cancelled or failed');
+    }
+  });
 
   return (
     <div className="auth-form-single">
@@ -195,6 +222,7 @@ export default function Register() {
         provider="Google"
         disabled={isLoading}
         className="auth-google-btn"
+        onClick={() => googleLogin()}
       />
 
       {/* Log in link */}

@@ -12,7 +12,7 @@ import { CATEGORIES } from '@/constants/marketing';
 import { apiClient } from '@/services/apiClient';
 import type { Listing } from '@/types/api';
 import { Building2, Tag, Loader2 } from 'lucide-react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 
 interface GlobalSearchProps {
   open: boolean;
@@ -21,6 +21,7 @@ interface GlobalSearchProps {
 
 export function GlobalSearch({ open, onOpenChange }: GlobalSearchProps) {
   const navigate = useNavigate();
+  const location = useLocation();
   const [featuredListings, setFeaturedListings] = useState<Listing[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -75,7 +76,7 @@ export function GlobalSearch({ open, onOpenChange }: GlobalSearchProps) {
             featuredListings.map((listing) => (
               <CommandItem
               key={listing.id}
-              onSelect={() => handleSelect(`/listing/${listing.id}`)}
+              onSelect={() => handleSelect(location.pathname.startsWith('/buyer') ? `/buyer/listing/${listing.id}` : `/listing/${listing.id}`)}
               className="flex items-center gap-2 cursor-pointer"
             >
               <Building2 className="w-4 h-4 text-primary" />

@@ -71,6 +71,9 @@ const SellerListings = lazy(() => import('../pages/seller/SellerListings'));
 const SellerCreateListing = lazy(() => import('../pages/seller/SellerCreateListing'));
 const SellerEditListing = lazy(() => import('../pages/seller/SellerEditListing'));
 const SellerListingPreview = lazy(() => import('../pages/seller/SellerListingPreview'));
+
+// Add Public Seller Profile View
+const SellerProfileView = lazy(() => import('../pages/public/SellerProfileView'));
 const SellerEnquiries = lazy(() => import('../pages/seller/SellerEnquiries'));
 const SellerEnquiryDetails = lazy(() => import('../pages/seller/SellerEnquiryDetails'));
 const SellerNotifications = lazy(() => import('../pages/seller/SellerNotifications'));
@@ -146,6 +149,7 @@ export const router = createBrowserRouter([
           { path: 'categories', element: <Suspense fallback={<PageLoader />}><Categories /></Suspense> },
           { path: 'category/:slug', element: <Suspense fallback={<PageLoader />}><CategoryDetails /></Suspense> },
           { path: 'listing/:id', element: <Suspense fallback={<PageLoader />}><BusinessDetails /></Suspense> },
+          { path: 'seller/:id', element: <Suspense fallback={<PageLoader />}><SellerProfileView /></Suspense> },
           { path: 'featured', element: <Suspense fallback={<PageLoader />}><FeaturedListings /></Suspense> },
           { path: 'latest', element: <Suspense fallback={<PageLoader />}><LatestListings /></Suspense> },
           { path: 'blog', element: <Suspense fallback={<PageLoader />}><BlogListing /></Suspense> },
@@ -201,7 +205,9 @@ export const router = createBrowserRouter([
               { path: 'billing/invoice/:id', element: <Suspense fallback={<PageLoader />}><InvoiceDetails /></Suspense> },
               { path: 'profile', element: <Suspense fallback={<PageLoader />}><BuyerProfile /></Suspense> },
               { path: 'settings', element: <Suspense fallback={<PageLoader />}><BuyerSettings /></Suspense> },
-              { path: 'reviews', element: <Suspense fallback={<PageLoader />}><BuyerReviews /></Suspense> }
+              { path: 'reviews', element: <Suspense fallback={<PageLoader />}><BuyerReviews /></Suspense> },
+              { path: 'listing/:id', element: <Suspense fallback={<PageLoader />}><BusinessDetails /></Suspense> },
+              { path: 'seller/:id', element: <Suspense fallback={<PageLoader />}><SellerProfileView /></Suspense> }
             ]
           }
         ]
@@ -213,7 +219,8 @@ export const router = createBrowserRouter([
             path: 'seller',
             element: <SellerLayout />,
             children: [
-              { index: true, element: <Suspense fallback={<PageLoader />}><SellerDashboard /></Suspense> },
+              { index: true, element: <Navigate to="/seller/listings" replace /> },
+              { path: 'dashboard', element: <Suspense fallback={<PageLoader />}><SellerDashboard /></Suspense> },
               { path: 'listings', element: <Suspense fallback={<PageLoader />}><SellerListings /></Suspense> },
               { path: 'listings/new', element: <Suspense fallback={<PageLoader />}><SellerCreateListing /></Suspense> },
               { path: 'listings/:id', element: <Suspense fallback={<PageLoader />}><SellerListingPreview /></Suspense> },

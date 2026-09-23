@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Download,
   Search,
   Table as TableIcon
 } from 'lucide-react';
-import { useAdminStore } from '@/store/useAdminStore';
+import { apiClient } from '@/services/apiClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -38,135 +38,36 @@ export default function AdminReports() {
   const [reportType, setReportType] = useState<AdminReportType>('users');
   const [dateRange, setDateRange] = useState('30d');
   const [searchTerm, setSearchTerm] = useState('');
+  const [rawReportData, setRawReportData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  // Destructure store data for mock reporting
-  const {
-    users,
-    sellers,
-    buyers,
-    listings,
-    enquiries,
-    conversations,
-    notifications,
-    reviews,
-    stats,
-  } = useAdminStore();
+  useEffect(() => {
+    const fetchReport = async () => {
+      setLoading(true);
+      try {
+        const data = await apiClient.get<any[]>(`/admin/reports?type=${reportType}&range=${dateRange}`);
+        setRawReportData(data);
+      } catch (err) {
+        console.error('Failed to fetch report data', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchReport();
+  }, [reportType, dateRange]);
 
-  const getReportData = () => {
-    let data: any[] = [];
-
-    switch (reportType) {
-      case 'users':
-        data = users.map(u => ({
-          ID: u.id,
-          Name: u.name,
-          Email: u.email,
-          Role: u.role,
-          Status: u.status,
-          CreatedAt: format(new Date(u.createdAt), 'PP'),
-          LastLogin: u.lastLoginAt ? format(new Date(u.lastLoginAt), 'PP') : 'N/A'
-        }));
-        break;
-      case 'sellers':
-        data = sellers.map(s => ({
-          ID: s.id,
-          CompanyName: s.companyName,
-          Email: s.email,
-          Status: s.status,
-          Type: s.sellerType,
-          Listings: s.listingCount,
-          Revenue: s.totalRevenue,
-          CreatedAt: format(new Date(s.createdAt), 'PP')
-        }));
-        break;
-      case 'buyers':
-        data = buyers.map(b => ({
-          ID: b.id,
-          Name: b.name,
-          Email: b.email,
-          Status: b.status,
-          Verification: b.verificationStatus,
-          Enquiries: b.totalEnquiries,
-          CreatedAt: format(new Date(b.createdAt), 'PP')
-        }));
-        break;
-      case 'listings':
-        data = listings.map(l => ({
-          ID: l.id,
-          Title: l.title,
-          Category: l.category,
-          Price: l.price,
-          Status: l.status,
-          Seller: l.sellerName,
-          Views: l.views,
-          CreatedAt: format(new Date(l.createdAt), 'PP')
-        }));
-        break;
-      case 'enquiries':
-        data = enquiries.map(e => ({
-          ID: e.id,
-          Listing: e.listingTitle,
-          Value: e.listingValue,
-          Buyer: e.buyerName,
-          Seller: e.sellerName,
-          Status: e.status,
-          CreatedAt: format(new Date(e.createdAt), 'PP')
-        }));
-        break;
-      case 'messages':
-        data = conversations.map(c => ({
-          ID: c.id,
-          Listing: c.listingTitle,
-          Buyer: c.buyerName,
-          Seller: c.sellerName,
-          Status: c.status,
-          MessageCount: c.messages.length,
-          CreatedAt: format(new Date(c.createdAt), 'PP')
-        }));
-        break;
-      case 'notifications':
-        data = notifications.map(n => ({
-          ID: n.id,
-          Title: n.title,
-          Type: n.type,
-          IsRead: n.isRead ? 'Yes' : 'No',
-          CreatedAt: format(new Date(n.createdAt), 'PP')
-        }));
-        break;
-      case 'reviews':
-        data = reviews.map(r => ({
-          ID: r.id,
-          Target: r.targetName,
-          Type: r.targetType,
-          Reviewer: r.reviewerName,
-          Rating: r.rating,
-          Status: r.status,
-          CreatedAt: format(new Date(r.createdAt), 'PP')
-        }));
-        break;
-      case 'platform':
-        data = [
-          { Metric: 'Total Users', Value: stats.totalUsers },
-          { Metric: 'Total Buyers', Value: stats.totalBuyers },
-          { Metric: 'Total Sellers', Value: stats.totalSellers },
-          { Metric: 'Total Listings', Value: stats.totalListings },
-          { Metric: 'Total Enquiries', Value: stats.totalEnquiries },
-          { Metric: 'Total Revenue', Value: `$${stats.totalRevenue.toLocaleString()}` }
-        ];
-        break;
-    }
-
+  const getFilteredReportData = () => {
+    let data = [...rawReportData];
     if (searchTerm) {
       const lowerSearch = searchTerm.toLowerCase();
       data = data.filter(item =>
         Object.values(item).some(val => String(val).toLowerCase().includes(lowerSearch))
       );
     }
-
     return data;
   };
 
-  const reportData = getReportData();
+  const reportData = getFilteredReportData();
 
   const handleExport = (formatType: 'csv' | 'json') => {
     if (reportData.length === 0) return;

@@ -5,13 +5,12 @@ export function PublicRoute() {
   const { status, user } = useUserStore();
 
   if (status === 'authenticated' && user) {
-    // Redirect authenticated users trying to access auth pages to their dashboard
+    // Redirect authenticated users trying to access auth pages
     if (user.roles?.some(r => ['admin', 'super-admin'].includes(r.toLowerCase()))) {
       return <Navigate to="/admin" replace />;
-    } else if (user.roles?.some(r => r.toLowerCase() === 'seller')) {
-      return <Navigate to="/seller" replace />;
     }
-    return <Navigate to="/buyer" replace />;
+    
+    return <Navigate to="/" state={{ justLoggedIn: true }} replace />;
   }
 
   return <Outlet />;

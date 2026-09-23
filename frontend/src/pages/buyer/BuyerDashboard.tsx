@@ -1,10 +1,7 @@
 import { useUserStore } from '@/store/useUserStore';
 import { useBuyerStore } from '@/store/useBuyerStore';
 import { BuyerStatCard } from '@/components/buyer/BuyerStatCard';
-import { RecentActivity } from '@/components/buyer/RecentActivity';
 import { RecommendedListings } from '@/components/buyer/RecommendedListings';
-import { RecentlyViewed } from '@/components/buyer/RecentlyViewed';
-import { QuickActions } from '@/components/buyer/QuickActions';
 import { Heart, Bookmark, Mail, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -61,15 +58,8 @@ export default function BuyerDashboard() {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
-          <RecommendedListings />
-          <RecentActivity />
-        </div>
-        <div className="space-y-6">
-          <QuickActions />
-          <RecentlyViewed />
-        </div>
+      <div className="space-y-6">
+        <RecommendedListings />
       </div>
     </div>
   );

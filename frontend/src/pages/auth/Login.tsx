@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema, type LoginInput } from '@/lib/validations/auth';
 import { authService } from '@/services/auth.service';
 import { useUserStore } from '@/store/useUserStore';
+import { useGoogleLogin } from '@react-oauth/google';
 import { PasswordInput } from '@/components/auth/PasswordInput';
 import { SocialLoginButton } from '@/components/auth/SocialLoginButton';
 import { AuthDivider } from '@/components/auth/AuthDivider';
@@ -47,10 +48,8 @@ export default function Login() {
       } else {
         if (res.user.roles?.some(r => ['admin', 'super-admin'].includes(r.toLowerCase()))) {
           navigate('/admin', { replace: true });
-        } else if (res.user.roles?.some(r => r.toLowerCase() === 'seller')) {
-          navigate(from === '/' ? '/seller' : from, { replace: true });
         } else {
-          navigate(from === '/' ? '/buyer' : from, { replace: true });
+          navigate('/', { replace: true, state: { justLoggedIn: true } });
         }
       }
     } catch (err: any) {
@@ -67,6 +66,35 @@ export default function Login() {
       setIsLoading(false);
     }
   };
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        // Send access token to backend via authService
+        const res = await authService.googleLogin(tokenResponse.access_token);
+        setUser(res.user, res.token);
+        
+        if (!res.user.verified && import.meta.env.VITE_EMAIL_VERIFICATION_ENABLED === 'true') {
+          navigate('/verify-email');
+        } else {
+          if (res.user.roles?.some((r: string) => ['admin', 'super-admin'].includes(r.toLowerCase()))) {
+            navigate('/admin', { replace: true });
+          } else {
+            navigate('/', { replace: true, state: { justLoggedIn: true } });
+          }
+        }
+      } catch (err: any) {
+        setError(err.response?.data?.message || err.message || 'Google login failed');
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    onError: () => {
+      setError('Google login was cancelled or failed');
+    }
+  });
 
   return (
     <div className="auth-form-single">
@@ -170,6 +198,7 @@ export default function Login() {
         provider="Google"
         disabled={isLoading}
         className="auth-google-btn"
+        onClick={() => googleLogin()}
       />
 
       {/* Sign up */}

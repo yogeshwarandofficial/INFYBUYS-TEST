@@ -103,7 +103,7 @@ export default function BuyerReviews() {
                     <div>
                       <CardTitle className="text-lg mb-1 text-[#0F172A]">{review.sellerName}</CardTitle>
                       <CardDescription className="text-[#64748B]">
-                        Review for <Link to={`/listing/${review.listingId}`} className="text-[#2563EB] hover:underline font-medium">{review.listingTitle}</Link>
+                        Review for <Link to={`/buyer/listing/${review.listingId}`} className="text-[#2563EB] hover:underline font-medium">{review.listingTitle}</Link>
                       </CardDescription>
                     </div>
                     <div className="flex items-center gap-2">

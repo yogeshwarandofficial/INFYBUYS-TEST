@@ -1071,17 +1071,31 @@ export const useBuyerStore = create<BuyerState>()(
         // The actual logout will be handled by the UI using useUserStore.logout()
       },
 
-      createReview: (reviewData) => set((state) => {
-        const newReview: BuyerReview = {
-          ...reviewData,
-          id: `rev-${Date.now()}`,
-          createdAt: new Date().toISOString(),
-          status: 'published',
-        };
-        return {
-          reviews: [newReview, ...state.reviews]
-        };
-      }),
+      createReview: async (reviewData) => {
+        try {
+          const newReviewBackend = await apiClient.post<any>('/reviews', {
+            listingId: reviewData.listingId,
+            sellerId: reviewData.sellerId,
+            rating: reviewData.rating,
+            comment: reviewData.comment,
+          });
+          
+          set((state) => {
+            const newReview: BuyerReview = {
+              ...reviewData,
+              id: newReviewBackend.id || `rev-${Date.now()}`,
+              createdAt: newReviewBackend.createdAt || new Date().toISOString(),
+              status: 'published',
+            };
+            return {
+              reviews: [newReview, ...state.reviews]
+            };
+          });
+        } catch (error) {
+          console.error("Failed to create review:", error);
+          throw error;
+        }
+      },
 
       updateReview: (id, updates) => set((state) => ({
         reviews: state.reviews.map(r => r.id === id ? { ...r, ...updates } : r)

@@ -23,8 +23,8 @@ interface SidebarProps {
 }
 
 const navItems = [
-  { title: 'Dashboard', path: '/seller', icon: LayoutDashboard },
   { title: 'My Listings', path: '/seller/listings', icon: List },
+  { title: 'Dashboard', path: '/seller/dashboard', icon: LayoutDashboard },
   { title: 'Enquiries', path: '/seller/enquiries', icon: Mail },
   { title: 'Notifications', path: '/seller/notifications', icon: Bell },
   { title: 'Analytics', path: '/seller/analytics', icon: BarChart },
@@ -45,7 +45,7 @@ export function SellerSidebar({ collapsed, setCollapsed, isMobile }: SidebarProp
     )}>
       <div className="h-16 flex items-center justify-between px-4 border-b border-white/10 shrink-0">
         {!collapsed || isMobile ? (
-          <Link to="/seller" className="font-bold text-lg tracking-tight truncate text-white">
+          <Link to="/seller/listings" className="font-bold text-lg tracking-tight truncate text-white">
             Seller Portal
           </Link>
         ) : (

@@ -53,7 +53,7 @@ export default function BuyerFavorites() {
             : "flex flex-col gap-4"
         }>
           {favoriteListings.map(listing => (
-            <Link key={listing.id} to={`/listing/${listing.id}`} className="block h-full group">
+            <Link key={listing.id} to={`/buyer/listing/${listing.id}`} className="block h-full group">
               <ListingCard
                 listing={listing}
                 variant={viewMode === 'list' ? 'featured' : 'latest'}

@@ -278,6 +278,7 @@ interface SellerState {
   submitListing: (id: string) => Promise<void>;
   setCoverMedia: (listingId: string, mediaId: string) => Promise<void>;
   removeCoverMedia: (listingId: string) => Promise<void>;
+  deleteMedia: (listingId: string, mediaId: string) => Promise<void>;
   markListingAsSold: (id: string) => Promise<void>;
   markListingAsActive: (id: string) => Promise<void>;
   restoreListing: (id: string) => void;
@@ -645,6 +646,30 @@ export const useSellerStore = create<SellerState>()(
           }));
         } catch (error) {
           console.error('Failed to remove cover media', error);
+          throw error;
+        }
+      },
+
+      deleteMedia: async (listingId: string, mediaId: string) => {
+        try {
+          await apiClient.delete(`/listings/${listingId}/media/${mediaId}`);
+          set((state) => ({
+            listings: state.listings.map((l) =>
+              l.id === listingId ? { 
+                ...l, 
+                media: l.media?.filter(m => m.id !== mediaId), 
+                coverMediaId: l.coverMediaId === mediaId ? undefined : l.coverMediaId,
+                updatedAt: now() 
+              } : l
+            ),
+          }));
+          get().addActivity({
+            type: 'listing',
+            title: 'Media Deleted',
+            description: `Media removed successfully from your listing.`,
+          });
+        } catch (error) {
+          console.error('Failed to delete media', error);
           throw error;
         }
       },
