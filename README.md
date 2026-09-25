@@ -2,7 +2,13 @@
 
         INFYBUYS is a premium marketplace platform connecting buyers and sellers for business acquisitions. The platform provides a secure environment for business listings, buyer-seller messaging, Non-Disclosure Agreements (NDAs), and subscription-based access tiers.
 
-        ## Project Structure
+        ## Current Status
+
+- **Frontend:** Upgraded to React 19, Vite, Tailwind CSS v4, and React Router v7.
+- **Backend:** Upgraded to NestJS 11 and Prisma 7. Email integration via Resend is configured.
+- **Features:** Authentication, role-based access control (Admin, Buyer, Seller), and media uploads via S3 are implemented.
+
+## Project Structure
 
         This repository is organized as a monorepo with two main components:
 
@@ -68,20 +74,21 @@
         ## 🛠️ Tech Stack
 
         ### Frontend
-        - **Framework:** React 18 with Vite
+        - **Framework:** React 19 with Vite
         - **Language:** TypeScript
         - **State Management:** Zustand, React Query
-        - **Styling:** Tailwind CSS, shadcn/ui, Radix UI primitives
-        - **Routing:** React Router v6
+        - **Styling:** Tailwind CSS v4, shadcn/ui, Radix UI primitives
+        - **Routing:** React Router v7
         - **Forms:** React Hook Form + Zod validation
 
         ### Backend
-        - **Framework:** NestJS
+        - **Framework:** NestJS 11
         - **Language:** TypeScript
         - **Database:** PostgreSQL
-        - **ORM:** Prisma
+        - **ORM:** Prisma 7
         - **Authentication:** JWT (JSON Web Tokens)
         - **Storage:** AWS S3 (Presigned URLs for secure media uploads)
+        - **Email:** Resend
 
         ## 🌟 Key Features
 
