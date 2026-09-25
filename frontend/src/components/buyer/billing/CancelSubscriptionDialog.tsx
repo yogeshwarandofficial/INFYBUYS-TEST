@@ -49,7 +49,7 @@ export function CancelSubscriptionDialog({
           </p>
         </div>
 
-        <DialogFooter className="gap-2 sm:gap-0 mt-2">
+        <DialogFooter className="gap-4 sm:gap-4 mt-6 sm:justify-center pr-2">
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Keep Subscription
           </Button>

@@ -269,7 +269,7 @@ export default function BusinessDetails() {
             {/* Financial Highlights */}
             <section>
               <h2 className="text-2xl font-bold mb-6">Financial Highlights</h2>
-              <Card className={`bg-muted/30 ${!hasAccess ? 'border-dashed relative overflow-hidden' : ''}`}>
+              <Card className={`bg-muted/30 ${!hasAccess ? 'border-dashed relative overflow-hidden min-h-[350px]' : ''}`}>
 
                 {!hasAccess && (
                   <div className="absolute inset-0 backdrop-blur-[2px] bg-background/50 z-10 flex flex-col items-center justify-center p-6 text-center">
