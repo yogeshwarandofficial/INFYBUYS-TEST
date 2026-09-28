@@ -12,6 +12,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { LayoutGrid, List, SlidersHorizontal, X, Search as SearchIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Link } from 'react-router';
+import { cn } from '@/lib/utils';
 
 export default function BuyerBrowse() {
   const { viewMode, setViewMode } = useBuyerStore();
@@ -36,157 +37,156 @@ export default function BuyerBrowse() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-transparent">
-      {/* Top Search Bar Area */}
-      <div className="bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm p-4">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row gap-4 items-center">
-          <BuyerSearchBar
-            value={searchInput}
-            onChange={setSearchInput}
-            onSearch={handleSearch}
-          />
-          <div className="flex items-center gap-3 w-full sm:w-auto">
-            <Button size="lg" className="h-12 flex-1 sm:flex-none bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-xl shadow-md" onClick={() => handleSearch(searchInput)}>
-              Search
-            </Button>
+    <div className="flex flex-col min-h-screen bg-slate-50/50">
+      {/* Hero Search Section */}
+      <div className="bg-white border-b border-slate-200/60 relative overflow-hidden">
+        {/* Subtle background decoration */}
+        <div className="absolute top-0 left-0 right-0 h-[500px] bg-gradient-to-b from-blue-50/50 to-transparent pointer-events-none" />
+        
+        <div className="max-w-[1400px] mx-auto px-6 xl:px-8 py-12 relative z-10">
+          <div className="max-w-3xl mx-auto text-center mb-8">
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-3">
+              Discover Premium Businesses
+            </h1>
+            <p className="text-[15px] text-slate-500 font-medium">
+              Explore curated listings, save your searches, and find the perfect acquisition.
+            </p>
+          </div>
+          
+          <div className="max-w-4xl mx-auto flex flex-col sm:flex-row gap-4 items-center bg-white p-3 rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+            <BuyerSearchBar
+              value={searchInput}
+              onChange={setSearchInput}
+              onSearch={handleSearch}
+            />
+            <div className="flex items-center gap-3 w-full sm:w-auto shrink-0">
+              <Button size="lg" className="h-[52px] px-8 bg-blue-600 hover:bg-blue-700 text-white rounded-[16px] shadow-sm text-[15px] font-bold transition-all hover:shadow-md hover:-translate-y-0.5" onClick={() => handleSearch(searchInput)}>
+                Search
+              </Button>
 
-            {/* Save Search Button for Desktop */}
-            <div className="hidden sm:block">
-              <SaveSearchDialog 
-                filters={{ ...filters, query: searchInput || filters.query }} 
-                resultCount={totalResults} 
-                trigger={<Button variant="outline" size="lg" className="h-12 bg-white/80 backdrop-blur-md border border-gray-200 text-[#111827] shadow-sm hover:bg-gray-50 rounded-xl">Save Search</Button>}
-              />
-            </div>
-
-            <Sheet open={showMobileFilters} onOpenChange={setShowMobileFilters}>
-              <SheetTrigger asChild>
-                <Button size="lg" variant="outline" className="h-12 lg:hidden rounded-xl">
-                  <SlidersHorizontal className="w-5 h-5 mr-2" />
-                  Filters
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-80 overflow-y-auto">
-                <BuyerFilterSidebar
-                  filters={filters}
-                  updateFilter={updateFilter}
-                  clearFilters={() => {
-                    clearFilters();
-                    setSearchInput('');
-                  }}
+              {/* Save Search Button for Desktop */}
+              <div className="hidden sm:block">
+                <SaveSearchDialog 
+                  filters={{ ...filters, query: searchInput || filters.query }} 
+                  resultCount={totalResults} 
+                  trigger={<Button variant="outline" size="lg" className="h-[52px] px-6 bg-white border-slate-200 text-slate-700 hover:text-slate-900 shadow-sm hover:bg-slate-50 rounded-[16px] text-[15px] font-bold transition-all">Save Search</Button>}
                 />
-              </SheetContent>
-            </Sheet>
+              </div>
+
+              <Sheet open={showMobileFilters} onOpenChange={setShowMobileFilters}>
+                <SheetTrigger asChild>
+                  <Button size="lg" variant="outline" className="h-[52px] px-5 lg:hidden rounded-[16px] border-slate-200 text-slate-700 font-bold">
+                    <SlidersHorizontal className="w-5 h-5 mr-2" />
+                    Filters
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="w-[320px] p-0 overflow-hidden flex flex-col bg-slate-50">
+                  <div className="h-full overflow-y-auto p-6">
+                    <BuyerFilterSidebar
+                      filters={filters}
+                      updateFilter={updateFilter}
+                      clearFilters={() => {
+                        clearFilters();
+                        setSearchInput('');
+                      }}
+                    />
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="flex-1 w-full flex gap-6 mt-6 max-w-7xl mx-auto px-4 xl:px-0">
-        {/* Desktop Sidebar */}
-        <aside className="hidden lg:block w-[280px] shrink-0">
-          <div className="bg-white/80 backdrop-blur-md border border-gray-100 shadow-sm rounded-xl p-5">
-            <BuyerFilterSidebar
-              filters={filters}
-              updateFilter={updateFilter}
-              clearFilters={() => {
-                clearFilters();
-                setSearchInput('');
-              }}
-            />
-          </div>
-        </aside>
-
+      <div className="flex-1 w-full max-w-[1400px] mx-auto px-6 xl:px-8 py-8 flex flex-col gap-6">
         {/* Main Content */}
         <main className="flex-1 min-w-0 flex flex-col">
-          {/* Controls */}
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-            <div className="flex items-center gap-2 text-[15px] text-[#64748B] font-medium">
-              <span className="text-[#111827] font-semibold">{totalResults}</span> Businesses Found
+          {/* Results Toolbar */}
+          <div className="bg-white border border-slate-200/60 shadow-sm rounded-[20px] p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+            <div className="flex items-center gap-3 text-[15px] text-slate-500 font-medium px-2 flex-wrap">
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-xl font-extrabold text-slate-900 tracking-tight">{totalResults}</span> 
+                <span>results</span>
+              </div>
+              
               {filters.query && (
-                <Badge variant="secondary" className="ml-2 font-normal bg-blue-50 text-blue-700 border-blue-100">
-                  "{filters.query}"
-                  <X
-                    className="w-3 h-3 ml-1 cursor-pointer"
-                    onClick={() => {
-                      updateFilter('query', '');
-                      setSearchInput('');
-                    }}
-                  />
-                </Badge>
+                <>
+                  <div className="w-1 h-1 rounded-full bg-slate-300" />
+                  <Badge variant="secondary" className="font-semibold bg-blue-50 text-blue-700 border-blue-100/50 px-3 py-1 rounded-lg">
+                    "{filters.query}"
+                    <X
+                      className="w-3.5 h-3.5 ml-2 cursor-pointer hover:text-blue-900 opacity-70 hover:opacity-100 transition-opacity"
+                      onClick={() => {
+                        updateFilter('query', '');
+                        setSearchInput('');
+                      }}
+                    />
+                  </Badge>
+                </>
               )}
+
+              {/* Desktop Collapsible Filter Toggle */}
+              <div className="hidden lg:block ml-4">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => setShowMobileFilters(true)} 
+                  className="rounded-lg h-9 font-bold bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200"
+                >
+                  <SlidersHorizontal className="w-4 h-4 mr-2" />
+                  Filters
+                </Button>
+              </div>
 
               {/* Mobile Save Search Button */}
               <div className="sm:hidden ml-auto">
                 <SaveSearchDialog
                   filters={{ ...filters, query: searchInput || filters.query }}
                   resultCount={totalResults}
-                  trigger={<Button variant="outline" size="sm" className="rounded-lg">Save</Button>}
+                  trigger={<Button variant="outline" size="sm" className="rounded-lg h-9 font-bold">Save</Button>}
                 />
               </div>
             </div>
 
             <div className="flex items-center gap-3 self-end sm:self-auto">
-              <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-[180px] h-10 bg-white/80 backdrop-blur-md border border-gray-200 rounded-lg shadow-sm text-[#334155]">
-                  <SelectValue placeholder="Sort by" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="newest">Newest First</SelectItem>
-                  <SelectItem value="price-asc">Price: Low to High</SelectItem>
-                  <SelectItem value="price-desc">Price: High to Low</SelectItem>
-                  <SelectItem value="revenue-desc">Revenue: High to Low</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <div className="flex items-center bg-white/80 backdrop-blur-md border border-gray-200 rounded-lg shadow-sm hidden sm:flex overflow-hidden p-0.5">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className={`rounded-md h-8 w-8 ${viewMode === 'grid' ? 'bg-[#EFF6FF] text-[#2563EB]' : 'text-[#64748B] hover:text-[#111827]'}`}
-                  onClick={() => setViewMode('grid')}
-                  aria-label="Grid view"
-                >
-                  <LayoutGrid className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className={`rounded-md h-8 w-8 ${viewMode === 'list' ? 'bg-[#EFF6FF] text-[#2563EB]' : 'text-[#64748B] hover:text-[#111827]'}`}
-                  onClick={() => setViewMode('list')}
-                  aria-label="List view"
-                >
-                  <List className="w-4 h-4" />
-                </Button>
+              <div className="relative">
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="w-[200px] h-11 bg-slate-50 hover:bg-slate-100 border-transparent hover:border-slate-200 focus:border-blue-500 rounded-xl shadow-none text-[14px] font-semibold text-slate-700 transition-all">
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl border-slate-200 shadow-xl font-medium">
+                    <SelectItem value="newest">Newest First</SelectItem>
+                    <SelectItem value="price-asc">Price: Low to High</SelectItem>
+                    <SelectItem value="price-desc">Price: High to Low</SelectItem>
+                    <SelectItem value="revenue-desc">Revenue: High to Low</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </div>
 
-          {/* Results */}
+          {/* Results Area */}
           {listings.length === 0 ? (
-            <div className="flex-1 flex flex-col items-center justify-center py-16 text-center bg-white/60 backdrop-blur-sm border border-gray-100 shadow-sm rounded-xl mb-8">
-              <div className="w-20 h-20 bg-[#EFF6FF] rounded-full flex items-center justify-center mb-5 shadow-inner">
-                <SearchIcon className="w-8 h-8 text-[#2563EB]" />
+            <div className="flex-1 flex flex-col items-center justify-center py-20 text-center bg-white border border-slate-200/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[24px]">
+              <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-6 shadow-inner border border-slate-100">
+                <SearchIcon className="w-10 h-10 text-slate-300" />
               </div>
-              <h3 className="text-xl font-bold text-[#111827] mb-2">No businesses found</h3>
-              <p className="text-[#64748B] mb-6 max-w-sm">
-                We couldn't find any listings matching your current filters.
+              <h3 className="text-2xl font-extrabold text-slate-900 mb-2 tracking-tight">No businesses found</h3>
+              <p className="text-[15px] font-medium text-slate-500 mb-8 max-w-sm">
+                We couldn't find any listings matching your current filters. Try adjusting your criteria.
               </p>
-              <Button className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg shadow-md px-6 h-11" onClick={() => { clearFilters(); setSearchInput(''); }}>
+              <Button className="bg-slate-900 hover:bg-slate-800 text-white rounded-[14px] shadow-md px-8 h-12 text-[15px] font-bold" onClick={() => { clearFilters(); setSearchInput(''); }}>
                 Clear all filters
               </Button>
             </div>
           ) : (
             <>
-              <div className={
-                viewMode === 'grid'
-                  ? "grid sm:grid-cols-2 xl:grid-cols-3 gap-6"
-                  : "flex flex-col gap-5"
-              }>
+              <div className="flex flex-col gap-6">
                 {listings.map(listing => (
-                  <Link key={listing.id} to={`/buyer/listing/${listing.id}`} className="block h-full group">
+                  <Link key={listing.id} to={`/buyer/listing/${listing.id}`} className="block outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-[24px]">
                     <ListingCard
                       listing={listing}
-                      variant={viewMode === 'list' ? 'featured' : 'latest'}
+                      variant="list"
                       showFavoriteButton={true}
                     />
                   </Link>
@@ -194,7 +194,7 @@ export default function BuyerBrowse() {
               </div>
 
               {totalPages > 1 && (
-                <div className="mt-8 pt-6 border-t flex justify-center">
+                <div className="mt-10 pt-8 border-t border-slate-200/60 flex justify-center">
                   <Pagination
                     currentPage={currentPage}
                     totalPages={totalPages}

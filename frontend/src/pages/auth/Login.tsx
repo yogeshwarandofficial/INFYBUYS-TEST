@@ -42,25 +42,19 @@ export default function Login() {
       setError(null);
       const res = await authService.login(data.email, data.password);
       setUser(res.user, res.token);
-
-      if (!res.user.verified && import.meta.env.VITE_EMAIL_VERIFICATION_ENABLED === 'true') {
-        navigate('/verify-email');
+      // Backend is the gatekeeper: if login succeeded, the user is authorised.
+      if (res.user.roles?.some(r => ['admin', 'super-admin'].includes(r.toLowerCase()))) {
+        navigate('/admin', { replace: true });
       } else {
-        if (res.user.roles?.some(r => ['admin', 'super-admin'].includes(r.toLowerCase()))) {
-          navigate('/admin', { replace: true });
-        } else {
-          navigate('/', { replace: true, state: { justLoggedIn: true } });
-        }
+        navigate(from, { replace: true, state: { justLoggedIn: true } });
       }
     } catch (err: any) {
-      if (
-        (err.message === 'Email not verified' || err.response?.data?.message === 'Email not verified') &&
-        import.meta.env.VITE_EMAIL_VERIFICATION_ENABLED === 'true'
-      ) {
-        localStorage.setItem('verificationEmail', data.email);
+      const message = err.message || err.response?.data?.message || '';
+      if (message === 'Email not verified') {
+        // Backend enforces verification — redirect to OTP page regardless of any frontend flag.
         navigate('/verify-email', { state: { email: data.email } });
       } else {
-        setError(err.message || 'An error occurred during login');
+        setError(message || 'An error occurred during login');
       }
     } finally {
       setIsLoading(false);
@@ -72,18 +66,13 @@ export default function Login() {
       try {
         setIsLoading(true);
         setError(null);
-        // Send access token to backend via authService
         const res = await authService.googleLogin(tokenResponse.access_token);
         setUser(res.user, res.token);
-        
-        if (!res.user.verified && import.meta.env.VITE_EMAIL_VERIFICATION_ENABLED === 'true') {
-          navigate('/verify-email');
+        // Google users are auto-verified by the backend (Google has verified their email).
+        if (res.user.roles?.some((r: string) => ['admin', 'super-admin'].includes(r.toLowerCase()))) {
+          navigate('/admin', { replace: true });
         } else {
-          if (res.user.roles?.some((r: string) => ['admin', 'super-admin'].includes(r.toLowerCase()))) {
-            navigate('/admin', { replace: true });
-          } else {
-            navigate('/', { replace: true, state: { justLoggedIn: true } });
-          }
+          navigate(from, { replace: true, state: { justLoggedIn: true } });
         }
       } catch (err: any) {
         setError(err.response?.data?.message || err.message || 'Google login failed');

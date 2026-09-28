@@ -58,15 +58,11 @@ export default function Register() {
         // Send access token to backend via authService
         const res = await authService.googleLogin(tokenResponse.access_token);
         setUser(res.user, res.token);
-        
-        if (!res.user.verified && import.meta.env.VITE_EMAIL_VERIFICATION_ENABLED === 'true') {
-          navigate('/verify-email');
+        // Google users are auto-verified by the backend (Google has verified their email).
+        if (res.user.roles?.some((r: string) => ['admin', 'super-admin'].includes(r.toLowerCase()))) {
+          navigate('/admin', { replace: true });
         } else {
-          if (res.user.roles?.some((r: string) => ['admin', 'super-admin'].includes(r.toLowerCase()))) {
-            navigate('/admin', { replace: true });
-          } else {
-            navigate('/', { replace: true, state: { justLoggedIn: true } });
-          }
+          navigate('/', { replace: true, state: { justLoggedIn: true } });
         }
       } catch (err: any) {
         setError(err.response?.data?.message || err.message || 'Google signup failed');

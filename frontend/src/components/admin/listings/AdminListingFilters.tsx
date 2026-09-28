@@ -12,6 +12,7 @@ import {
 } from '../../ui/select';
 import { Label } from '../../ui/label';
 import { Filter, RotateCcw } from 'lucide-react';
+import { cn } from '../../../lib/utils';
 
 interface AdminListingFiltersProps {
   filters: AdminListingFiltersState;
@@ -21,6 +22,7 @@ interface AdminListingFiltersProps {
   onReset: () => void;
   categories: string[];
   className?: string;
+  orientation?: 'vertical' | 'horizontal';
 }
 
 export function AdminListingFilters({
@@ -30,40 +32,44 @@ export function AdminListingFilters({
   onSortChange,
   onReset,
   categories,
-  className
+  className,
+  orientation = 'vertical'
 }: AdminListingFiltersProps) {
   const activeFiltersCount = Object.values(filters).filter(v => v !== 'all').length;
 
   return (
-    <div className={`flex flex-col gap-6 ${className}`}>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 font-semibold">
-          <Filter className="h-4 w-4" />
-          <span>Filters</span>
-          {activeFiltersCount > 0 && (
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground">
-              {activeFiltersCount}
-            </span>
-          )}
+    <div className={cn("flex", orientation === 'vertical' ? "flex-col gap-6" : "flex-row flex-wrap items-center gap-4", className)}>
+      {orientation === 'vertical' && (
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 font-semibold">
+            <Filter className="h-4 w-4" />
+            <span>Filters</span>
+            {activeFiltersCount > 0 && (
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground">
+                {activeFiltersCount}
+              </span>
+            )}
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onReset}
+            className="h-8 text-xs text-muted-foreground hover:text-foreground"
+            disabled={activeFiltersCount === 0 && sorting === 'newest'}
+          >
+            <RotateCcw className="mr-2 h-3.5 w-3.5" />
+            Reset
+          </Button>
         </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onReset}
-          className="h-8 text-xs text-muted-foreground hover:text-foreground"
-          disabled={activeFiltersCount === 0 && sorting === 'newest'}
-        >
-          <RotateCcw className="mr-2 h-3.5 w-3.5" />
-          Reset
-        </Button>
-      </div>
+      )}
 
-      <div className="space-y-4">
+      <div className={cn("flex", orientation === 'vertical' ? "flex-col space-y-4" : "flex-row flex-wrap items-center gap-3 w-full")}>
         {/* Sort */}
-        <div className="space-y-2">
-          <Label htmlFor="sort" className="text-[#334155] font-medium">Sort By</Label>
+        {/* Sort */}
+        <div className={cn(orientation === 'vertical' ? "space-y-2" : "flex items-center gap-2")}>
+          {orientation === 'vertical' && <Label htmlFor="sort" className="text-[#334155] font-medium text-xs">Sort</Label>}
           <Select value={sorting} onValueChange={(v) => onSortChange(v as AdminListingSortOption)}>
-            <SelectTrigger id="sort">
+            <SelectTrigger id="sort" className={cn(orientation === 'horizontal' && "w-[160px] h-9 text-xs")}>
               <SelectValue placeholder="Sort by..." />
             </SelectTrigger>
             <SelectContent>
@@ -78,13 +84,13 @@ export function AdminListingFilters({
         </div>
 
         {/* Status */}
-        <div className="space-y-2">
-          <Label htmlFor="status" className="text-[#334155] font-medium">Status</Label>
+        <div className={cn(orientation === 'vertical' ? "space-y-2" : "flex items-center gap-2")}>
+          {orientation === 'vertical' && <Label htmlFor="status" className="text-[#334155] font-medium text-xs">Status</Label>}
           <Select
             value={filters.status}
             onValueChange={(v) => onFilterChange({ status: v as any })}
           >
-            <SelectTrigger id="status">
+            <SelectTrigger id="status" className={cn(orientation === 'horizontal' && "w-[140px] h-9 text-xs")}>
               <SelectValue placeholder="All Statuses" />
             </SelectTrigger>
             <SelectContent>
@@ -101,13 +107,13 @@ export function AdminListingFilters({
         </div>
 
         {/* Category */}
-        <div className="space-y-2">
-          <Label htmlFor="category" className="text-[#334155] font-medium">Category</Label>
+        <div className={cn(orientation === 'vertical' ? "space-y-2" : "flex items-center gap-2")}>
+          {orientation === 'vertical' && <Label htmlFor="category" className="text-[#334155] font-medium text-xs">Category</Label>}
           <Select
             value={filters.category}
             onValueChange={(v) => onFilterChange({ category: v })}
           >
-            <SelectTrigger id="category">
+            <SelectTrigger id="category" className={cn(orientation === 'horizontal' && "w-[160px] h-9 text-xs")}>
               <SelectValue placeholder="All Categories" />
             </SelectTrigger>
             <SelectContent>
@@ -120,13 +126,13 @@ export function AdminListingFilters({
         </div>
 
         {/* Verification */}
-        <div className="space-y-2">
-          <Label htmlFor="verification" className="text-[#334155] font-medium">Verification</Label>
+        <div className={cn(orientation === 'vertical' ? "space-y-2" : "flex items-center gap-2")}>
+          {orientation === 'vertical' && <Label htmlFor="verification" className="text-[#334155] font-medium text-xs">Verification</Label>}
           <Select
             value={filters.verification}
             onValueChange={(v) => onFilterChange({ verification: v as any })}
           >
-            <SelectTrigger id="verification">
+            <SelectTrigger id="verification" className={cn(orientation === 'horizontal' && "w-[140px] h-9 text-xs")}>
               <SelectValue placeholder="All States" />
             </SelectTrigger>
             <SelectContent>
@@ -136,6 +142,19 @@ export function AdminListingFilters({
             </SelectContent>
           </Select>
         </div>
+
+        {orientation === 'horizontal' && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onReset}
+            className="h-9 text-xs text-muted-foreground hover:text-foreground ml-auto"
+            disabled={activeFiltersCount === 0 && sorting === 'newest'}
+          >
+            <RotateCcw className="mr-2 h-3.5 w-3.5" />
+            Reset
+          </Button>
+        )}
       </div>
     </div>
   );

@@ -43,11 +43,11 @@ export default function AdminListings() {
   // KPI Calculations
   const totalListings = listings.length;
   const activeListings = listings.filter(l => l.status === 'PUBLISHED' || l.status === 'active').length;
-  const pendingListings = listings.filter(l => l.status === 'SUBMITTED_FOR_REVIEW' || l.status === 'pending' || l.status === 'CHANGES_PENDING_REVIEW').length;
+  const pendingListings = listings.filter(l => l.status === 'SUBMITTED_FOR_REVIEW' || l.status === 'pending').length;
   const soldListings = listings.filter(l => l.status === 'SOLD_LET' || l.status === 'sold').length;
 
   return (
-    <div className="p-4 sm:p-6 space-y-8 max-w-7xl mx-auto pb-12">
+    <div className="p-4 sm:p-6 space-y-6 max-w-[1600px] mx-auto pb-12">
       <div>
         <h1 className="text-3xl font-bold tracking-tight text-[#111827]">Listings Management</h1>
         <p className="text-[15px] text-[#64748B] mt-1">Manage {totalListings} total business listings across the platform</p>
@@ -55,59 +55,64 @@ export default function AdminListings() {
 
       {/* KPI Cards */}
       <div className="space-y-6 min-w-0">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl p-4 flex flex-col justify-between transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
-            <div className="flex items-center justify-between"><div className="w-10 h-10 rounded-xl bg-blue-50/80 text-blue-600 border border-blue-100/50 flex items-center justify-center"><Package className="h-5 w-5" /></div>
-              </div><span className="text-[13px] font-semibold text-[#64748B] uppercase tracking-wider mt-4">Total Listings</span>
-            <span className="text-3xl font-bold text-[#111827] mt-1">{totalListings}</span>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl p-4 flex flex-col justify-between transition-all duration-200 hover:shadow-md">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-blue-50/80 text-blue-600 border border-blue-100/50 flex items-center justify-center shrink-0">
+                <Package className="h-4 w-4" />
+              </div>
+              <span className="text-[12px] font-semibold text-[#64748B] uppercase tracking-wider">Total Listings</span>
+            </div>
+            <span className="text-2xl font-bold text-[#111827] mt-3">{totalListings}</span>
           </div>
-          <div className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl p-4 flex flex-col justify-between transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
-            <div className="flex items-center justify-between"><div className="w-10 h-10 rounded-xl bg-emerald-50/80 text-emerald-600 border border-emerald-100/50 flex items-center justify-center"><CheckCircle2 className="h-5 w-5" /></div>
-              </div><span className="text-[13px] font-semibold text-[#64748B] uppercase tracking-wider mt-4">Active</span>
-            <span className="text-3xl font-bold text-[#111827] mt-1">{activeListings}</span>
+
+          <div className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl p-4 flex flex-col justify-between transition-all duration-200 hover:shadow-md">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-emerald-50/80 text-emerald-600 border border-emerald-100/50 flex items-center justify-center shrink-0">
+                <CheckCircle2 className="h-4 w-4" />
+              </div>
+              <span className="text-[12px] font-semibold text-[#64748B] uppercase tracking-wider">Active</span>
+            </div>
+            <span className="text-2xl font-bold text-[#111827] mt-3">{activeListings}</span>
           </div>
-          <div className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl p-4 flex flex-col justify-between transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
-            <div className="flex items-center justify-between"><div className="w-10 h-10 rounded-xl bg-blue-50/80 text-blue-600 border border-blue-100/50 flex items-center justify-center"><Clock className="h-5 w-5" /></div>
-              </div><span className="text-[13px] font-semibold text-[#64748B] uppercase tracking-wider mt-4">Pending Review</span>
-            <span className="text-3xl font-bold text-[#111827] mt-1">{pendingListings}</span>
+
+          <div className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl p-4 flex flex-col justify-between transition-all duration-200 hover:shadow-md">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-blue-50/80 text-blue-600 border border-blue-100/50 flex items-center justify-center shrink-0">
+                <Clock className="h-4 w-4" />
+              </div>
+              <span className="text-[12px] font-semibold text-[#64748B] uppercase tracking-wider">Pending</span>
+            </div>
+            <span className="text-2xl font-bold text-[#111827] mt-3">{pendingListings}</span>
           </div>
-          <div className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl p-4 flex flex-col justify-between transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
-            <div className="flex items-center gap-2 text-purple-600 dark:text-purple-400">
-              <Check className="h-4 w-4" />
-              </div><span className="text-[13px] font-semibold text-[#64748B] uppercase tracking-wider mt-4">Sold</span>
-            <span className="text-3xl font-bold text-[#111827] mt-1">{soldListings}</span>
+
+          <div className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl p-4 flex flex-col justify-between transition-all duration-200 hover:shadow-md">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 border border-purple-100/50 flex items-center justify-center shrink-0">
+                <Check className="h-4 w-4" />
+              </div>
+              <span className="text-[12px] font-semibold text-[#64748B] uppercase tracking-wider">Sold</span>
+            </div>
+            <span className="text-2xl font-bold text-[#111827] mt-3">{soldListings}</span>
           </div>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Desktop Filters */}
-          <div className="hidden lg:block w-64 shrink-0">
-            <div className="sticky top-24">
-              <AdminListingFilters
-                filters={filters}
-                onFilterChange={setFilters}
-                sorting={sorting}
-                onSortChange={setSorting}
-                onReset={resetFilters}
-                categories={categories}
-              />
-            </div>
-          </div>
-
+        <div className="flex flex-col gap-6">
           <div className="flex-1 flex flex-col gap-6 min-w-0">
-            {/* Search and Mobile Filters */}
-            <div className="flex items-center gap-2">
-              <AdminListingSearch
-                value={search}
-                onChange={setSearch}
-                className="flex-1"
-              />
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button variant="outline" size="icon" className="lg:hidden shrink-0">
-                    <Filter className="h-4 w-4" />
-                  </Button>
-                </SheetTrigger>
+            {/* Unified Toolbar */}
+            <div className="flex flex-col lg:flex-row lg:items-center gap-4 bg-white/50 p-3 rounded-2xl border border-[#E5E9F2] shadow-sm">
+              <div className="flex items-center gap-2 flex-1 min-w-[200px] lg:max-w-xs">
+                <AdminListingSearch
+                  value={search}
+                  onChange={setSearch}
+                  className="flex-1"
+                />
+                <Sheet>
+                  <SheetTrigger asChild>
+                    <Button variant="outline" size="icon" className="lg:hidden shrink-0">
+                      <Filter className="h-4 w-4" />
+                    </Button>
+                  </SheetTrigger>
                 <SheetContent side="right" className="w-[300px] sm:w-[400px]">
                   <SheetHeader className="mb-6">
                     <SheetTitle>Filters</SheetTitle>
@@ -122,6 +127,19 @@ export default function AdminListings() {
                   />
                 </SheetContent>
               </Sheet>
+            </div>
+            
+            <div className="hidden lg:flex flex-1">
+                <AdminListingFilters
+                  filters={filters}
+                  onFilterChange={setFilters}
+                  sorting={sorting}
+                  onSortChange={setSorting}
+                  onReset={resetFilters}
+                  categories={categories}
+                  orientation="horizontal"
+                />
+              </div>
             </div>
 
             {paginatedListings.length === 0 ? (

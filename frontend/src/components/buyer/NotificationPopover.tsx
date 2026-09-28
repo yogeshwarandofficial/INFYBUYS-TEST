@@ -48,12 +48,15 @@ export function NotificationPopover() {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="ghost" size="icon" className="relative" aria-label="Notifications">
-          <Bell className="w-5 h-5" />
+        <button className="relative text-slate-400 hover:text-slate-600 transition-colors duration-200 focus:outline-none" aria-label="Notifications">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
           {notificationCount > 0 && (
-            <span className="absolute top-1 right-1.5 w-2 h-2 bg-destructive rounded-full" />
+            <span className="absolute -top-1 -right-1.5 h-3 w-3 bg-red-500 rounded-full border-2 border-white" />
           )}
-        </Button>
+        </button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-80 p-0">
         <div className="flex items-center justify-between p-4 border-b">

@@ -8,7 +8,6 @@ import { PrismaService } from '../prisma/prisma.service.js';
 import * as bcrypt from 'bcryptjs';
 import * as crypto from 'crypto';
 import { Role } from '../../generated/prisma/client.js';
-import { OAuth2Client } from 'google-auth-library';
 import { Resend } from 'resend';
 
 @Injectable()
@@ -19,7 +18,7 @@ export class AuthService {
     private readonly prisma: PrismaService,
   ) {}
 
-  private googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
 
   private async generateRefreshToken(userId: string): Promise<string> {
     const rawToken = crypto.randomBytes(32).toString('hex');
@@ -265,17 +264,16 @@ export class AuthService {
 
   /**
    * Re-sends a fresh OTP to the given email.
-   * Finds the user first — if not found or already verified, returns early.
+   * Returns silently regardless of whether the email exists to prevent
+   * user-enumeration attacks. The frontend should always show a generic
+   * "If the account exists, a code was sent" message.
    */
   async resendOtp(email: string): Promise<void> {
     const normalizedEmail = email.trim().toLowerCase();
     const user = await this.usersService.findByEmail(normalizedEmail);
-    if (!user) {
-      // Don't leak whether user exists
-      throw new BadRequestException('No account found with that email.');
-    }
-    if (user.verifiedAt) {
-      throw new BadRequestException('Email is already verified.');
+    if (!user || user.verifiedAt) {
+      // Return silently — do not reveal whether the email is registered
+      return;
     }
     await this.sendOtpEmail(user.id, normalizedEmail);
   }
@@ -331,47 +329,4 @@ export class AuthService {
     return { message: 'Email successfully verified' };
   }
 
-  /** @deprecated Use sendOtpEmail instead */
-  async sendVerificationEmail(userId: string, email: string) {
-    await this.sendOtpEmail(userId, email);
-  }
-
-  async verifyEmail(token: string) {
-    try {
-      const payload = await this.jwtService.verifyAsync(token);
-      if (payload.type !== 'email-verification') {
-        throw new UnauthorizedException('Invalid token type');
-      }
-      const user = await this.usersService.findById(payload.sub);
-      if (!user) {
-        throw new UnauthorizedException('User not found');
-      }
-      if (user.verifiedAt) {
-        return { message: 'Email already verified' };
-      }
-      
-      await this.prisma.user.update({
-        where: { id: user.id },
-        data: { verifiedAt: new Date() },
-      });
-      
-      return { message: 'Email successfully verified' };
-    } catch (e) {
-      throw new UnauthorizedException('Invalid or expired verification token');
-    }
-  }
-
-  async resendVerificationEmail(email: string) {
-    const normalizedEmail = email.trim().toLowerCase();
-    const user = await this.usersService.findByEmail(normalizedEmail);
-    if (!user) {
-      // Don't leak whether user exists
-      return { message: 'If the email exists, a verification link has been sent.' };
-    }
-    if (user.verifiedAt) {
-      return { message: 'Email already verified' };
-    }
-    await this.sendVerificationEmail(user.id, user.email);
-    return { message: 'Verification email resent.' };
-  }
 }

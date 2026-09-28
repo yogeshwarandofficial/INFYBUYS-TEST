@@ -10,7 +10,7 @@ export function SellerAnalyticsEmptyState() {
         <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-6">
           <BarChart3 className="w-8 h-8 text-muted-foreground" />
         </div>
-        <h3 className="text-xl font-bold mb-2 text-[#111827]">No Analytics Data Yet</h3>
+        <h3 className="text-xl font-bold mb-2 text-[#111827]">Create your first listing to unlock Analytics</h3>
         <p className="text-muted-foreground max-w-md mx-auto mb-8">
           Create your first listing to start receiving views, enquiries, and messages. Your performance metrics will appear here once buyers start interacting with your business.
         </p>

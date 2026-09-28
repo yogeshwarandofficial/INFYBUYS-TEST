@@ -8,7 +8,7 @@ export function BuyerLayout() {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[var(--sidebar-bg)]">
+    <div className="flex h-screen overflow-hidden bg-[#0f172a]">
       <Seo title="Buyer Dashboard" noIndex={true} />
 
       {/* Desktop Sidebar */}
@@ -16,7 +16,7 @@ export function BuyerLayout() {
         <BuyerSidebar collapsed={collapsed} setCollapsed={setCollapsed} />
       </div>
 
-      <div className="flex-1 flex flex-col min-w-0 h-full bg-[#F5F7FC] rounded-tl-[2rem] overflow-hidden shadow-2xl">
+      <div className="flex-1 flex flex-col min-w-0 h-full relative bg-slate-50 rounded-tl-[32px] overflow-hidden">
         <BuyerHeader />
         <main className="buyer-portal flex-1 overflow-auto p-6 md:p-8">
           <Outlet />

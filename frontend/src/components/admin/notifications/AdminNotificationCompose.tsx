@@ -54,9 +54,9 @@ export function AdminNotificationCompose() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
-          <Plus className="h-4 w-4 mr-2" />
-          Create Notification
+        <Button className="h-9 text-xs gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md hover:shadow-lg transition-all w-full lg:w-auto">
+          <Plus className="h-3.5 w-3.5" />
+          Create 
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

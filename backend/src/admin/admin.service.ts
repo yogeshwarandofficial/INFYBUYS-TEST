@@ -24,21 +24,13 @@ export class AdminService {
 
     const totalEnquiries = await this.prisma.enquiry.count();
 
-    // Calculate total revenue (sum of listing prices or a mock value if 0)
-    const listingsAgg = await this.prisma.listing.aggregate({
-      _sum: {
-        priceOrRent: true
-      },
-      where: {
-        status: 'PUBLISHED'
-      }
+    // Total revenue: sum of all Payment records.
+    // Returns 0 until Stripe integration is complete and real payments are recorded.
+    // NOTE: Do NOT use listing.priceOrRent — that is the asking price, not received revenue.
+    const paymentsAgg = await this.prisma.payment.aggregate({
+      _sum: { amount: true },
     });
-
-    const calculatedRevenue = listingsAgg._sum.priceOrRent ? Number(listingsAgg._sum.priceOrRent) : 0;
-    
-    // We will return a static 245000 if we want it to look like the design, 
-    // or we can use the calculated one. Let's use calculated, but fallback to 0.
-    const totalRevenue = calculatedRevenue > 0 ? calculatedRevenue : 245000;
+    const totalRevenue = paymentsAgg._sum.amount ? Number(paymentsAgg._sum.amount) : 0;
 
     return {
       totalUsers,
@@ -171,7 +163,7 @@ export class AdminService {
       case '90d': days = 90; startDate.setDate(now.getDate() - (days - 1)); break;
       case '6m': days = 180; startDate.setMonth(now.getMonth() - 6); startDate.setDate(startDate.getDate() + 1); break;
       case '1y': days = 365; startDate.setFullYear(now.getFullYear() - 1); startDate.setDate(startDate.getDate() + 1); break;
-      case 'all': days = 30; startDate = new Date(now.getDate() - 29); break;
+      case 'all': days = 30; startDate = new Date(Date.now() - 29 * 24 * 60 * 60 * 1000); break;
       default: days = 30; startDate.setDate(now.getDate() - (days - 1)); break;
     }
 
@@ -194,7 +186,7 @@ export class AdminService {
     });
 
     const userGrowthData: any[] = [];
-    const timeSeriesStart = period === 'all' ? new Date(new Date().setDate(new Date().getDate() - 29)) : startDate;
+    const timeSeriesStart = period === 'all' ? new Date(Date.now() - 29 * 24 * 60 * 60 * 1000) : startDate;
 
     for (let i = 0; i < (period === 'all' ? 30 : days); i++) {
       const d = new Date(timeSeriesStart);
@@ -258,7 +250,7 @@ export class AdminService {
       engagementData.push({
         date: d.toLocaleDateString('en-US', { month: 'short', day: '2-digit' }),
         enquiries: dayEnquiries.length,
-        conversations: 0,
+        messages: 0,
       });
     }
 

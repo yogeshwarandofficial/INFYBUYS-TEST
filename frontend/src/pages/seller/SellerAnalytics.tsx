@@ -26,10 +26,32 @@ export default function SellerAnalytics() {
   }
 
   if (error || !data) {
+    // Check if the error is a 404 (Not Found), which means the user has no listings yet.
+    const is404 = (error as any)?.response?.status === 404 || (error as any)?.status === 404;
+
+    if (is404 || !data) {
+      return (
+        <>
+          <Seo title="Analytics - Seller Portal | InfyBuys" />
+          <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-8">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Analytics & Performance</h1>
+              <p className="text-muted-foreground mt-1">
+                Track your listing views and enquiries.
+              </p>
+            </div>
+            <SellerAnalyticsEmptyState />
+          </div>
+        </>
+      );
+    }
+
     return (
       <div className="p-8 text-center text-destructive flex flex-col items-center justify-center min-h-[50vh]">
         <h2 className="text-xl font-semibold mb-2">Error loading analytics</h2>
-        <p className="text-muted-foreground">Please try refreshing the page.</p>
+        <p className="text-muted-foreground">
+          {error instanceof Error ? error.message : 'Please try refreshing the page.'}
+        </p>
       </div>
     );
   }

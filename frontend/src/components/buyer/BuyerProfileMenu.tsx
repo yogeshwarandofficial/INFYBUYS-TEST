@@ -1,7 +1,5 @@
 import { useNavigate, Link } from 'react-router';
 import { useUserStore } from '@/store/useUserStore';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,8 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { LogOut, User, Settings, Sun, Moon, Store } from 'lucide-react';
-import { useState } from 'react';
+import { LogOut, User, Settings, Store } from 'lucide-react';
 
 export function BuyerProfileMenu() {
   const { user, logout } = useUserStore();
@@ -33,48 +30,44 @@ export function BuyerProfileMenu() {
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
-            <AvatarImage src="" alt={user.name} />
-            <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
-          </Avatar>
-        </Button>
+        <button className="w-[38px] h-[38px] rounded-full bg-slate-100 flex items-center justify-center border border-slate-200 hover:bg-slate-200 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 outline-none" aria-label="User Menu">
+          <span className="text-[14px] font-semibold text-slate-700 tracking-wide">{getInitials(user.name)}</span>
+        </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="end" forceMount>
-        <DropdownMenuLabel className="font-normal">
-          <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{user.name}</p>
-            <p className="text-xs leading-none text-muted-foreground">
+      <DropdownMenuContent align="end" sideOffset={8} className="w-64 rounded-2xl shadow-xl shadow-blue-900/5 border border-slate-200/60 p-2 bg-white/95 backdrop-blur-md animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95" forceMount>
+        <DropdownMenuLabel className="font-normal p-3 pb-4">
+          <div className="flex flex-col">
+            <p className="text-sm font-semibold text-slate-900 leading-none mb-1.5">{user.name}</p>
+            <p className="text-xs leading-none text-slate-500">
               {user.email}
             </p>
           </div>
         </DropdownMenuLabel>
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator className="bg-slate-100 -mx-2 mb-2" />
         <DropdownMenuGroup>
-          <DropdownMenuItem asChild>
+          <DropdownMenuItem asChild className="flex items-center rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 cursor-pointer hover:bg-slate-50 hover:text-slate-900 focus:bg-slate-50 focus:text-slate-900 transition-colors mb-0.5 outline-none">
             <Link to="/buyer/profile">
-              <User className="mr-2 h-4 w-4" />
+              <User className="mr-3 h-4 w-4 text-slate-400" />
               <span>Profile</span>
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem asChild>
+          <DropdownMenuItem asChild className="flex items-center rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 cursor-pointer hover:bg-slate-50 hover:text-slate-900 focus:bg-slate-50 focus:text-slate-900 transition-colors mb-0.5 outline-none">
             <Link to="/buyer/settings">
-              <Settings className="mr-2 h-4 w-4" />
+              <Settings className="mr-3 h-4 w-4 text-slate-400" />
               <span>Settings</span>
             </Link>
           </DropdownMenuItem>
-
         </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
+        <DropdownMenuSeparator className="bg-slate-100 -mx-2 my-2" />
+        <DropdownMenuItem asChild className="flex items-center rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 cursor-pointer hover:bg-slate-50 hover:text-slate-900 focus:bg-slate-50 focus:text-slate-900 transition-colors mb-0.5 outline-none">
           <Link to="/seller/listings">
-            <Store className="mr-2 h-4 w-4" />
+            <Store className="mr-3 h-4 w-4 text-slate-400" />
             <span>Switch to Sell</span>
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleLogout} className="text-red-600 focus:bg-red-50 focus:text-red-700 cursor-pointer font-medium">
-          <LogOut className="mr-2 h-4 w-4" />
+        <DropdownMenuSeparator className="bg-slate-100 -mx-2 my-2" />
+        <DropdownMenuItem onClick={handleLogout} className="flex items-center rounded-xl px-3 py-2.5 text-sm font-medium text-red-600 cursor-pointer hover:bg-red-50 hover:text-red-700 focus:bg-red-50 focus:text-red-700 transition-colors outline-none">
+          <LogOut className="mr-3 h-4 w-4" />
           <span>Log out</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

@@ -28,11 +28,11 @@ export const useUserStore = create<UserState>()(
       setUser: (user, token) => set({
         user: user ? { ...user, roles: user.roles?.map(r => r.toLowerCase()) } : null,
         token: token || null,
-        status: user ? (
-          import.meta.env.VITE_EMAIL_VERIFICATION_ENABLED === 'true'
-            ? (user.verified ? 'authenticated' : 'verification-required')
-            : 'authenticated'
-        ) : 'unauthenticated'
+        // The backend is the source of truth for email verification enforcement.
+        // If the backend permitted login, the user is authenticated.
+        // The 'verification-required' status is set explicitly by the Login page
+        // when the backend rejects login with 'Email not verified'.
+        status: user ? 'authenticated' : 'unauthenticated'
       }),
       setStatus: (status) => set({ status }),
       logout: (expired = false) => set({

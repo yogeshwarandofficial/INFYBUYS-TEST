@@ -15,15 +15,15 @@ export function EmptyState({
   onAction
 }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center py-20 px-4 text-center border border-dashed border-[#E5E9F2] rounded-2xl bg-white/85 backdrop-blur-md shadow-sm shadow-blue-900/5">
-      <div className="w-16 h-16 bg-[#F6F8FC] rounded-2xl flex items-center justify-center mb-6 text-[#94A3B8]">
-        <FolderSearch className="w-8 h-8" />
+    <div className="flex flex-col items-center justify-center py-10 px-4 text-center w-full">
+      <div className="w-12 h-12 bg-slate-50/50 border border-slate-100 rounded-xl flex items-center justify-center mb-4 text-slate-400">
+        <FolderSearch className="w-5 h-5" />
       </div>
-      <h3 className="text-xl font-bold mb-2 text-[#111827]">{title}</h3>
-      <p className="text-[#64748B] max-w-md mb-6">{description}</p>
+      <h3 className="text-[15px] font-semibold mb-1 text-gray-900">{title}</h3>
+      <p className="text-[14px] text-slate-500 max-w-xs mb-5">{description}</p>
 
       {onAction && actionLabel && (
-        <Button onClick={onAction}>{actionLabel}</Button>
+        <Button variant="outline" size="sm" onClick={onAction}>{actionLabel}</Button>
       )}
     </div>
   );

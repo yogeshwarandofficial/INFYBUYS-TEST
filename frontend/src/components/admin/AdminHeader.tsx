@@ -1,5 +1,4 @@
-import { Search, Bell, Menu } from 'lucide-react';
-import { Input } from '@/components/ui/input';
+import { Bell, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';

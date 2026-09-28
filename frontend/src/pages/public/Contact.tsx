@@ -33,15 +33,17 @@ export default function Contact() {
 
   const onSubmit = async (data: ContactFormValues) => {
     setIsSubmitting(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    console.log('Form submitted:', data);
-    setIsSubmitting(false);
-    setIsSuccess(true);
-    reset();
-
-    // Reset success message after 5 seconds
-    setTimeout(() => setIsSuccess(false), 5000);
+    try {
+      // TODO: wire to real /api/contact endpoint when backend supports it
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      setIsSuccess(true);
+      reset();
+      setTimeout(() => setIsSuccess(false), 5000);
+    } catch {
+      // silently fail on simulated submission
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

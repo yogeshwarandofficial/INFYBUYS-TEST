@@ -22,7 +22,7 @@ export default function BuyerBilling() {
 
   const [isAddingCard, setIsAddingCard] = useState(false);
 
-  const activePlan = plans.find(p => p.id === subscription?.planId) || plans[0];
+  const activePlan = plans?.find(p => p.id === subscription?.planId) || (plans && plans.length > 0 ? plans[0] : { name: 'Free', price: 0 });
 
   return (
     <>
@@ -44,7 +44,7 @@ export default function BuyerBilling() {
                 <CardDescription>View past charges and download invoices.</CardDescription>
               </CardHeader>
               <CardContent>
-                <BillingHistoryTable records={billingHistory} />
+                <BillingHistoryTable records={billingHistory || []} />
               </CardContent>
             </Card>
           </div>
@@ -64,16 +64,16 @@ export default function BuyerBilling() {
                   <>
                     <div className="flex justify-between items-center text-sm">
                       <span className="text-muted-foreground">Next billing date</span>
-                      <span>{new Date(subscription.renewalDate || '').toLocaleDateString()}</span>
+                      <span>{subscription?.renewalDate ? new Date(subscription.renewalDate).toLocaleDateString() : 'N/A'}</span>
                     </div>
                     <div className="flex justify-between items-center text-sm">
                       <span className="text-muted-foreground">Amount</span>
-                      <span>${subscription.amount.toFixed(2)}</span>
+                      <span>${(subscription?.amount || 0).toFixed(2)}</span>
                     </div>
                   </>
                 ) : subscription?.status === 'cancelled' ? (
                   <div className="text-sm text-destructive">
-                    Cancels on {new Date(subscription.renewalDate || '').toLocaleDateString()}
+                    Cancels on {subscription?.renewalDate ? new Date(subscription.renewalDate).toLocaleDateString() : 'N/A'}
                   </div>
                 ) : (
                   <div className="text-sm text-muted-foreground">

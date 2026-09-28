@@ -39,12 +39,12 @@ export function BuyerSearchBar({ value, onChange, onSearch }: BuyerSearchBarProp
   };
 
   return (
-    <div className="relative flex-1 w-full" ref={containerRef}>
-      <SearchIcon className="absolute left-4 top-3.5 h-5 w-5 text-[#64748B]" />
+    <div className="relative flex-1 w-full group" ref={containerRef}>
+      <SearchIcon className="absolute left-6 top-1/2 -translate-y-1/2 h-6 w-6 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
       <Input
         type="text"
         placeholder="Search businesses, niches, or keywords..."
-        className="pl-12 h-12 bg-white/80 backdrop-blur-md border border-gray-200 shadow-sm rounded-xl focus-visible:ring-[#2563EB] text-[#111827] placeholder:text-[#64748B]"
+        className="pl-16 pr-12 h-[52px] bg-transparent border-transparent shadow-none focus-visible:ring-0 text-[17px] font-medium text-slate-900 placeholder:text-slate-400 placeholder:font-normal"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={handleKeyDown}
@@ -54,7 +54,7 @@ export function BuyerSearchBar({ value, onChange, onSearch }: BuyerSearchBarProp
         <Button
           variant="ghost"
           size="icon"
-          className="absolute right-2 top-2 h-8 w-8 text-muted-foreground hover:text-foreground"
+          className="absolute right-3 top-1/2 -translate-y-1/2 h-8 w-8 text-slate-400 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-full"
           onClick={() => {
             onChange('');
             onSearch('');

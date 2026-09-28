@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router';
 import { useUserStore } from '@/store/useUserStore';
-import { useTheme } from '@/providers/ThemeProvider';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,17 +7,11 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  DropdownMenuSub,
-  DropdownMenuSubTrigger,
-  DropdownMenuPortal,
-  DropdownMenuSubContent,
 } from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { ShieldAlert, LogOut, Moon, Sun, Monitor } from 'lucide-react';
+import { ShieldAlert, LogOut, Settings } from 'lucide-react';
 
 export function AdminProfileMenu() {
   const { user, logout } = useUserStore();
-  const { setTheme, theme } = useTheme();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -39,35 +32,34 @@ export function AdminProfileMenu() {
 
   return (
     <DropdownMenu modal={false}>
-      <DropdownMenuTrigger className="outline-none">
-        <Avatar className="h-9 w-9 border-2 border-primary/10">
-          <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+      <DropdownMenuTrigger asChild>
+        <button className="w-[38px] h-[38px] rounded-full bg-slate-100 flex items-center justify-center border border-slate-200 hover:bg-slate-200 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 outline-none" aria-label="Admin Menu">
+          <span className="text-[14px] font-semibold text-slate-700 tracking-wide">
             {getInitials(user.name)}
-          </AvatarFallback>
-        </Avatar>
+          </span>
+        </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuLabel className="font-normal">
-          <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{user.name}</p>
-            <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
-            <div className="flex items-center gap-1 mt-1 text-xs font-medium text-blue-600 dark:text-blue-400">
-              <ShieldAlert className="w-3 h-3" /> System Administrator
+      <DropdownMenuContent align="end" sideOffset={8} className="w-64 rounded-2xl shadow-xl shadow-blue-900/5 border border-slate-200/60 p-2 bg-white/95 backdrop-blur-md animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95">
+        <DropdownMenuLabel className="font-normal p-3 pb-4">
+          <div className="flex flex-col">
+            <p className="text-sm font-semibold text-slate-900 leading-none mb-1.5">{user.name}</p>
+            <p className="text-xs leading-none text-slate-500">{user.email}</p>
+            <div className="flex items-center gap-1.5 mt-3 text-xs font-semibold text-blue-700 bg-blue-50/80 w-fit px-2.5 py-1.5 rounded-lg border border-blue-100">
+              <ShieldAlert className="w-3.5 h-3.5" /> System Administrator
             </div>
           </div>
         </DropdownMenuLabel>
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator className="bg-slate-100 -mx-2 mb-2" />
 
-        <DropdownMenuItem onClick={() => navigate('/admin/settings')}>
-          Account Settings
+        <DropdownMenuItem onClick={() => navigate('/admin/settings')} className="flex items-center rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 cursor-pointer hover:bg-slate-50 hover:text-slate-900 focus:bg-slate-50 focus:text-slate-900 transition-colors mb-0.5 outline-none">
+          <Settings className="mr-3 h-4 w-4 text-slate-400" />
+          <span>Account Settings</span>
         </DropdownMenuItem>
 
+        <DropdownMenuSeparator className="bg-slate-100 -mx-2 my-2" />
 
-
-        <DropdownMenuSeparator />
-
-        <DropdownMenuItem onClick={handleLogout} className="text-red-600 focus:bg-red-50 focus:text-red-700 cursor-pointer font-medium">
-          <LogOut className="mr-2 h-4 w-4" />
+        <DropdownMenuItem onClick={handleLogout} className="flex items-center rounded-xl px-3 py-2.5 text-sm font-medium text-red-600 cursor-pointer hover:bg-red-50 hover:text-red-700 focus:bg-red-50 focus:text-red-700 transition-colors outline-none">
+          <LogOut className="mr-3 h-4 w-4" />
           <span>Log out</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

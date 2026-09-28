@@ -119,7 +119,7 @@ export function PublicHeader() {
                     <ChevronDown className="w-3 h-3 ml-0.5 opacity-70" />
                   </div>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-72 bg-white border border-slate-200 shadow-xl rounded-xl z-[100] p-0 overflow-hidden">
+                <DropdownMenuContent align="end" className="w-72 bg-white/95 backdrop-blur-md border border-slate-200/60 shadow-xl shadow-blue-900/5 rounded-2xl z-[100] p-0 overflow-hidden animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95">
                   {/* Search Input */}
                   <div className="p-3 border-b border-slate-100 relative">
                     <Search className="w-4 h-4 text-slate-400 absolute left-6 top-1/2 -translate-y-1/2" />
@@ -157,7 +157,7 @@ export function PublicHeader() {
                               : 'text-[#0B152A] focus:bg-slate-50 focus:text-[#0B4C8C] hover:bg-slate-50 hover:text-[#0B4C8C] cursor-pointer'
                         }`}
                       >
-                        <div className="flex items-center gap-2.5">
+                        <div className="flex items-center gap-3">
                           {region.id === 'INTL' ? (
                             <span className="text-base leading-none w-5 text-center">🌍</span>
                           ) : (

@@ -43,26 +43,26 @@ export default function BuyerProfile() {
           breadcrumbs={[{ label: 'Profile' }]}
         />
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-8">
+        <div className="flex flex-col lg:flex-row gap-8 mt-8">
+          <div className="flex-1 space-y-8 min-w-0">
             <ProfileHeader
               onEdit={() => setIsEditDialogOpen(true)}
               onPreview={() => setIsPreviewDialogOpen(true)}
             />
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Bio & Investment Criteria</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="whitespace-pre-wrap text-muted-foreground leading-relaxed">
-                  {profile.bio || 'No bio provided. Update your profile to add investment criteria.'}
-                </div>
-              </CardContent>
-            </Card>
+            <div className="bg-white rounded-[24px] border border-slate-200 shadow-sm p-8 relative">
+              <h2 className="text-lg font-bold text-slate-900 mb-6">Bio & Investment Criteria</h2>
+              <div className="text-[15px] text-slate-600 leading-relaxed">
+                {profile.bio && profile.bio.trim() !== '' && !profile.bio.startsWith('Lorem ipsum') && !profile.bio.includes('gibberish') ? (
+                  profile.bio
+                ) : (
+                  <div className="text-slate-400 italic">No bio provided. Update your profile to add investment criteria and let sellers know what you are looking for.</div>
+                )}
+              </div>
+            </div>
           </div>
 
-          <div className="space-y-8">
+          <div className="w-full lg:w-[380px] shrink-0 space-y-8">
             <ProfileCompletion />
             <ContactInformationCard />
             <SocialLinksCard />

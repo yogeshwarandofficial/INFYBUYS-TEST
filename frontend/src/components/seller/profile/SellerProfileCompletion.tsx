@@ -1,7 +1,5 @@
 import { type SellerProfileData as SellerProfile } from '@/hooks/useSellerProfile';
-import { Card, CardContent } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
-import { CheckCircle2, AlertCircle } from 'lucide-react';
+import { Info, CheckCircle2 } from 'lucide-react';
 
 interface SellerProfileCompletionProps {
   profile: SellerProfile;
@@ -33,46 +31,63 @@ export function SellerProfileCompletion({ profile }: SellerProfileCompletionProp
   const isComplete = completionPercentage === 100;
 
   return (
-    <Card className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl overflow-hidden">
-      <CardContent className="p-6">
-        <div className="flex items-start justify-between mb-2">
-          <div>
-            <h3 className="text-lg font-semibold flex items-center gap-2 text-[#111827]">
-              Profile Completion
-              {isComplete ? (
-                <CheckCircle2 className="w-5 h-5 text-emerald-500" aria-hidden="true" />
-              ) : (
-                <AlertCircle className="w-5 h-5 text-amber-500" aria-hidden="true" />
-              )}
-            </h3>
-            <p className="text-[13px] text-[#64748B] mt-1">
-              {isComplete
-                ? 'Your profile is fully complete. Buyers can see all your details.'
-                : 'Complete your profile to build trust with potential buyers.'}
-            </p>
-          </div>
-          <span className="text-2xl font-bold text-[#111827]">{completionPercentage}%</span>
-        </div>
-        <Progress value={completionPercentage} className="h-2 mt-4 mb-4" />
+    <div className="bg-white rounded-[24px] border border-blue-200 shadow-[0_10px_40px_-10px_rgba(59,130,246,0.15)] p-8 relative overflow-hidden">
+      {/* Subtle BG glow */}
+      <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-400/10 rounded-full blur-2xl pointer-events-none"></div>
 
-        {!isComplete && (
-          <div className="mt-4 pt-4 border-t border-[#E5E9F2]">
-            <p className="text-sm font-medium mb-3 text-[#111827]">Missing information:</p>
-            <div className="flex flex-wrap gap-2">
-              {fields
-                .filter((f) => !filledFields.includes(f))
-                .map((f) => (
-                  <span
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+          Profile Strength
+          {isComplete ? (
+            <CheckCircle2 className="text-emerald-500 w-4 h-4 fill-emerald-100" />
+          ) : (
+            <Info className="text-blue-400 w-4 h-4 fill-blue-50" />
+          )}
+        </h3>
+        <span className="text-2xl font-extrabold text-blue-600 tracking-tight">{completionPercentage}%</span>
+      </div>
+      
+      <p className="text-xs text-slate-500 mb-6 leading-relaxed">
+        {isComplete 
+          ? 'Your profile is fully complete. Buyers can see all your details.' 
+          : 'Complete your profile to build trust with potential buyers and increase listing views.'}
+      </p>
+
+      {/* Progress Bar */}
+      <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden mb-8 border border-slate-200/50">
+        <div 
+          className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)] relative overflow-hidden transition-all duration-1000"
+          style={{ width: `${completionPercentage}%` }}
+        >
+          <div className="absolute inset-0 bg-white/20 w-full animate-[pan-bg_2s_linear_infinite]" style={{ backgroundImage: 'linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent)', backgroundSize: '1rem 1rem' }}></div>
+        </div>
+      </div>
+
+      {!isComplete && (
+        <div>
+          <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-4">Action Required:</p>
+          <div className="flex flex-wrap gap-2">
+            {fields
+              .filter((f) => !filledFields.includes(f))
+              .map((f, index) => {
+                // Highlight the first 3 missing items for emphasis
+                const isPriority = index < 3;
+                return (
+                  <button 
                     key={f.key}
-                    className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-[#F1F5F9] text-[#64748B]"
+                    className={`px-2.5 py-1.5 rounded-lg border text-[11px] transition-all ${
+                      isPriority 
+                        ? 'bg-amber-50 text-amber-700 border-amber-200/60 font-bold hover:bg-amber-100 hover:shadow-sm hover:-translate-y-0.5' 
+                        : 'bg-slate-50 text-slate-600 border-slate-200/60 font-semibold hover:bg-slate-100'
+                    }`}
                   >
-                    {f.label}
-                  </span>
-                ))}
-            </div>
+                    {f.label} {isPriority && '+'}
+                  </button>
+                );
+              })}
           </div>
-        )}
-      </CardContent>
-    </Card>
+        </div>
+      )}
+    </div>
   );
 }

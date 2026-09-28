@@ -10,17 +10,25 @@ export default function AdminKyc() {
   if (error) return <div className="p-8 text-red-600">Error loading KYC data</div>;
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-          <ShieldCheck className="w-6 h-6 text-primary" />
-          KYC Applications
-        </h1>
-      </div>
+    <div className="w-full p-6 lg:p-10">
+      <div className="max-w-6xl mx-auto space-y-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
+              <div className="p-2 bg-blue-50 text-blue-600 rounded-lg shrink-0">
+                <ShieldCheck className="w-6 h-6" />
+              </div>
+              KYC Applications
+            </h1>
+            <p className="text-sm text-gray-500 mt-2 ml-14">
+              Review and manage seller identity verifications
+            </p>
+          </div>
+        </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm whitespace-nowrap">
             <thead className="bg-gray-50 border-b border-gray-200 text-gray-500">
               <tr>
                 <th className="px-6 py-4 font-medium">Seller</th>
@@ -52,14 +60,14 @@ export default function AdminKyc() {
                       {app.kycSubmittedAt ? new Date(app.kycSubmittedAt).toLocaleDateString() : 'N/A'}
                     </td>
                     <td className="px-6 py-4">
-                      {app.kycStatus === 'PENDING' && <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800"><AlertCircle className="w-3 h-3"/> Pending</span>}
-                      {app.kycStatus === 'APPROVED' && <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800"><CheckCircle2 className="w-3 h-3"/> Approved</span>}
-                      {app.kycStatus === 'REJECTED' && <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">Rejected</span>}
+                      {app.kycStatus === 'PENDING' && <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800"><AlertCircle className="w-3.5 h-3.5"/> Pending</span>}
+                      {app.kycStatus === 'APPROVED' && <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800"><CheckCircle2 className="w-3.5 h-3.5"/> Approved</span>}
+                      {app.kycStatus === 'REJECTED' && <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">Rejected</span>}
                     </td>
                     <td className="px-6 py-4">
                       <button
                         onClick={() => navigate(`/admin/kyc/${app.id}`)}
-                        className="inline-flex items-center gap-1 text-primary hover:text-primary/80 font-medium"
+                        className="inline-flex items-center gap-1.5 text-blue-600 hover:text-blue-800 font-medium transition-colors bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg"
                       >
                         <Eye className="w-4 h-4" /> Review
                       </button>
@@ -68,7 +76,8 @@ export default function AdminKyc() {
                 ))
               )}
             </tbody>
-          </table>
+            </table>
+          </div>
         </div>
       </div>
     </div>

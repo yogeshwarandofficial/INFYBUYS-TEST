@@ -17,13 +17,13 @@ export function AdminNotificationSearch({
 }: AdminNotificationSearchProps) {
   return (
     <div className={`relative ${className}`}>
-      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" aria-hidden="true" />
+      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
       <Input
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="pl-9 pr-10"
+        className="pl-9 pr-10 h-9 text-xs bg-white"
         aria-label="Search notifications"
       />
       {value && (

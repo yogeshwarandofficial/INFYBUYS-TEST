@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useUserStore } from '@/store/useUserStore';
 import { DeleteAccountDialog } from '@/components/buyer/profile/DeleteAccountDialog';
+import { ShieldCheck, AlertTriangle } from 'lucide-react';
 
 export function AccountStatusCard() {
   const { user } = useUserStore();
@@ -18,58 +18,60 @@ export function AccountStatusCard() {
 
   return (
     <>
-      <Card>
-        <CardHeader>
-          <CardTitle>Account Status</CardTitle>
-          <CardDescription>View your current account standing and manage your data.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <span className="text-sm font-medium text-muted-foreground">Account Type</span>
-              <div className="flex items-center gap-2">
-                <span className="font-semibold capitalize">{accountType}</span>
-              </div>
+      <div className="bg-white rounded-[24px] border border-slate-200 shadow-sm p-8 relative">
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
+              <ShieldCheck className="w-5 h-5" />
             </div>
+            Account Status
+          </h2>
+        </div>
 
-            <div className="space-y-1">
-              <span className="text-sm font-medium text-muted-foreground">Verification</span>
-              <div className="flex items-center gap-2">
-                {user?.verified ? (
-                  <Badge className="bg-green-100 text-green-800 hover:bg-green-100 dark:bg-green-900/30 dark:text-green-500">Verified</Badge>
-                ) : (
-                  <Badge variant="outline" className="text-amber-600 border-amber-200 bg-amber-50">Unverified</Badge>
-                )}
-              </div>
-            </div>
+        <p className="text-[13px] font-medium text-slate-500 mb-6">View your current account standing and manage your data.</p>
 
-            <div className="space-y-1">
-              <span className="text-sm font-medium text-muted-foreground">Subscription</span>
-              <div className="flex items-center gap-2">
-                <span className="font-semibold">{activePlanName} Plan</span>
-              </div>
-            </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-8">
+          <div className="space-y-1">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Account Type</span>
+            <span className="text-sm font-semibold text-slate-900 capitalize">{accountType}</span>
+          </div>
 
-            <div className="space-y-1">
-              <span className="text-sm font-medium text-muted-foreground">Member Since</span>
-              <div className="flex items-center gap-2">
-                <span className="font-semibold">{memberSince}</span>
-              </div>
+          <div className="space-y-1">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Verification</span>
+            <div className="flex items-center gap-2">
+              {user?.verified ? (
+                <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200/60 font-bold hover:bg-emerald-100 shadow-none px-2.5 py-1 text-xs">Verified</Badge>
+              ) : (
+                <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200/60 font-bold hover:bg-amber-100 shadow-none px-2.5 py-1 text-xs">Unverified</Badge>
+              )}
             </div>
           </div>
-        </CardContent>
-        <CardFooter className="flex flex-col sm:flex-row justify-between gap-4 border-t pt-6">
+
+          <div className="space-y-1">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Subscription</span>
+            <span className="text-sm font-semibold text-slate-900">{activePlanName} Plan</span>
+          </div>
+
+          <div className="space-y-1">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Member Since</span>
+            <span className="text-sm font-semibold text-slate-900">{memberSince}</span>
+          </div>
+        </div>
+
+        <div className="mt-8 pt-6 border-t border-slate-100 flex flex-col sm:flex-row justify-between gap-4">
           <div className="space-y-1 w-full sm:w-auto">
-            <h4 className="font-medium text-sm text-destructive">Danger Zone</h4>
-            <p className="text-xs text-muted-foreground max-w-xs">
+            <h4 className="font-bold text-sm text-red-600 flex items-center gap-1.5">
+              <AlertTriangle className="w-4 h-4" /> Danger Zone
+            </h4>
+            <p className="text-xs font-medium text-slate-500 max-w-xs leading-relaxed">
               Permanently delete your account and all associated data. This action cannot be undone.
             </p>
           </div>
-          <Button variant="destructive" onClick={() => setIsDeleteDialogOpen(true)} className="w-full sm:w-auto shrink-0">
+          <Button variant="destructive" onClick={() => setIsDeleteDialogOpen(true)} className="w-full sm:w-auto shrink-0 rounded-xl font-bold shadow-sm h-auto py-2.5">
             Delete Account
           </Button>
-        </CardFooter>
-      </Card>
+        </div>
+      </div>
 
       <DeleteAccountDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen} />
     </>

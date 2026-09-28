@@ -62,15 +62,14 @@ export function SellerNotificationFilters({
   hasActiveFilters,
 }: SellerNotificationFiltersProps) {
   return (
-    <div className="space-y-6">
-      <div className="space-y-2">
-        <Label className="text-[#111827] font-semibold">Status</Label>
+    <div className="flex flex-row flex-nowrap items-center gap-3 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] py-1">
+      <div className="flex items-center gap-2 shrink-0">
         <Select
           value={filters.status}
           onValueChange={(v) => updateFilter('status', v as SellerNotificationStatusFilter)}
         >
-          <SelectTrigger id="notif-status-filter" aria-label="Filter by status" className="bg-white border-[#E5E9F2] rounded-xl focus:ring-blue-500 shadow-sm">
-            <SelectValue />
+          <SelectTrigger id="notif-status-filter" aria-label="Filter by status" className="w-[140px] bg-white border-[#E5E9F2] rounded-lg focus:ring-blue-500 shadow-sm h-9 text-sm">
+            <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
             {STATUS_OPTIONS.map((o) => (
@@ -82,14 +81,13 @@ export function SellerNotificationFilters({
         </Select>
       </div>
 
-      <div className="space-y-2">
-        <Label className="text-[#111827] font-semibold">Type</Label>
+      <div className="flex items-center gap-2 shrink-0">
         <Select
           value={filters.type}
           onValueChange={(v) => updateFilter('type', v as SellerNotificationTypeFilter)}
         >
-          <SelectTrigger id="notif-type-filter" aria-label="Filter by type" className="bg-white border-[#E5E9F2] rounded-xl focus:ring-blue-500 shadow-sm">
-            <SelectValue />
+          <SelectTrigger id="notif-type-filter" aria-label="Filter by type" className="w-[140px] bg-white border-[#E5E9F2] rounded-lg focus:ring-blue-500 shadow-sm h-9 text-sm">
+            <SelectValue placeholder="Type" />
           </SelectTrigger>
           <SelectContent>
             {TYPE_OPTIONS.map((o) => (
@@ -101,14 +99,13 @@ export function SellerNotificationFilters({
         </Select>
       </div>
 
-      <div className="space-y-2">
-        <Label className="text-[#111827] font-semibold">Priority</Label>
+      <div className="flex items-center gap-2 shrink-0">
         <Select
           value={filters.priority}
           onValueChange={(v) => updateFilter('priority', v as SellerNotificationPriorityFilter)}
         >
-          <SelectTrigger id="notif-priority-filter" aria-label="Filter by priority" className="bg-white border-[#E5E9F2] rounded-xl focus:ring-blue-500 shadow-sm">
-            <SelectValue />
+          <SelectTrigger id="notif-priority-filter" aria-label="Filter by priority" className="w-[140px] bg-white border-[#E5E9F2] rounded-lg focus:ring-blue-500 shadow-sm h-9 text-sm">
+            <SelectValue placeholder="Priority" />
           </SelectTrigger>
           <SelectContent>
             {PRIORITY_OPTIONS.map((o) => (
@@ -120,14 +117,13 @@ export function SellerNotificationFilters({
         </Select>
       </div>
 
-      <div className="space-y-2">
-        <Label className="text-[#111827] font-semibold">Sort By</Label>
+      <div className="flex items-center gap-2 shrink-0">
         <Select
           value={filters.sort}
           onValueChange={(v) => updateFilter('sort', v as SellerNotificationSort)}
         >
-          <SelectTrigger id="notif-sort" aria-label="Sort notifications">
-            <SelectValue />
+          <SelectTrigger id="notif-sort" aria-label="Sort notifications" className="w-[150px] bg-white border-[#E5E9F2] rounded-lg focus:ring-blue-500 shadow-sm h-9 text-sm">
+            <SelectValue placeholder="Sort By" />
           </SelectTrigger>
           <SelectContent>
             {SORT_OPTIONS.map((o) => (
@@ -140,13 +136,12 @@ export function SellerNotificationFilters({
       </div>
 
       {hasActiveFilters && (
-        <>
-          <Separator className="bg-[#E5E9F2]" />
-          <Button variant="outline" className="w-full bg-white hover:bg-slate-50 border-[#E5E9F2] rounded-xl shadow-sm text-[#111827]" onClick={resetFilters}>
-            <X className="w-4 h-4 mr-2" aria-hidden="true" />
-            Clear Filters
+        <div className="flex items-center shrink-0 pl-1">
+          <Button variant="ghost" size="sm" className="h-9 text-slate-500 hover:text-slate-900" onClick={resetFilters}>
+            <X className="w-4 h-4 mr-1.5" aria-hidden="true" />
+            Clear
           </Button>
-        </>
+        </div>
       )}
     </div>
   );

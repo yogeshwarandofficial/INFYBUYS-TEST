@@ -36,11 +36,13 @@ export function AdminNotificationCard({ notification }: AdminNotificationCardPro
   };
 
   return (
-    <Card
+    <div
       className={cn(
-        "overflow-hidden transition-colors relative",
-        notification.link ? "cursor-pointer hover:bg-muted/50" : "",
-        !notification.isRead ? "bg-primary/5 dark:bg-primary/10 border-primary/20" : ""
+        "group relative flex flex-col sm:flex-row gap-4 p-4 rounded-xl border transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-blue-500",
+        notification.link ? "cursor-pointer hover:shadow-md hover:-translate-y-0.5" : "",
+        !notification.isRead 
+          ? "bg-blue-50/40 border-blue-100/50" 
+          : "bg-white/85 backdrop-blur-md border-[#E5E9F2] shadow-sm shadow-blue-900/5 hover:border-blue-200"
       )}
       onClick={handleNavigate}
       tabIndex={0}
@@ -53,30 +55,39 @@ export function AdminNotificationCard({ notification }: AdminNotificationCardPro
       }}
     >
       {!notification.isRead && (
-        <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+        <div className="absolute left-0 top-3 bottom-3 w-1 bg-blue-600 rounded-r-md"></div>
       )}
-      <CardContent className="p-4 space-y-3">
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex flex-col gap-1.5">
-            <div className="flex items-center gap-2">
-              <AdminNotificationTypeBadge type={notification.type} />
-              <span className="text-xs text-muted-foreground flex items-center gap-1">
-                <Clock className="h-3 w-3" /> {formatDate(notification.createdAt)}
-              </span>
-            </div>
-            <span className={cn("font-semibold text-sm", !notification.isRead ? "text-foreground" : "text-muted-foreground")}>
+      
+      <div className="flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center gap-4">
+        {/* Left Side: Type Badge and Main Content */}
+        <div className="flex-1 min-w-0 flex gap-3 sm:gap-4">
+          <div className="shrink-0 mt-1 sm:mt-0.5">
+            <AdminNotificationTypeBadge type={notification.type} className="shadow-sm" />
+          </div>
+          <div className="flex flex-col min-w-0 gap-1">
+            <span className={cn(
+              "text-[15px] truncate", 
+              !notification.isRead ? "font-semibold text-gray-900" : "font-medium text-gray-700"
+            )}>
               {notification.title}
             </span>
+            <span className="text-[14px] text-slate-500 line-clamp-1 sm:line-clamp-2 pr-4">
+              {notification.message}
+            </span>
+          </div>
+        </div>
+
+        {/* Right Side: Timestamp and Actions */}
+        <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-3 shrink-0 ml-10 sm:ml-0">
+          <div className="flex items-center gap-1.5 text-[13px] text-slate-500 font-medium">
+            <Clock className="h-3.5 w-3.5" />
+            <span>{formatDate(notification.createdAt)}</span>
           </div>
           <div onClick={(e) => e.stopPropagation()}>
             <AdminNotificationActions notification={notification} />
           </div>
         </div>
-
-        <p className="text-sm text-muted-foreground line-clamp-2">
-          {notification.message}
-        </p>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

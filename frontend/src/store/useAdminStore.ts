@@ -1019,19 +1019,11 @@ export const useAdminStore = create<AdminState>()(
     {
       name: 'infybuys-admin-storage',
       partialize: (state) => ({
+        // Only persist UI preferences and lightweight stats; never cache
+        // raw user/seller/buyer PII or conversation data in localStorage.
         stats: state.stats,
-        recentActivity: state.recentActivity,
-        systemAlerts: state.systemAlerts,
-        users: state.users,
-        sellers: state.sellers,
-        buyers: state.buyers,
-        listings: state.listings,
-        enquiries: state.enquiries,
-        conversations: state.conversations,
         notifications: state.notifications,
-        reviews: state.reviews,
         settings: state.settings,
-        auditLogs: state.auditLogs,
       }),
     }
   )

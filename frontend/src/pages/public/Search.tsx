@@ -155,7 +155,7 @@ export default function Search() {
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
 
           {/* Sidebar */}
-          <div className={`lg:w-72 shrink-0 ${showMobileFilters ? 'block' : 'hidden lg:block'}`}>
+          <div className={`lg:w-64 shrink-0 ${showMobileFilters ? 'block' : 'hidden lg:block'}`}>
             <div className="flex items-center justify-between md:hidden mb-6">
               <h3 className="font-bold text-lg">Filters</h3>
               <Button variant="ghost" size="icon" aria-label="Close filters" onClick={() => setShowMobileFilters(false)}>
@@ -242,11 +242,7 @@ export default function Search() {
               </div>
             </div>
 
-            <div className={
-              viewMode === 'grid'
-                ? "grid sm:grid-cols-2 xl:grid-cols-3 gap-6"
-                : "flex flex-col gap-6"
-            }>
+            <div className="flex flex-col gap-6 w-full">
               {isLoading ? (
                 <div className="col-span-full py-20 flex justify-center text-slate-500 text-lg font-medium">Loading...</div>
               ) : error ? (
@@ -267,7 +263,7 @@ export default function Search() {
                   <ListingCard
                     key={listing.id}
                     listing={listing}
-                    variant={viewMode === 'list' ? 'featured' : 'latest'}
+                    variant="list"
                   />
                 ))
               )}

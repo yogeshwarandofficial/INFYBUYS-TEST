@@ -44,18 +44,6 @@ export class AuthController {
     return this.authService.logout(refreshTokenDto);
   }
 
-  @Post('verify-email')
-  @HttpCode(HttpStatus.OK)
-  async verifyEmail(@Body('token') token: string) {
-    return this.authService.verifyEmail(token);
-  }
-
-  @Post('resend-verification')
-  @HttpCode(HttpStatus.OK)
-  async resendVerificationEmail(@Body('email') email: string) {
-    return this.authService.resendVerificationEmail(email);
-  }
-
   // ─── OTP endpoints ───────────────────────────────────────────────────────
 
   @Post('send-otp')

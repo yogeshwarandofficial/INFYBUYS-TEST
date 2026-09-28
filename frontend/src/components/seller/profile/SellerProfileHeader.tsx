@@ -4,8 +4,7 @@ import { SellerProfilePreviewDialog } from './SellerProfilePreviewDialog';
 import { SellerEditProfileDialog } from './SellerEditProfileDialog';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { MapPin, Briefcase, Eye, Edit } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { MapPin, Building2, Eye, Pencil, BadgeCheck } from 'lucide-react';
 
 interface SellerProfileHeaderProps {
   profile: SellerProfile;
@@ -17,52 +16,89 @@ export function SellerProfileHeader({ profile }: SellerProfileHeaderProps) {
 
   return (
     <>
-      <div className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl overflow-hidden">
-        {/* Cover Photo Area (Mocked with gradient for aesthetics) */}
-        <div className="h-32 sm:h-48 bg-gradient-to-r from-[#E0E7FF] via-[#EFF6FF] to-white/50 w-full"></div>
+      <div className="bg-white rounded-[24px] border border-slate-200 shadow-sm overflow-hidden relative">
+        {/* Animated Cover Banner */}
+      <div 
+        className="h-32 md:h-40 w-full relative bg-pan" 
+        style={{ 
+          background: 'linear-gradient(-45deg, #eff6ff, #e0e7ff, #f3e8ff, #f8fafc)',
+          backgroundSize: '400% 400%'
+        }}
+      >
+        {/* Abstract overlay patterns for texture */}
+        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(#3b82f6 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent"></div>
+      </div>
 
-        <div className="px-6 pb-6 relative">
-          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 sm:items-end -mt-12 sm:-mt-16 mb-4">
-            <Avatar className="w-24 h-24 sm:w-32 sm:h-32 border-4 border-white shadow-sm shrink-0">
-              <AvatarFallback className="text-2xl sm:text-4xl bg-[#EFF6FF] text-[#2563EB] font-medium">
-                {profile.fullName?.charAt(0) || 'S'}
-              </AvatarFallback>
-              {profile.avatarUrl && <img src={profile.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />}
-            </Avatar>
-
-            <div className="flex-1 space-y-1 mb-1">
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#111827]">{profile.fullName}</h1>
-              <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-[15px] text-[#64748B]">
-                <span className="flex items-center gap-1.5">
-                  <Briefcase className="w-4 h-4 shrink-0" aria-hidden="true" />
-                  {profile.jobTitle} {profile.companyName && `at ${profile.companyName}`}
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <MapPin className="w-4 h-4 shrink-0" aria-hidden="true" />
-                  {profile.location || 'Location not specified'}
-                </span>
-                <Badge variant="secondary" className="capitalize bg-[#F1F5F9] text-[#64748B] hover:bg-[#E2E8F0]">{profile.sellerType}</Badge>
-              </div>
+      {/* Profile Info Overlay */}
+      <div className="px-6 md:px-8 pb-8 relative">
+        {/* Avatar & Actions Row */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 -mt-12 mb-6">
+          {/* Avatar */}
+          <div className="relative w-28 h-28 md:w-32 md:h-32 rounded-[1.5rem] bg-white p-1.5 shadow-lg flex-shrink-0 group">
+            <div className="w-full h-full rounded-[1.2rem] overflow-hidden bg-slate-100 relative">
+              <Avatar className="w-full h-full rounded-[1.2rem] border-0 rounded-none shadow-none">
+                <AvatarFallback className="text-4xl bg-slate-100 text-brand-blue font-bold rounded-none">
+                  {profile.fullName?.charAt(0) || 'S'}
+                </AvatarFallback>
+                {profile.avatarUrl && <img src={profile.avatarUrl} alt="Avatar" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />}
+              </Avatar>
             </div>
-
-            <div className="flex items-center gap-3 sm:mb-2 shrink-0 w-full sm:w-auto">
-              <Button variant="outline" className="flex-1 sm:flex-none bg-white/60 hover:bg-white border-[#E5E9F2] rounded-xl text-[#111827] shadow-sm" onClick={() => setIsPreviewOpen(true)}>
-                <Eye className="w-4 h-4 mr-2" aria-hidden="true" />
-                Preview
-              </Button>
-              <Button className="flex-1 sm:flex-none bg-[#2563EB] hover:bg-blue-700 text-white rounded-xl shadow-sm" onClick={() => setIsEditOpen(true)}>
-                <Edit className="w-4 h-4 mr-2" aria-hidden="true" />
-                Edit Profile
-              </Button>
-            </div>
+            <div className="absolute bottom-2 right-2 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full shadow-sm"></div>
           </div>
-
-          <div className="max-w-3xl mt-4">
-            <p className="text-muted-foreground whitespace-pre-wrap text-sm leading-relaxed">
-              {profile.bio || 'Add a bio to tell buyers more about yourself and your expertise.'}
-            </p>
+          
+          {/* Action Buttons */}
+          <div className="flex items-center gap-3 w-full md:w-auto">
+            <Button 
+              variant="outline" 
+              className="flex-1 md:flex-none flex items-center justify-center gap-2 h-11 px-6 rounded-xl text-sm font-semibold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 hover:text-slate-900 transition-all shadow-sm"
+              onClick={() => setIsPreviewOpen(true)}
+            >
+              <Eye className="w-4 h-4 text-slate-500" />
+              Preview
+            </Button>
+            <Button 
+              className="flex-1 md:flex-none flex items-center justify-center gap-2 h-11 px-6 rounded-xl text-sm font-semibold text-white bg-blue-600 border border-blue-600 hover:bg-blue-700 hover:shadow-md transition-all shadow-sm"
+              onClick={() => setIsEditOpen(true)}
+            >
+              <Pencil className="w-4 h-4 text-white/90" />
+              Edit Profile
+            </Button>
           </div>
         </div>
+
+        {/* Name & Badges */}
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+            {profile.fullName}
+            <BadgeCheck className="text-blue-500 w-6 h-6 fill-blue-100" />
+          </h1>
+          
+          <div className="flex flex-wrap items-center gap-2.5 mt-3">
+            {profile.companyName && (
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-50 border border-slate-200 rounded-md text-sm font-medium text-slate-700">
+                <Building2 className="w-4 h-4 text-slate-400" />
+                {profile.companyName}
+              </div>
+            )}
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-50 border border-slate-200 rounded-md text-sm font-medium text-slate-700">
+              <MapPin className="w-4 h-4 text-slate-400" />
+              {profile.location || 'Location not specified'}
+            </div>
+            {profile.sellerType && (
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-blue-50 border border-blue-100 rounded-md text-sm font-bold text-blue-700 uppercase tracking-wider">
+                {profile.sellerType}
+              </div>
+            )}
+          </div>
+
+          <p className="mt-4 text-[15px] font-medium text-slate-600 max-w-2xl leading-relaxed">
+            {profile.bio && profile.bio.trim() !== '' && !profile.bio.startsWith('Lorem ipsum') && !profile.bio.includes('gibberish') 
+              ? profile.bio 
+              : 'Add a bio to tell buyers more about yourself, your expertise, and the types of businesses you represent.'}
+          </p>
+        </div>
+      </div>
       </div>
 
       <SellerProfilePreviewDialog

@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Param, Body, Request, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, Param, Body, Request, Query, UseGuards } from '@nestjs/common';
 import { ListingsService } from '../listings/listings.service.js';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 import { RolesGuard } from '../auth/guards/roles.guard.js';
@@ -27,15 +27,12 @@ export class AdminController {
   }
 
   @Get('analytics')
-  getAnalytics(@Request() req: any) {
-    const period = req.query.period || '30d';
+  getAnalytics(@Query('period') period = '30d') {
     return this.adminService.getAnalytics(period);
   }
 
   @Get('reports')
-  getReports(@Request() req: any) {
-    const type = req.query.type || 'users';
-    const range = req.query.range || '30d';
+  getReports(@Query('type') type = 'users', @Query('range') range = '30d') {
     return this.adminService.getReportData(type, range);
   }
 

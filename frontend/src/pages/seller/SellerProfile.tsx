@@ -7,7 +7,6 @@ import { SellerBusinessInformationCard } from '@/components/seller/profile/Selle
 import { SellerSocialLinksCard } from '@/components/seller/profile/SellerSocialLinksCard';
 import { useEffect, useState } from 'react';
 import { apiClient } from '@/services/apiClient';
-import { Card, CardContent } from '@/components/ui/card';
 import { Star } from 'lucide-react';
 
 export default function SellerProfile() {
@@ -43,48 +42,46 @@ export default function SellerProfile() {
     <>
       <Seo title="My Profile - Seller Portal | InfyBuys" />
 
-      <div className="p-4 sm:p-6 space-y-6 max-w-7xl mx-auto pb-12">
+      <div className="p-4 sm:p-6 space-y-8 max-w-7xl mx-auto pb-12">
         <SellerProfileHeader profile={profile} />
 
-        <div className="grid lg:grid-cols-3 gap-8 mt-8 items-start">
-          <div className="lg:col-span-2 space-y-6">
+        <div className="flex flex-col lg:flex-row gap-8 items-start">
+          <div className="flex-1 space-y-8 min-w-0">
             <SellerBusinessInformationCard profile={profile} />
 
             {reviews.length > 0 && (
-              <div>
-                <h2 className="text-2xl font-bold mb-6">Your Reviews</h2>
+              <div className="bg-white rounded-[24px] border border-slate-200 shadow-sm p-8 relative">
+                <h2 className="text-lg font-bold text-slate-900 mb-6">Your Reviews</h2>
                 <div className="grid gap-4">
                   {reviews.map(review => (
-                    <Card key={review.id}>
-                      <CardContent className="p-6 flex gap-4">
-                        <img 
-                          src={review.buyer?.buyerProfile?.avatarKey || `https://ui-avatars.com/api/?name=${encodeURIComponent(review.buyer?.name || 'Buyer')}`} 
-                          alt="Buyer" 
-                          className="w-12 h-12 rounded-full object-cover bg-muted"
-                        />
-                        <div>
-                          <div className="font-semibold mb-1">{review.buyer?.name || 'Anonymous Buyer'}</div>
-                          <div className="flex gap-1 mb-2">
-                            {[1, 2, 3, 4, 5].map((star) => (
-                              <Star
-                                key={star}
-                                className={`w-4 h-4 ${star <= review.rating ? 'fill-orange-400 text-orange-400' : 'text-muted-foreground/30'}`}
-                              />
-                            ))}
-                          </div>
-                          <p className="text-muted-foreground text-sm">{review.comment}</p>
-                          <div className="text-xs text-muted-foreground mt-2">
-                            {new Date(review.createdAt).toLocaleDateString()}
-                          </div>
+                    <div key={review.id} className="p-6 rounded-2xl border border-slate-100 bg-slate-50/50 flex gap-4">
+                      <img 
+                        src={review.buyer?.buyerProfile?.avatarKey || `https://ui-avatars.com/api/?name=${encodeURIComponent(review.buyer?.name || 'Buyer')}`} 
+                        alt="Buyer" 
+                        className="w-12 h-12 rounded-full object-cover bg-slate-200 shrink-0"
+                      />
+                      <div>
+                        <div className="font-bold text-slate-900 mb-1">{review.buyer?.name || 'Anonymous Buyer'}</div>
+                        <div className="flex gap-1 mb-2">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <Star
+                              key={star}
+                              className={`w-4 h-4 ${star <= review.rating ? 'fill-orange-400 text-orange-400' : 'text-slate-300'}`}
+                            />
+                          ))}
                         </div>
-                      </CardContent>
-                    </Card>
+                        <p className="text-slate-600 text-[15px] leading-relaxed">{review.comment}</p>
+                        <div className="text-xs font-medium text-slate-400 mt-3">
+                          {new Date(review.createdAt).toLocaleDateString()}
+                        </div>
+                      </div>
+                    </div>
                   ))}
                 </div>
               </div>
             )}
           </div>
-          <div className="lg:col-span-1 flex flex-col gap-6">
+          <div className="w-full lg:w-[380px] shrink-0 flex flex-col gap-8">
             <SellerProfileCompletion profile={profile} />
             <SellerContactInformationCard profile={profile} />
             <SellerSocialLinksCard profile={profile} />

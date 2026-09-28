@@ -80,58 +80,35 @@ export default function SellerNotifications() {
         </div>
 
         {/* Main Layout */}
-        <div className="flex gap-8 mt-8 items-start">
-          {/* Desktop Sidebar Filters */}
-          <aside className="hidden lg:block w-[280px] shrink-0 sticky top-24">
-            <div className="bg-white/85 backdrop-blur-md rounded-2xl border border-[#E5E9F2] shadow-sm shadow-blue-900/5 p-6">
-              <h2 className="font-bold text-base text-[#111827] mb-6">Filters</h2>
-            <SellerNotificationFilters
-              filters={filters}
-              updateFilter={updateFilter}
-              resetFilters={resetFilters}
-              hasActiveFilters={hasActiveFilters}
-            />
-          </div>
-          </aside>
-
-          {/* List Section */}
-          <div className="flex-1 min-w-0 w-full space-y-4">
-            {/* Search and Mobile Filters */}
-            <div className="flex flex-col sm:flex-row gap-4">
+        <div className="w-full space-y-4 mt-8">
+          {/* Toolbar */}
+          <div className="flex flex-col md:flex-row items-center gap-3 bg-white/85 backdrop-blur-md p-3 rounded-2xl border border-[#E5E9F2] shadow-sm w-full">
+            <div className="w-full md:w-64 shrink-0">
               <SellerNotificationSearch
                 value={filters.search}
                 onChange={(v) => updateFilter('search', v)}
               />
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button variant="outline" className="relative lg:hidden w-full sm:w-auto bg-white/60 border-[#E5E9F2] rounded-xl shadow-sm h-10 text-[#111827]">
-                    <Filter className="w-4 h-4 mr-2" />
-                    Filters
-                    {hasActiveFilters && (
-                      <span className="ml-2 w-2 h-2 rounded-full bg-primary" />
-                    )}
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-                  <SheetTitle className="mb-4">Filter Notifications</SheetTitle>
-                  <SellerNotificationFilters
-                    filters={filters}
-                    updateFilter={updateFilter}
-                    resetFilters={resetFilters}
-                    hasActiveFilters={hasActiveFilters}
-                  />
-                </SheetContent>
-              </Sheet>
             </div>
+            <div className="hidden md:block h-8 w-px bg-slate-200 mx-1 shrink-0" />
+            <div className="w-full flex-1 overflow-x-auto">
+              <SellerNotificationFilters
+                filters={filters}
+                updateFilter={updateFilter}
+                resetFilters={resetFilters}
+                hasActiveFilters={hasActiveFilters}
+              />
+            </div>
+          </div>
 
-            {/* List */}
-            <div className="space-y-3">
+          {/* List Section */}
+          <div className="bg-white rounded-2xl shadow-sm border border-[#E5E9F2] overflow-hidden flex flex-col">
+            <div className="divide-y divide-[#E5E9F2] flex-1">
               {isLoading ? (
-                <div className="p-8 text-center text-sm text-muted-foreground">Loading...</div>
+                <div className="p-12 text-center text-sm text-muted-foreground flex flex-col items-center justify-center">Loading notifications...</div>
               ) : totalCount === 0 ? (
-                <SellerNotificationEmptyState type="empty" />
+                <div className="p-8"><SellerNotificationEmptyState type="empty" /></div>
               ) : paginated.length === 0 ? (
-                <SellerNotificationEmptyState type="no-results" onClearFilters={resetFilters} />
+                <div className="p-8"><SellerNotificationEmptyState type="no-results" onClearFilters={resetFilters} /></div>
               ) : (
                 paginated.map((notification) => (
                   <SellerNotificationCard key={notification.id} notification={notification as any} />

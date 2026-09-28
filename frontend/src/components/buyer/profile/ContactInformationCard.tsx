@@ -1,4 +1,3 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Mail, Phone, MapPin } from 'lucide-react';
 import { useBuyerProfile } from '@/hooks/useBuyerProfile';
 
@@ -8,41 +7,45 @@ export function ContactInformationCard() {
   if (!profile) return null;
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-lg">Contact Information</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
-            <Mail className="w-5 h-5" />
+    <div className="bg-white rounded-[24px] border border-slate-200 shadow-sm p-8 relative">
+      <h3 className="text-sm font-bold text-slate-900 mb-6 uppercase tracking-wider">Contact Info</h3>
+      <ul className="space-y-5">
+        <li className="flex items-start gap-4 group">
+          <div className="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center flex-shrink-0 text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-500 group-hover:border-blue-100 transition-all">
+            <Mail className="w-4 h-4" />
           </div>
-          <div className="min-w-0">
-            <p className="text-sm font-medium">Email</p>
-            <p className="text-sm text-muted-foreground truncate">{profile.email}</p>
+          <div className="overflow-hidden pt-0.5">
+            <p className="text-[11px] font-medium text-slate-500 mb-0.5 uppercase tracking-wide">Email</p>
+            <p className="text-[15px] font-bold text-slate-900 break-words">{profile.email}</p>
           </div>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
-            <Phone className="w-5 h-5" />
+        </li>
+        <li className="flex items-start gap-4 group">
+          <div className="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center flex-shrink-0 text-slate-400 group-hover:bg-emerald-50 group-hover:text-emerald-500 group-hover:border-emerald-100 transition-all">
+            <Phone className="w-4 h-4" />
           </div>
-          <div className="min-w-0">
-            <p className="text-sm font-medium">Phone</p>
-            <p className="text-sm text-muted-foreground truncate">{profile.phone || 'Not provided'}</p>
+          <div className="pt-0.5">
+            <p className="text-[11px] font-medium text-slate-500 mb-0.5 uppercase tracking-wide">Phone</p>
+            {profile.phone ? (
+              <p className="text-[15px] font-bold text-slate-900">{profile.phone}</p>
+            ) : (
+              <p className="text-[15px] font-medium text-slate-400 italic">Not provided</p>
+            )}
           </div>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
-            <MapPin className="w-5 h-5" />
+        </li>
+        <li className="flex items-start gap-4 group">
+          <div className="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center flex-shrink-0 text-slate-400 group-hover:bg-purple-50 group-hover:text-purple-500 group-hover:border-purple-100 transition-all">
+            <MapPin className="w-4 h-4" />
           </div>
-          <div className="min-w-0">
-            <p className="text-sm font-medium">Location</p>
-            <p className="text-sm text-muted-foreground truncate">{profile.location || 'Not provided'}</p>
+          <div className="pt-0.5">
+            <p className="text-[11px] font-medium text-slate-500 mb-0.5 uppercase tracking-wide">Location</p>
+            {profile.location ? (
+              <p className="text-[15px] font-bold text-slate-900 break-words">{profile.location}</p>
+            ) : (
+              <p className="text-[15px] font-medium text-slate-400 italic">Not provided</p>
+            )}
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </li>
+      </ul>
+    </div>
   );
 }

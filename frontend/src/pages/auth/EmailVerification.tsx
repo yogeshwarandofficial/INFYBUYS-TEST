@@ -15,7 +15,7 @@ export default function EmailVerification() {
   const { status } = useUserStore();
   const navigate = useNavigate();
   const location = useLocation();
-  const email = location.state?.email || localStorage.getItem('verificationEmail');
+  const email = location.state?.email ?? null;
 
   // If already authenticated, redirect away
   useEffect(() => {

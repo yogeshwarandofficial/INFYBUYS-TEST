@@ -1,6 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import type { LucideIcon } from 'lucide-react';
+import { TrendingUp, TrendingDown } from 'lucide-react';
 
 interface AdminStatCardProps {
   title: string;
@@ -18,41 +18,48 @@ interface AdminStatCardProps {
 export function AdminStatCard({ title, value, description, icon: Icon, trend, className }: AdminStatCardProps) {
   const getIconStyle = () => {
     const t = title.toLowerCase();
-    if (t.includes('user') || t.includes('buyer')) return 'bg-blue-50/80 text-blue-600 border-blue-100/50';
-    if (t.includes('revenue') || t.includes('active')) return 'bg-emerald-50/80 text-emerald-600 border-emerald-100/50';
-    if (t.includes('seller') || t.includes('approval')) return 'bg-purple-50/80 text-purple-600 border-purple-100/50';
-    if (t.includes('listing') || t.includes('enquir')) return 'bg-orange-50/80 text-orange-600 border-orange-100/50';
-    return 'bg-slate-50/80 text-slate-600 border-slate-100/50';
+    if (t.includes('user') || t.includes('buyer')) return 'bg-blue-50 text-blue-600 group-hover:bg-blue-100';
+    if (t.includes('revenue')) return 'bg-emerald-50 text-emerald-600 group-hover:bg-emerald-100';
+    if (t.includes('active')) return 'bg-teal-50 text-teal-600 group-hover:bg-teal-100';
+    if (t.includes('seller') || t.includes('approval')) return 'bg-purple-50 text-purple-600 group-hover:bg-purple-100';
+    if (t.includes('listing')) return 'bg-green-50 text-green-600 group-hover:bg-green-100';
+    if (t.includes('enquir')) return 'bg-orange-50 text-orange-600 group-hover:bg-orange-100';
+    if (title.toLowerCase() === 'pending approvals') return 'bg-amber-50 text-amber-600 group-hover:bg-amber-100';
+    return 'bg-slate-50 text-slate-600 group-hover:bg-slate-100';
   };
-  return (
-    <Card className={cn("bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 overflow-hidden", className)}>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-[13px] font-semibold text-[#64748B] uppercase tracking-wider">
-          {title}
-        </CardTitle>
-        <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center shadow-sm border shrink-0", getIconStyle())}>
-          <Icon className="h-5 w-5" />
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className="text-3xl font-bold text-[#111827] mt-1">{value}</div>
 
-        {(description || trend) && (
-          <div className="flex items-center gap-2 mt-1">
-            {trend && (
+  return (
+    <div className={cn("bg-white rounded-xl border border-slate-200 p-5 shadow-subtle hover:shadow-card transition-shadow group relative overflow-hidden", className)}>
+      {title.toLowerCase() === 'pending approvals' && (
+        <div className="absolute inset-0 bg-amber-50/30 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+      )}
+      <div className="flex justify-between items-start mb-4 relative z-10">
+        <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{title}</h3>
+        <div className={cn("w-8 h-8 rounded-md flex items-center justify-center transition-colors", getIconStyle())}>
+          <Icon className="w-[18px] h-[18px]" />
+        </div>
+      </div>
+      <div className="flex items-baseline gap-2 relative z-10">
+        <span className="text-3xl font-bold text-slate-900">{value}</span>
+      </div>
+      {(description || trend) && (
+        <div className="mt-3 flex items-center text-sm relative z-10">
+          {trend ? (
+            <>
               <span className={cn(
-                "text-xs font-medium",
+                "font-medium flex items-center gap-1",
                 trend.positive ? "text-emerald-600" : "text-destructive"
               )}>
+                {trend.positive ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />}
                 {trend.positive ? '+' : ''}{trend.value}%
               </span>
-            )}
-            <p className="text-[13px] text-[#64748B]">
-              {trend?.label || description}
-            </p>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+              <span className="text-slate-500 ml-2">{trend.label}</span>
+            </>
+          ) : (
+            <span className="text-slate-500">{description}</span>
+          )}
+        </div>
+      )}
+    </div>
   );
 }

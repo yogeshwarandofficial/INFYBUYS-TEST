@@ -1,13 +1,9 @@
 import { useAdminUserSearch } from '../../hooks/useAdminUserSearch';
-import { useAdminStore } from '../../store/useAdminStore';
 import { AdminUsersTable } from '../../components/admin/users/AdminUsersTable';
-import { AdminUserCard } from '../../components/admin/users/AdminUserCard';
-import { AdminUserSearch } from '../../components/admin/users/AdminUserSearch';
-import { AdminUserFilters } from '../../components/admin/users/AdminUserFilters';
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
-import { Users, UserCheck, Store, ShieldAlert } from 'lucide-react';
+import { Users, UserCheck, Store, ShieldAlert, Plus, Search, SlidersHorizontal, ArrowDownWideNarrow } from 'lucide-react';
 import { Pagination } from '../../components/shared/Pagination';
 import { EmptyState } from '../../components/shared/EmptyState';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
 
 import { useEffect, useState } from 'react';
 import { apiClient } from '../../services/apiClient';
@@ -47,122 +43,212 @@ export default function AdminUsers() {
     fetchStats();
   }, []);
 
-  // Use fetched KPIs
   const totalUsers = stats.totalUsers;
   const activeUsers = stats.activeUsers;
   const sellers = stats.sellers;
   const suspendedUsers = stats.suspendedUsers;
 
+  const activeFiltersCount = (filters.role && filters.role !== 'all' ? 1 : 0) +
+    (filters.status && filters.status !== 'all' ? 1 : 0) +
+    (filters.emailVerified && filters.emailVerified !== 'all' ? 1 : 0) +
+    (filters.phoneVerified && filters.phoneVerified !== 'all' ? 1 : 0);
+
   return (
-    <div className="p-4 sm:p-6 space-y-8 max-w-7xl mx-auto pb-12">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight text-[#111827]">Users Management</h1>
-        <p className="text-[15px] text-[#64748B] mt-1">Manage {totalUsers} total users across the platform</p>
-      </div>
-
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 overflow-hidden">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-[13px] font-semibold text-[#64748B] uppercase tracking-wider">Total Users</CardTitle>
-            <div className="w-10 h-10 rounded-xl bg-blue-50/80 text-blue-600 border border-blue-100/50 flex items-center justify-center shrink-0"><Users className="h-5 w-5" /></div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-[#111827] mt-1">{totalUsers.toLocaleString()}</div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 overflow-hidden">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-[13px] font-semibold text-[#64748B] uppercase tracking-wider">Active Users</CardTitle>
-            <div className="w-10 h-10 rounded-xl bg-emerald-50/80 text-emerald-600 border border-emerald-100/50 flex items-center justify-center shrink-0"><UserCheck className="h-5 w-5" /></div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-[#111827] mt-1">{activeUsers.toLocaleString()}</div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 overflow-hidden">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-[13px] font-semibold text-[#64748B] uppercase tracking-wider">Sellers</CardTitle>
-            <div className="w-10 h-10 rounded-xl bg-purple-50/80 text-purple-600 border border-purple-100/50 flex items-center justify-center shrink-0"><Store className="h-5 w-5" /></div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-[#111827] mt-1">{sellers.toLocaleString()}</div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 overflow-hidden">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-[13px] font-semibold text-[#64748B] uppercase tracking-wider">Suspended / Blocked</CardTitle>
-            <div className="w-10 h-10 rounded-xl bg-red-50/80 text-red-600 border border-red-100/50 flex items-center justify-center shrink-0"><ShieldAlert className="h-5 w-5" /></div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-[#111827] mt-1">{suspendedUsers.toLocaleString()}</div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="flex flex-col lg:flex-row gap-6">
-        {/* Desktop Sidebar Filters (Hidden on Mobile) */}
-        <div className="hidden lg:block">
-          <AdminUserFilters
-            filters={filters}
-            onFilterChange={setFilters}
-            sorting={sorting}
-            onSortingChange={setSorting}
-            onReset={resetFilters}
-          />
+    <div className="flex-1 overflow-y-auto p-4 sm:p-8 bg-slate-50">
+      <div className="max-w-[1400px] mx-auto space-y-8 pb-12">
+          
+        {/* Page Header */}
+        <div className="animate-fade-in flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
+          <div>
+            <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Users Management</h2>
+            <p className="text-sm text-slate-500 mt-1 flex items-center gap-2">
+              <span>Manage <span className="font-semibold text-slate-700">{totalUsers}</span> total users across the platform</span>
+            </p>
+          </div>
+          
+          <button className="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-4 py-2.5 rounded-lg text-sm font-medium transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0">
+            <Plus className="w-4 h-4" />
+            Add New User
+          </button>
         </div>
 
-        {/* Main Content Area */}
-        <div className="flex-1 space-y-6 min-w-0">
-          <div className="flex flex-col sm:flex-row gap-4 justify-between">
-            <AdminUserSearch value={search} onChange={setSearch} />
-            <div className="lg:hidden">
-              <AdminUserFilters
-                filters={filters}
-                onFilterChange={setFilters}
-                sorting={sorting}
-                onSortingChange={setSorting}
-                onReset={resetFilters}
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 animate-slide-up delay-100">
+          
+          {/* Card 1: Total Users */}
+          <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-subtle flex flex-col justify-between overflow-hidden relative group">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-bl-full -z-10 group-hover:scale-110 transition-transform duration-500"></div>
+            <div className="flex justify-between items-start mb-6">
+              <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Users</h3>
+              <div className="w-8 h-8 rounded-md bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100">
+                <Users className="w-[18px] h-[18px]" />
+              </div>
+            </div>
+            <div className="flex items-baseline gap-2 z-10">
+              <span className="text-4xl font-extrabold text-slate-900 tracking-tight">{totalUsers.toLocaleString()}</span>
+            </div>
+          </div>
+
+          {/* Card 2: Active Users */}
+          <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-subtle flex flex-col justify-between overflow-hidden relative group">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-50 rounded-bl-full -z-10 group-hover:scale-110 transition-transform duration-500"></div>
+            <div className="flex justify-between items-start mb-6">
+              <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Active Users</h3>
+              <div className="w-8 h-8 rounded-md bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
+                <UserCheck className="w-[18px] h-[18px]" />
+              </div>
+            </div>
+            <div className="flex items-baseline gap-2 z-10">
+              <span className="text-4xl font-extrabold text-slate-900 tracking-tight">{activeUsers.toLocaleString()}</span>
+            </div>
+          </div>
+
+          {/* Card 3: Sellers */}
+          <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-subtle flex flex-col justify-between overflow-hidden relative group">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-purple-50 rounded-bl-full -z-10 group-hover:scale-110 transition-transform duration-500"></div>
+            <div className="flex justify-between items-start mb-6">
+              <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Sellers</h3>
+              <div className="w-8 h-8 rounded-md bg-purple-50 text-purple-600 flex items-center justify-center border border-purple-100">
+                <Store className="w-[18px] h-[18px]" />
+              </div>
+            </div>
+            <div className="flex items-baseline gap-2 z-10">
+              <span className="text-4xl font-extrabold text-slate-900 tracking-tight">{sellers.toLocaleString()}</span>
+            </div>
+          </div>
+
+          {/* Card 4: Suspended / Blocked */}
+          <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-subtle flex flex-col justify-between overflow-hidden relative group">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-rose-50 rounded-bl-full -z-10 group-hover:scale-110 transition-transform duration-500"></div>
+            <div className="flex justify-between items-start mb-6">
+              <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Suspended / Blocked</h3>
+              <div className="w-8 h-8 rounded-md bg-rose-50 text-rose-600 flex items-center justify-center border border-rose-100">
+                <ShieldAlert className="w-[18px] h-[18px]" />
+              </div>
+            </div>
+            <div className="flex items-baseline gap-2 z-10">
+              <span className="text-4xl font-extrabold text-slate-900 tracking-tight">{suspendedUsers.toLocaleString()}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Unified Table Container */}
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm animate-slide-up delay-200 overflow-hidden flex flex-col">
+          
+          {/* Top Gradient Accent Line */}
+          <div className="h-1 w-full bg-gradient-to-r from-blue-500 via-indigo-400 to-purple-400"></div>
+
+          {/* Unified Control Bar */}
+          <div className="p-5 border-b border-slate-100 flex flex-col xl:flex-row xl:items-center justify-between gap-4 bg-slate-50/50">
+            
+            {/* Search */}
+            <div className="relative group w-full xl:w-auto">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
+              <input 
+                type="text" 
+                placeholder="Search users by name, email..." 
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full xl:w-72 focus:xl:w-80 pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all duration-300 shadow-sm"
               />
+            </div>
+
+            {/* Horizontal Filters */}
+            <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+              {/* Role Filter */}
+              <Select value={filters.role || 'all'} onValueChange={(val) => setFilters({ role: val as any })}>
+                <SelectTrigger className="flex items-center gap-2 px-3 py-1.5 h-auto bg-white border border-slate-200 hover:border-slate-300 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 shadow-sm transition-all focus:ring-0 focus:ring-offset-0">
+                  <span className="text-slate-400 font-normal">Role:</span> <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Roles</SelectItem>
+                  <SelectItem value="admin">Admin</SelectItem>
+                  <SelectItem value="seller">Seller</SelectItem>
+                  <SelectItem value="buyer">Buyer</SelectItem>
+                </SelectContent>
+              </Select>
+              
+              {/* Status Filter */}
+              <Select value={filters.status || 'all'} onValueChange={(val) => setFilters({ status: val as any })}>
+                <SelectTrigger className="flex items-center gap-2 px-3 py-1.5 h-auto bg-white border border-slate-200 hover:border-slate-300 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 shadow-sm transition-all focus:ring-0 focus:ring-offset-0">
+                  <span className="text-slate-400 font-normal">Status:</span> <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Statuses</SelectItem>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="suspended">Suspended</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="blocked">Blocked</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <div className="w-px h-6 bg-slate-200 mx-1 hidden sm:block"></div>
+
+              {/* Advanced Filters Toggle (Optional - simplified to Reset for now) */}
+              {activeFiltersCount > 0 ? (
+                <button 
+                  onClick={resetFilters}
+                  className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 border border-transparent hover:bg-slate-200 rounded-lg text-sm font-medium text-slate-700 transition-all"
+                >
+                  <SlidersHorizontal className="w-4 h-4" />
+                  Reset Filters
+                  <span className="flex items-center justify-center w-5 h-5 rounded bg-white text-[10px] font-bold shadow-sm border border-slate-200">{activeFiltersCount}</span>
+                </button>
+              ) : (
+                <button className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 border border-transparent hover:bg-slate-200 rounded-lg text-sm font-medium text-slate-700 transition-all opacity-70">
+                  <SlidersHorizontal className="w-4 h-4" />
+                  Filters
+                </button>
+              )}
+
+              {/* Sort */}
+              <Select value={sorting} onValueChange={(val) => setSorting(val as any)}>
+                <SelectTrigger className="flex items-center gap-2 px-3 py-1.5 h-auto bg-white border border-slate-200 hover:border-slate-300 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 shadow-sm transition-all ml-auto xl:ml-0 focus:ring-0 focus:ring-offset-0">
+                  <ArrowDownWideNarrow className="w-4 h-4" />
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="newest">Newest First</SelectItem>
+                  <SelectItem value="oldest">Oldest First</SelectItem>
+                  <SelectItem value="nameAsc">Name (A-Z)</SelectItem>
+                  <SelectItem value="nameDesc">Name (Z-A)</SelectItem>
+                  <SelectItem value="lastLogin">Recent Login</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
           {/* Results List */}
           {paginatedUsers.length === 0 ? (
-            <EmptyState
-              title="No users found"
-              description="No users match your current search and filter criteria."
-              actionLabel="Clear Filters"
-              onAction={resetFilters}
-            />
+            <div className="p-8">
+              <EmptyState
+                title="No users found"
+                description="No users match your current search and filter criteria."
+                actionLabel="Clear Filters"
+                onAction={resetFilters}
+              />
+            </div>
           ) : (
-            <div className="space-y-4">
-              {/* Mobile View: Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:hidden gap-4">
-                {paginatedUsers.map((user) => (
-                  <AdminUserCard key={user.id} user={user} />
-                ))}
-              </div>
-
+            <>
               {/* Desktop View: Table */}
-              <div className="hidden lg:block overflow-hidden rounded-md border-[#E5E9F2] bg-white/85 backdrop-blur-md shadow-sm shadow-blue-900/5 rounded-2xl">
+              <div className="overflow-x-auto">
                 <AdminUsersTable users={paginatedUsers} />
               </div>
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <div className="pt-4 flex justify-center">
-                  <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={setCurrentPage}
-                  />
+                <div className="p-4 border-t border-slate-100 bg-slate-50 flex flex-col sm:flex-row items-center justify-between text-sm text-slate-500 gap-4">
+                  <span>Showing page <span className="font-medium text-slate-900">{currentPage}</span> of <span className="font-medium text-slate-900">{totalPages}</span></span>
+                  <div className="flex-1 w-full flex justify-end">
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      onPageChange={setCurrentPage}
+                    />
+                  </div>
                 </div>
               )}
-            </div>
+            </>
           )}
         </div>
       </div>

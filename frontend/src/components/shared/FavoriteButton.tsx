@@ -2,6 +2,7 @@ import React from 'react';
 import { Heart } from 'lucide-react';
 import { useIsFavorite, useAddFavorite, useRemoveFavorite } from '@/hooks/useFavorites';
 import { useUserStore } from '@/store/useUserStore';
+import { cn } from '@/lib/utils';
 
 interface FavoriteButtonProps {
   listingId: string;
@@ -34,13 +35,16 @@ export const FavoriteButton: React.FC<FavoriteButtonProps> = ({ listingId, class
   return (
     <button
       onClick={toggleFavorite}
-      className={`p-2 rounded-full bg-white/80 backdrop-blur hover:bg-white shadow-sm transition-all duration-200 focus:outline-none ${className}`}
+      className={cn("w-[38px] h-[38px] flex items-center justify-center rounded-full bg-white/80 backdrop-blur-md hover:bg-white shadow-sm border border-slate-100 hover:border-slate-200 transition-all duration-300 focus:outline-none hover:shadow-md hover:-translate-y-0.5 group", className)}
       aria-label={isFavorite ? "Remove from saved listings" : "Save listing"}
     >
       <Heart
-        className={`w-5 h-5 transition-colors duration-200 ${
-          isFavorite ? 'fill-red-500 text-red-500' : 'text-slate-500 hover:text-red-500'
-        } ${iconClassName}`}
+        className={cn("w-[18px] h-[18px] transition-all duration-300", 
+          isFavorite 
+            ? 'fill-red-500 text-red-500 scale-110' 
+            : 'text-slate-500 group-hover:text-red-500 group-hover:scale-110',
+          iconClassName
+        )}
       />
     </button>
   );

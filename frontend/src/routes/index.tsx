@@ -35,8 +35,7 @@ const Maintenance = lazy(() => import('../pages/public/Maintenance'));
 const Unauthorized = lazy(() => import('../pages/public/Unauthorized'));
 
 // Auth Pages
-const Login = lazy(() => import('../pages/auth/Login'));
-const Register = lazy(() => import('../pages/auth/Register'));
+const UnifiedAuth = lazy(() => import('../pages/auth/UnifiedAuth'));
 const OTPVerification = lazy(() => import('../pages/auth/OTPVerification'));
 const ForgotPassword = lazy(() => import('../pages/auth/ForgotPassword'));
 const ResetPassword = lazy(() => import('../pages/auth/ResetPassword'));
@@ -164,11 +163,11 @@ export const router = createBrowserRouter([
       {
         element: <PublicRoute />, // Prevents logged in users from seeing auth pages
         children: [
+          { path: 'login', element: <Suspense fallback={<PageLoader />}><UnifiedAuth /></Suspense> },
+          { path: 'register', element: <Suspense fallback={<PageLoader />}><UnifiedAuth /></Suspense> },
           {
             element: <AuthLayout />,
             children: [
-              { path: 'login', element: <Suspense fallback={<PageLoader />}><Login /></Suspense> },
-              { path: 'register', element: <Suspense fallback={<PageLoader />}><Register /></Suspense> },
               { path: 'forgot-password', element: <Suspense fallback={<PageLoader />}><ForgotPassword /></Suspense> },
               { path: 'reset-password', element: <Suspense fallback={<PageLoader />}><ResetPassword /></Suspense> },
               { path: 'verify-otp', element: <Suspense fallback={<PageLoader />}><OTPVerification /></Suspense> },

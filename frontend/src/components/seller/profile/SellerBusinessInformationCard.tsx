@@ -1,6 +1,6 @@
 import { type SellerProfileData as SellerProfile } from '@/hooks/useSellerProfile';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Briefcase, Plus } from 'lucide-react';
 
 interface SellerBusinessInformationCardProps {
   profile: SellerProfile;
@@ -8,52 +8,79 @@ interface SellerBusinessInformationCardProps {
 
 export function SellerBusinessInformationCard({ profile }: SellerBusinessInformationCardProps) {
   return (
-    <Card className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl">
-      <CardHeader>
-        <CardTitle className="text-lg text-[#111827]">Business Details</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <p className="text-sm font-semibold text-[#64748B]">Seller Type</p>
-            <p className="text-[15px] font-medium text-[#111827] capitalize mt-1">{profile.sellerType}</p>
+    <div className="bg-white rounded-[24px] border border-slate-200 shadow-sm p-8 relative">
+      <div className="flex items-center justify-between mb-8">
+        <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
+            <Briefcase className="w-5 h-5" />
           </div>
-          <div>
-            <p className="text-sm font-semibold text-[#64748B]">Experience</p>
-            <p className="text-[15px] font-medium text-[#111827] mt-1">{profile.yearsOfExperience || 'Not specified'}</p>
-          </div>
-          <div>
-            <p className="text-sm font-semibold text-[#64748B]">Job Title</p>
-            <p className="text-[15px] font-medium text-[#111827] mt-1">{profile.jobTitle || 'Not specified'}</p>
-          </div>
-        </div>
+          Business Details
+        </h2>
+      </div>
 
-        <div className="space-y-2">
-          <p className="text-sm font-semibold text-[#64748B]">Preferred Categories</p>
-          <div className="flex flex-wrap gap-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-8">
+        {/* Group 1 */}
+        <div>
+          <p className="text-[11px] font-medium uppercase tracking-wider text-slate-500 mb-1">Seller Type</p>
+          <p className="text-[15px] font-bold text-slate-900 capitalize">{profile.sellerType}</p>
+        </div>
+        
+        {/* Group 2 */}
+        <div>
+          <p className="text-[11px] font-medium uppercase tracking-wider text-slate-500 mb-1">Experience</p>
+          {profile.yearsOfExperience ? (
+            <p className="text-[15px] font-bold text-slate-900">{profile.yearsOfExperience}</p>
+          ) : (
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-100 border border-slate-200/60 text-xs font-medium text-slate-500 border-dashed">
+              <Plus className="w-3 h-3" /> Not specified
+            </div>
+          )}
+        </div>
+        
+        {/* Group 3 */}
+        <div>
+          <p className="text-[11px] font-medium uppercase tracking-wider text-slate-500 mb-1">Job Title</p>
+          {profile.jobTitle ? (
+            <p className="text-[15px] font-bold text-slate-900">{profile.jobTitle}</p>
+          ) : (
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-100 border border-slate-200/60 text-xs font-medium text-slate-500 border-dashed">
+              <Plus className="w-3 h-3" /> Not specified
+            </div>
+          )}
+        </div>
+        
+        {/* Group 4 */}
+        <div className="md:col-span-2 pt-4 border-t border-slate-100">
+          <p className="text-[11px] font-medium uppercase tracking-wider text-slate-500 mb-3">Preferred Categories</p>
+          <div className="flex flex-wrap items-center gap-2">
             {profile.preferredCategories.length > 0 ? (
               profile.preferredCategories.map((cat) => (
-                <Badge key={cat} variant="secondary" className="bg-[#EFF6FF] text-[#2563EB] hover:bg-blue-100/50">{cat}</Badge>
+                <Badge key={cat} variant="secondary" className="px-3 py-1 bg-slate-50 border border-slate-200 rounded-lg text-[13px] font-semibold text-slate-700">{cat}</Badge>
               ))
             ) : (
-              <span className="text-sm text-muted-foreground">None selected</span>
+              <button className="px-4 py-2 border border-dashed border-slate-300 rounded-xl text-xs font-semibold text-slate-500 hover:bg-slate-50 hover:text-blue-600 transition-colors flex items-center gap-2">
+                <Plus className="w-4 h-4" /> Add Categories
+              </button>
             )}
           </div>
         </div>
-
-        <div className="space-y-2">
-          <p className="text-sm font-semibold text-[#64748B]">Preferred Locations</p>
-          <div className="flex flex-wrap gap-2">
+        
+        {/* Group 5 */}
+        <div className="md:col-span-2 pt-4 border-t border-slate-100">
+          <p className="text-[11px] font-medium uppercase tracking-wider text-slate-500 mb-3">Preferred Locations</p>
+          <div className="flex flex-wrap items-center gap-2">
             {profile.preferredLocations.length > 0 ? (
               profile.preferredLocations.map((loc) => (
-                <Badge key={loc} variant="outline" className="border-purple-200 bg-purple-50 text-purple-700 hover:bg-purple-100/50">{loc}</Badge>
+                <Badge key={loc} variant="outline" className="px-3 py-1 bg-slate-50 border border-slate-200 rounded-lg text-[13px] font-semibold text-slate-700">{loc}</Badge>
               ))
             ) : (
-              <span className="text-sm text-muted-foreground">None selected</span>
+              <button className="px-4 py-2 border border-dashed border-slate-300 rounded-xl text-xs font-semibold text-slate-500 hover:bg-slate-50 hover:text-blue-600 transition-colors flex items-center gap-2">
+                <Plus className="w-4 h-4" /> Add Locations
+              </button>
             )}
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

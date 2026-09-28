@@ -93,7 +93,9 @@ const handleResponse = async (response: Response, fetchFn: () => Promise<Respons
       }
     }
     const errorData = await response.json().catch(() => null);
-    throw new Error(errorData?.message || response.statusText || 'API Error');
+    // Return only a safe, generic message — never expose raw server internals to the browser
+    const safeMessage = errorData?.message || response.statusText || 'An unexpected error occurred';
+    throw new Error(safeMessage);
   }
 
   const text = await response.text();
@@ -103,12 +105,22 @@ const handleResponse = async (response: Response, fetchFn: () => Promise<Respons
 export const apiClient = {
   get: async <T>(url: string, params?: ApiQueryParams): Promise<T> => {
     const queryString = buildQueryString(params);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000);
     const fetchFn = () => fetch(`${API_BASE_URL}${url}${queryString}`, {
       method: 'GET',
       headers: getHeaders(),
+      signal: controller.signal,
     });
-    const response = await fetchFn();
-    return handleResponse(response, fetchFn);
+    try {
+      const response = await fetchFn();
+      clearTimeout(timeoutId);
+      return handleResponse(response, fetchFn);
+    } catch (err: any) {
+      clearTimeout(timeoutId);
+      if (err.name === 'AbortError') throw new Error('Request timed out. Please try again.');
+      throw err;
+    }
   },
 
   post: async <T>(url: string, data: any): Promise<T> => {

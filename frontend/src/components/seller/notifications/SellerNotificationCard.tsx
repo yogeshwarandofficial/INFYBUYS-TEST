@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router';
 import { type Notification, useMarkNotificationAsRead } from '@/hooks/useNotifications';
 import { SellerNotificationIcon } from './SellerNotificationIcon';
 import { SellerNotificationPriorityBadge } from './SellerNotificationPriorityBadge';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -39,19 +38,18 @@ export function SellerNotificationCard({ notification }: SellerNotificationCardP
   };
 
   return (
-    <Card
+    <div
       role={notification.link ? 'button' : 'article'}
       tabIndex={0}
       aria-label={`${!notification.isRead ? 'Unread ' : ''}${notification.type} notification: ${notification.title}`}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       className={cn(
-        'relative overflow-hidden transition-all',
-        notification.link && 'cursor-pointer hover:shadow-md hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-        !notification.isRead && 'border-primary/60 bg-primary/[0.02] dark:bg-primary/[0.04]'
+        'relative overflow-hidden transition-all p-4 flex items-start gap-3 sm:gap-4',
+        notification.link && 'cursor-pointer hover:bg-slate-50 focus-visible:bg-slate-50 focus-visible:outline-none',
+        !notification.isRead && 'bg-blue-50/40 dark:bg-blue-900/10'
       )}
     >
-      <CardContent className="p-4 flex items-start gap-3 sm:gap-4">
         {/* Icon */}
         <SellerNotificationIcon type={notification.type as any} />
 
@@ -94,7 +92,6 @@ export function SellerNotificationCard({ notification }: SellerNotificationCardP
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-      </CardContent>
-    </Card>
+    </div>
   );
 }

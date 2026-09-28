@@ -1,39 +1,36 @@
 import { useNavigate } from 'react-router';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Users, UserCheck, ShoppingBag, Package, HelpCircle, BarChart3 } from 'lucide-react';
 
 export function AdminQuickActions() {
   const navigate = useNavigate();
 
   const actions = [
-    { title: 'Manage Users', icon: Users, path: '/admin/users' },
-    { title: 'Manage Sellers', icon: UserCheck, path: '/admin/sellers' },
-    { title: 'Manage Buyers', icon: ShoppingBag, path: '/admin/buyers' },
-    { title: 'Review Listings', icon: Package, path: '/admin/listings' },
-    { title: 'View Enquiries', icon: HelpCircle, path: '/admin/enquiries' },
-    { title: 'View Analytics', icon: BarChart3, path: '/admin/analytics' },
+    { title: 'Manage Users', icon: Users, path: '/admin/users', colorClass: 'text-blue-500', hoverBorder: 'hover:border-blue-500' },
+    { title: 'Manage Sellers', icon: UserCheck, path: '/admin/sellers', colorClass: 'text-teal-500', hoverBorder: 'hover:border-teal-500' },
+    { title: 'Manage Buyers', icon: ShoppingBag, path: '/admin/buyers', colorClass: 'text-indigo-500', hoverBorder: 'hover:border-indigo-500' },
+    { title: 'Review Listings', icon: Package, path: '/admin/listings', colorClass: 'text-emerald-500', hoverBorder: 'hover:border-emerald-500' },
+    { title: 'View Enquiries', icon: HelpCircle, path: '/admin/enquiries', colorClass: 'text-amber-500', hoverBorder: 'hover:border-amber-500' },
+    { title: 'View Analytics', icon: BarChart3, path: '/admin/analytics', colorClass: 'text-purple-500', hoverBorder: 'hover:border-purple-500' },
   ];
 
   return (
-    <Card className="bg-white/85 backdrop-blur-md border border-[#E5E9F2] shadow-sm shadow-blue-900/5 rounded-2xl overflow-hidden">
-      <CardHeader>
-        <CardTitle className="text-lg text-[#111827]">Quick Actions</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-          {actions.map((action) => (
-            <Button
-              key={action.title}
-              variant="outline" className="h-auto py-4 flex flex-col gap-2 bg-white/60 hover:bg-white border-[#E5E9F2] rounded-xl text-[#111827] shadow-sm transition-colors"
-              onClick={() => navigate(action.path)}
-            >
-              <div className="w-10 h-10 rounded-xl bg-[#F6F8FC] flex items-center justify-center mb-1"><action.icon className="w-5 h-5 text-[#2563EB]" /></div>
-              <span className="text-[13px] font-medium text-[#111827]">{action.title}</span>
-            </Button>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+    <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-subtle">
+      <h3 className="text-base font-semibold text-slate-900 mb-5">Quick Actions</h3>
+      
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        {actions.map((action) => (
+          <button
+            key={action.title}
+            onClick={() => navigate(action.path)}
+            className={`flex flex-col items-center justify-center p-4 bg-white border border-slate-200 ${action.hoverBorder} rounded-lg shadow-sm hover:shadow transition-all group`}
+          >
+            <div className={`${action.colorClass} mb-2 group-hover:scale-110 transition-transform`}>
+              <action.icon className="w-6 h-6" />
+            </div>
+            <span className="text-sm font-medium text-slate-700">{action.title}</span>
+          </button>
+        ))}
+      </div>
+    </div>
   );
 }
