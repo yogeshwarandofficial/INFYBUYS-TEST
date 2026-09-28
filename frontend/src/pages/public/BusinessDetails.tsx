@@ -451,7 +451,7 @@ export default function BusinessDetails() {
                       <SubmitReviewDialog
                         listingId={listing.id}
                         listingTitle={listing.title}
-                        sellerId={listing.sellerId || listing.seller?.id}
+                        sellerId={listing.sellerId || listing.seller?.id || ''}
                         sellerName={listing.seller?.name || 'Seller'}
                         trigger={
                           <Button className="w-full bg-[#0F172A] hover:bg-slate-800 text-white mb-3">

@@ -24,7 +24,7 @@ export interface SellerDashboardStats {
 
 // â”€â”€â”€ Listings â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-export type SellerListingStatus = 'draft' | 'pending' | 'active' | 'sold' | 'archived';
+export type SellerListingStatus = 'draft' | 'pending' | 'active' | 'sold' | 'archived' | 'CHANGES_PENDING_REVIEW';
 
 export interface SellerListing {
   id: string;

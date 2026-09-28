@@ -45,7 +45,7 @@ export default function PhoneVerification() {
       setIsLoading(true);
       setError(null);
       setSuccess(null);
-      await authService.verifyOTP(data.otp);
+      await authService.verifyOTP('', data.otp);
       setSuccess('Phone number verified successfully!');
       setTimeout(() => {
         navigate('/login', { replace: true });

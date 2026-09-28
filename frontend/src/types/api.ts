@@ -31,6 +31,7 @@ export interface ApiQueryParams {
   dateFrom?: string;
   dateTo?: string;
   isFeatured?: boolean;
+  [key: string]: any;
 }
 
 export interface ListingMedia {
@@ -106,6 +107,7 @@ export interface Enquiry {
   buyer?: {
     id: string;
     name: string;
+    companyName?: string;
   };
   seller?: {
     id: string;

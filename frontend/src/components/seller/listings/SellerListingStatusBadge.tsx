@@ -26,6 +26,10 @@ const STATUS_CONFIG: Record<
     label: 'Archived',
     className: 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400',
   },
+  CHANGES_PENDING_REVIEW: {
+    label: 'Changes Pending Review',
+    className: 'bg-amber-100/80 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400',
+  },
 };
 
 interface SellerListingStatusBadgeProps {
