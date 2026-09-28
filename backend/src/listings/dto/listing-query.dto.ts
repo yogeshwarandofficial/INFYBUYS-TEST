@@ -1,6 +1,6 @@
 import { IsOptional, IsEnum, IsString, IsNumber, IsBoolean } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
-import { ListingType, ListingStatus } from '../../../generated/prisma/client.js';
+import { ListingType, ListingStatus } from '@prisma/client';
 
 export class ListingQueryDto {
   @IsEnum(ListingType)

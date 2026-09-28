@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ListingsService } from './listings.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { S3Service } from '../s3/s3.service';
-import { ListingStatus, KycStatus } from '../../generated/prisma/client';
+import { ListingStatus, KycStatus } from '@prisma/client';
 import { ForbiddenException } from '@nestjs/common';
 
 describe('ListingsService KYC Validation', () => {

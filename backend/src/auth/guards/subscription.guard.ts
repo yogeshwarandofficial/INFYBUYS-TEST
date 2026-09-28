@@ -1,6 +1,6 @@
 import { Injectable, CanActivate, ExecutionContext, ForbiddenException, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { SubscriptionAudience } from '../../../generated/prisma/client.js';
+import { SubscriptionAudience } from '@prisma/client';
 import { REQUIRES_SUBSCRIPTION_KEY } from '../decorators/subscription.decorator.js';
 import { SubscriptionsService } from '../../subscriptions/subscriptions.service.js';
 import { AuthenticatedUser } from '../types/authenticated-user.type.js';

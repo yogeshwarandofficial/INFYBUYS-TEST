@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, ForbiddenException, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { NotificationsService } from '../notifications/notifications.service';
-import { NdaStatus } from '../../generated/prisma/client.js';
+import { NdaStatus } from '@prisma/client';
 
 @Injectable()
 export class NdaService {

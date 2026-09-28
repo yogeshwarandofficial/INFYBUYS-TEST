@@ -1,6 +1,6 @@
 import { IsString, IsOptional, IsEnum, IsNumber, Min, IsNotEmpty } from 'class-validator';
 import { Type } from 'class-transformer';
-import { ListingType } from '../../../generated/prisma/client.js';
+import { ListingType } from '@prisma/client';
 
 export class CreateSavedSearchDto {
   @IsString()

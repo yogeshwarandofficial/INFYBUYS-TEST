@@ -4,7 +4,7 @@ import { SubmitKycDto } from './dto/submit-kyc.dto.js';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 import { RolesGuard } from '../auth/guards/roles.guard.js';
 import { Roles } from '../auth/decorators/roles.decorator.js';
-import { Role, KycDocumentType } from '../../generated/prisma/client.js';
+import { Role, KycDocumentType } from '@prisma/client';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('seller/kyc')

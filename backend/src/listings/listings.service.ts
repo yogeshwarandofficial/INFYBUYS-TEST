@@ -7,7 +7,7 @@ import { ListingQueryDto } from './dto/listing-query.dto.js';
 import { AddListingMediaDto } from './dto/add-listing-media.dto.js';
 import { ReorderListingMediaDto } from './dto/reorder-listing-media.dto.js';
 import { RejectListingDto } from '../admin/dto/reject-listing.dto.js';
-import { ListingStatus, MediaType, Role, KycStatus } from '../../generated/prisma/client.js';
+import { ListingStatus, MediaType, Role, KycStatus } from '@prisma/client';
 import { NotificationsService } from '../notifications/notifications.service';
 import * as crypto from 'crypto';
 import * as path from 'path';

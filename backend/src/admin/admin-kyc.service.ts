@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, BadRequestException, Inject, forwardRef } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { S3Service } from '../s3/s3.service.js';
-import { KycStatus } from '../../generated/prisma/client.js';
+import { KycStatus } from '@prisma/client';
 import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()

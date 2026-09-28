@@ -5,7 +5,7 @@ import { CreateListingDto } from './dto/create-listing.dto.js';
 import { UpdateListingDto } from './dto/update-listing.dto.js';
 import { ReorderListingMediaDto } from './dto/reorder-listing-media.dto.js';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
-import { MediaType, Role } from '../../generated/prisma/client.js';
+import { MediaType, Role } from '@prisma/client';
 
 @Controller('seller/apply')
 @UseGuards(JwtAuthGuard) // Only requires authentication, NO @Roles guard

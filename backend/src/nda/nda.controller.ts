@@ -3,7 +3,7 @@ import { NdaService } from './nda.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
-import { Role } from '../../generated/prisma/client.js';
+import { Role } from '@prisma/client';
 
 @Controller()
 @UseGuards(JwtAuthGuard, RolesGuard)

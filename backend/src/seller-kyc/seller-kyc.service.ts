@@ -3,7 +3,7 @@ import { PrismaService } from '../prisma/prisma.service.js';
 import { S3Service } from '../s3/s3.service.js';
 import { CompaniesHouseService } from './companies-house.service.js';
 import { SubmitKycDto } from './dto/submit-kyc.dto.js';
-import { KycStatus, KycDocumentType } from '../../generated/prisma/client.js';
+import { KycStatus, KycDocumentType } from '@prisma/client';
 import * as crypto from 'crypto';
 import * as path from 'path';
 

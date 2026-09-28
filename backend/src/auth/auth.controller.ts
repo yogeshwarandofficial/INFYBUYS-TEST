@@ -4,7 +4,7 @@ import { RolesGuard } from './guards/roles.guard.js';
 import { SubscriptionGuard } from './guards/subscription.guard.js';
 import { Roles } from './decorators/roles.decorator.js';
 import { RequiresSubscription } from './decorators/subscription.decorator.js';
-import { Role, SubscriptionAudience } from '../../generated/prisma/client.js';
+import { Role, SubscriptionAudience } from '@prisma/client';
 import { AuthService } from './auth.service.js';
 import { RegisterDto } from './dto/register.dto.js';
 import { LoginDto } from './dto/login.dto.js';

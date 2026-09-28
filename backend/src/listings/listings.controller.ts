@@ -9,7 +9,7 @@ import { ReorderListingMediaDto } from './dto/reorder-listing-media.dto.js';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 import { RolesGuard } from '../auth/guards/roles.guard.js';
 import { Roles } from '../auth/decorators/roles.decorator.js';
-import { Role, MediaType, SubscriptionAudience } from '../../generated/prisma/client.js';
+import { Role, MediaType, SubscriptionAudience } from '@prisma/client';
 import { OptionalJwtAuthGuard } from '../auth/guards/optional-jwt-auth.guard.js';
 import { SubscriptionGuard } from '../auth/guards/subscription.guard.js';
 import { RequiresSubscription } from '../auth/decorators/subscription.decorator.js';

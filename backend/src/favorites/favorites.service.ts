@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { ListingsService, publicListingSelect } from '../listings/listings.service.js';
-import { ListingStatus } from '../../generated/prisma/client.js';
+import { ListingStatus } from '@prisma/client';
 
 @Injectable()
 export class FavoritesService {

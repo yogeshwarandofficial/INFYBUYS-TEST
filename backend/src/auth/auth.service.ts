@@ -7,7 +7,7 @@ import { RefreshTokenDto } from './dto/refresh-token.dto.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import * as bcrypt from 'bcryptjs';
 import * as crypto from 'crypto';
-import { Role } from '../../generated/prisma/client.js';
+import { Role } from '@prisma/client';
 import { Resend } from 'resend';
 
 @Injectable()
